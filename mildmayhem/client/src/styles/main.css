@@ -1,0 +1,14 @@
+* {
+    margin: 0;
+    sizing: 0;
+    box-sizing: border-box;
+}
+
+body {
+    
+}
+
+.selectMatchTitle {
+    text-align: center;
+    font: 50px;
+}
