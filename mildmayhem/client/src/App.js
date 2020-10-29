@@ -14,9 +14,10 @@ class App extends Component {
       
       <Router>
         <div>
-        <Route path="/" exact component={MenuPage} />
-        <Route path="/game" component={GamePage} />
-      
+        <Switch>
+          <Route path="/" exact component={MenuPage} />
+          <Route path="/game" component={GamePage} />
+        </Switch>
         </div>
       </Router>
       
