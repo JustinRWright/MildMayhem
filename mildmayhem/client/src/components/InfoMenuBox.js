@@ -6,7 +6,7 @@ class InfoMenuBox extends React.Component {
   constructor(props) {
             super(props);
             this.state = {showControls: true,
-            showStats: true};
+            showStats: true}; 
             
         }
     
@@ -26,7 +26,20 @@ class InfoMenuBox extends React.Component {
     let statColor = '#FFFFFF';
     if (controls){
         controlColor = '#9A9A9A';
-        text = <p><br></br>Welcome to Mild Mayhem!!<br></br><br></br><u>Controls<br></br></u>Movement: WASD<br></br><br></br> Sword Slash: SPACE<br></br><br></br> Magic Blast: P</p>
+        text = <p>Welcome to Mild Mayhem!!<br></br><br></br><div style = {{border: '1px solid'}}><u>Player1
+        </u><br></br>Movement: WASD<br></br>
+        Sword Slash: SPACE<br></br>
+        Magic Blast: P
+        <br></br>
+        </div>
+        <div style = {{border: '1px solid'}}>
+        <u>Player2
+        </u><br></br>Movement: ArrowKeys<br></br>
+        Sword Slash: NumPad 0<br></br>
+        Magic Blast: NumPad 9
+        </div>
+        </p>
+       
     }
     else if (stats){
         statColor = '#9A9A9A';

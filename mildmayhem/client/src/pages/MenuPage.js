@@ -7,6 +7,7 @@ import InfoMenuBox from '../components/InfoMenuBox.js';
 import LocalGameImage from '../images/GameShot.png';
 import OnlineGameImage from '../images/OnlineGame.png';
 import { Link } from 'react-router-dom';
+
 class MenuPage extends React.Component {
   
   render() {
@@ -34,7 +35,7 @@ class MenuPage extends React.Component {
             
         </Grid>
         <Grid item xs = {12}>
-                <div style={{textAlign: 'center', verticalAlign: 'top', padding: 100, border: '1px solid'}}>Online Match</div>
+                <div style={{textAlign: 'center', verticalAlign: 'top', padding: 100, border: '1px solid'}}>Available Online Matches</div>
         </Grid>
     </Grid>
    
