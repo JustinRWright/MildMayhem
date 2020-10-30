@@ -5,6 +5,7 @@ import MagicBlast from "../sprites/MagicBlast.js";
 import SwordSwing from "../sprites/SwordSwing.js";
 import Phaser from 'phaser';
 import bckg from '../assets/bckg.png';
+import HealthBar from "../sprites/HealthBar.js";
 let LocalGameScene = {
     
     
@@ -30,25 +31,36 @@ let LocalGameScene = {
                 }
 
             };
-            
+            this.playerHit = function(magicBlast,player){
+               
+                if (magicBlast.getOwner()!==player){
+                    console.log("hit by enemy!");
+                }
+            }
             console.log("config is: " + this.controlConfig);
             this.player1 = new Player(this, 400, 500,'player');
+            this.healthBarP1 = new HealthBar({scene: this, x: 0, y:570});
             this.player2 = new Player(this, 400, 100, 'otherPlayer');
             this.controlsP1 = new Controls(this,{directionals: 'WASD', magicBlast: 'p', swordSwing: 'SPACE'});
             this.controlsP2 = new Controls(this,{directionals: 'ArrowKeys', magicBlast: 'NUMKEY9', swordSwing: 'NUMKEY0'});
             this.magicBlasts = this.physics.add.group();
             this.swordHitBoxes = this.physics.add.group();
+            this.players = this.physics.add.group();
+            this.players.add(this.player1);
+            this.players.add(this.player2);
             this.physics.add.overlap(this.magicBlasts,this.swordHitBoxes,this.deflectBlast);
+            this.physics.add.overlap(this.magicBlasts,this.players,this.playerHit);
             this.createMagicBlast = function(player){
                     //Create magic Blast
                     var magicBlast = new MagicBlast(this,player.getX(),
-                    player.getY(),'magicBlast');
+                    player.getY(),'magicBlast',{owner: player});
                     //Add to collision group
                     this.magicBlasts.add(magicBlast);
                     //Fire in direction of player orientation
                     magicBlast.setMagicBlastVelocity(player.getOrientationVector());
                     magicBlast.setCollideWorldBounds(true);
                     magicBlast.setBounce(1);
+                    
             };
             this.checkForSwingThenSwing = function(attackInput, player){
                 //Check if swordSwing exists, and then check if it belongs to the player
