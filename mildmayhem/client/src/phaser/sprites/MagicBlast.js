@@ -2,7 +2,7 @@ import Phaser from 'phaser';
 export default class MagicBlast extends Phaser.Physics.Arcade.Sprite
     {
 
-        constructor (scene,x,y,texture)
+        constructor (scene,x,y,texture,{owner}={})
         {
             super(scene,x,y,texture);
             //Adds sprite to screen
@@ -15,7 +15,7 @@ export default class MagicBlast extends Phaser.Physics.Arcade.Sprite
             this.setCircle(85);
             this.createAnimations(scene);
             this.anims.play('magicBlastSpin',true);
-            
+            this.owner = owner;
             this.x = x;
             this.y = y;
             
@@ -36,8 +36,8 @@ export default class MagicBlast extends Phaser.Physics.Arcade.Sprite
           });
           
         }
-        destroy(){
-          
+        getOwner(){
+          return this.owner;
         }
         setMagicBlastVelocity(velocity){
            console.log('MagicBlast velocity in is: ' + JSON.stringify(velocity));
