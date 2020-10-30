@@ -2,7 +2,7 @@ import { Scene } from 'phaser';
 import Player from "../sprites/Player.js";
 import Controls from "../controls/Controls.js";
 import MagicBlast from "../sprites/MagicBlast.js";
-import SwordSwing from "../sprites/SwordSlash.js";
+import SwordSwing from "../sprites/SwordSwing.js";
 import Phaser from 'phaser';
 import bckg from '../assets/bckg.png';
 let LocalGameScene = {
@@ -30,63 +30,87 @@ let LocalGameScene = {
                 }
 
             };
+            
             console.log("config is: " + this.controlConfig);
             this.player1 = new Player(this, 400, 500,'player');
             this.player2 = new Player(this, 400, 100, 'otherPlayer');
             this.controlsP1 = new Controls(this,{directionals: 'WASD', magicBlast: 'p', swordSwing: 'SPACE'});
-            this.controlsP2 = new Controls(this,{directionals: 'WASD', magicBlast: 'p', swordSwing: 'SPACE'});
+            this.controlsP2 = new Controls(this,{directionals: 'ArrowKeys', magicBlast: 'NUMKEY9', swordSwing: 'NUMKEY0'});
             this.magicBlasts = this.physics.add.group();
             this.swordHitBoxes = this.physics.add.group();
             this.physics.add.overlap(this.magicBlasts,this.swordHitBoxes,this.deflectBlast);
-            
+            this.createMagicBlast = function(player){
+                    //Create magic Blast
+                    var magicBlast = new MagicBlast(this,player.getX(),
+                    player.getY(),'magicBlast');
+                    //Add to collision group
+                    this.magicBlasts.add(magicBlast);
+                    //Fire in direction of player orientation
+                    magicBlast.setMagicBlastVelocity(player.getOrientationVector());
+                    magicBlast.setCollideWorldBounds(true);
+                    magicBlast.setBounce(1);
+            };
+            this.checkForSwingThenSwing = function(attackInput, player){
+                //Check if swordSwing exists, and then check if it belongs to the player
+                this.swordHitBoxes.getChildren().forEach(swordSwing => {
+                    if (swordSwing.getOwner() === player) {
+                        let swordToCheck = swordSwing;
+                    }
+                });
+                //Check if sword swing can be activated
+                 if ((attackInput.swordSwingFiring && typeof swordToCheck == 'undefined')){
+                    //Set sword swing spawn point
+                    let swordSpawnX = player.getX();
+                    let swordSpawnY = player.getY();
+                   
+                    //Create new sword swing
+                    let newSwordSwing = new SwordSwing(this,swordSpawnX,swordSpawnY,'swordSwing',{owner: player});
+                    newSwordSwing.swingSword();
+                    this.swordHitBoxes.add(newSwordSwing);
+                   
+                 }
+            };
         },
 
     update: function()
         {
         //console.log("control config is: " + this.controlConfig);
         //get Player input
-        this.movementVector = this.controlsP1.getMovementVector();
-        this.movementVector = this.controlsP2.getMovementVector();
+        this.movementVectorP1 = this.controlsP1.getMovementVector();
+        this.movementVectorP2 = this.controlsP2.getMovementVector();
 
-        this.player1.setPlayerVelocity(this.movementVector);
-        this.player1.setOrientationVector(this.movementVector);
-        let attackInputs = this.controlsP1.getAttackInput();
-        
+        this.player1.setPlayerVelocity(this.movementVectorP1);
+        this.player1.setOrientationVector(this.movementVectorP1);
+
+        this.player2.setPlayerVelocity(this.movementVectorP2);
+        this.player2.setOrientationVector(this.movementVectorP2);
+
+        let attackInputsP1 = this.controlsP1.getAttackInput();
+        let attackInputsP2 = this.controlsP2.getAttackInput();
+
         //this.physics.add.overlap(this.player1, this.magicBlasts,this.deflectBlast,this);
         //Check for user firing magic blast
-        if (attackInputs.magicBlastFiring){
-            //Create magic Blast
-            var magicBlast = new MagicBlast(this,this.player1.getX(),
-            this.player1.getY(),'magicBlast');
-            
-            //Add to collision group
-            this.magicBlasts.add(magicBlast);
-            //Fire in direction of player orientation
-            magicBlast.setMagicBlastVelocity(this.player1.getOrientationVector());
-            
-            magicBlast.setCollideWorldBounds(true);
-            magicBlast.setBounce(1);
+        if (attackInputsP1.magicBlastFiring){
+           this.createMagicBlast(this.player1);
         };
-        //Update states for GameObjects
-        if (this.swordSwing){
-            this.swordSwing.update()
+        if (attackInputsP2.magicBlastFiring){
+           this.createMagicBlast(this.player2);
+        };
+        //Check if sword swings exist, and update them as needed
+        let swordSwings = this.swordHitBoxes.getChildren();
+        if (swordSwings.length>0){
+            swordSwings.forEach(swordSwing => {
+            swordSwing.update();
+            }
+            );
+            
         }
         
         //Check for user swinging sword
         //The animation runs on a timer which gets reset if the player is pressing space for more than one game tick, therefore I had to run !this.swordSwing.isSwinging, this needs to get changed because it's so complicated and ugly
-        if ((attackInputs.swordSwingFiring && typeof this.swordSwing == "undefined") || attackInputs.swordSwingFiring && !this.swordSwing.isSwinging()){
-            //console.log("Sword Swung!!");
-            //Set sword swing spawn point
-            let swordSpawnX = this.player1.getX();
-            let swordSpawnY = this.player1.getY();
-            //console.log("swordSpawnX is:" + swordSpawnX);
-            //console.log("swordSpawnY is:" + swordSpawnY);
-            //Create new sword swing
-            this.swordSwing = new SwordSwing(this,swordSpawnX,swordSpawnY,'swordSwing',{owner: this.player1});
-            this.swordSwing.swingSword();
-            this.swordHitBoxes.add(this.swordSwing);
-            
-        }
+        
+        this.checkForSwingThenSwing(attackInputsP1, this.player1);
+        this.checkForSwingThenSwing(attackInputsP2, this.player2);
 
         
         }
