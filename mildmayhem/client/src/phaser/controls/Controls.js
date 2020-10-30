@@ -9,7 +9,7 @@ export default class Controls extends Phaser.GameObjects.Sprite
             
         }
         setKeyInput(scene,{directionals,magicBlast,swordSwing,dodge}={}){
-          //Potentially can add configurable controls by using if statements here in the future
+          //Potentially can add more configurable controls by using if statements here in the future
           if (directionals === 'WASD'){
             this.directionals = scene.input.keyboard.addKeys({
                 up:Phaser.Input.Keyboard.KeyCodes.W,
@@ -18,11 +18,21 @@ export default class Controls extends Phaser.GameObjects.Sprite
                 right:Phaser.Input.Keyboard.KeyCodes.D
             });
           }
+          else if (directionals === 'ArrowKeys'){
+            this.directionals = scene.input.keyboard.createCursorKeys();
+           
+          }
           if (magicBlast === 'p'){
             this.magicBlastAttack = scene.input.keyboard.addKeys({p: Phaser.Input.Keyboard.KeyCodes.P});
           }
+          else if (magicBlast === 'NUMKEY9'){
+            this.magicBlastAttack = scene.input.keyboard.addKeys({p: Phaser.Input.Keyboard.KeyCodes.NUMPAD_NINE});
+          }
           if (swordSwing === 'SPACE'){
             this.swordSwing = scene.input.keyboard.addKeys({spaceBar: Phaser.Input.Keyboard.KeyCodes.SPACE});
+          }
+          else if (swordSwing === 'NUMKEY0'){
+            this.swordSwing = scene.input.keyboard.addKeys({spaceBar: Phaser.Input.Keyboard.KeyCodes.NUMPAD_ZERO});
           }
         }
         getMovementVector(){

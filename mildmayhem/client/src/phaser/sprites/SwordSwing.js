@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-export default class SwordSlash extends Phaser.Physics.Arcade.Sprite
+export default class SwordSwing extends Phaser.Physics.Arcade.Sprite
     {
 
         constructor (scene,x,y,texture,{owner}={})
@@ -24,7 +24,7 @@ export default class SwordSlash extends Phaser.Physics.Arcade.Sprite
             this.on('animationcomplete', function() {
               //console.log("animation completed!");
               this.swinging = false;
-              this.body.destroy();
+              this.destroy();
               
               //this.anims.stop();
             },this);
@@ -67,9 +67,7 @@ export default class SwordSlash extends Phaser.Physics.Arcade.Sprite
         isSwinging(){
           return this.swinging;
         }
-        destroy(){
-          this.destroy();
-        }
+
         followOwner(){
           
           this.x = this.owner.x;
