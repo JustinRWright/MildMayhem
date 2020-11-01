@@ -23,6 +23,7 @@ export default class SwordSwing extends Phaser.Physics.Arcade.Sprite
             this.createAnimations(scene);
             this.on('animationcomplete', function() {
               //console.log("animation completed!");
+              console.log("anims key for sword is: " + this.anims);
               this.swinging = false;
               this.destroy();
               
@@ -69,7 +70,6 @@ export default class SwordSwing extends Phaser.Physics.Arcade.Sprite
         }
 
         followOwner(){
-          
           this.x = this.owner.x;
           this.y = this.owner.y;
         }
@@ -79,8 +79,7 @@ export default class SwordSwing extends Phaser.Physics.Arcade.Sprite
           //in order to match the rotation of the sword angle math in orient sword
           //**A -270 degrees seems to be automatically converted to 90 inside of phaser.arcade.sprite.angle after it is set
           let collisionAngle = Phaser.Math.Angle.Between(gameObject.x,gameObject.y,this.x,this.y)*180/Math.PI-90;
-          //console.log("collision angle is: " + collisionAngle);
-          //console.log("sword angle is: " + this.angle);
+         
           if (collisionAngle>this.angle-60&&collisionAngle<this.angle+60){
             return true;
           }

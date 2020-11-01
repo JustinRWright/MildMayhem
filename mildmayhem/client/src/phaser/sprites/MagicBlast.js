@@ -18,9 +18,19 @@ export default class MagicBlast extends Phaser.Physics.Arcade.Sprite
             this.owner = owner;
             this.x = x;
             this.y = y;
+            let timedEvent = this.scene.time.delayedCall(1000, this.onEvent, [], this);
+            this.on('animationcomplete', function(anim) {
+              //console.log("animation completed!");
+              this.emit('animationcomplete_' + anim.key, anim);
+            },this);
+            this.on('animationcomplete_magicBlastExplode', function() {
+              this.destroy();
+            });
             
         }
-       
+        onEvent(){
+          this.explode();
+        }
         createAnimations(scene){
           scene.anims.create({
             key: 'magicBlastSpin',
@@ -32,7 +42,7 @@ export default class MagicBlast extends Phaser.Physics.Arcade.Sprite
             key: 'magicBlastExplode',
             frames: scene.anims.generateFrameNumbers(this.texture.key, { start: 13,end: 29 }),
             frameRate: 20,
-            repeat: -1
+           
           });
           
         }
@@ -42,6 +52,11 @@ export default class MagicBlast extends Phaser.Physics.Arcade.Sprite
         setMagicBlastVelocity(velocity){
            console.log('MagicBlast velocity in is: ' + JSON.stringify(velocity));
           this.body.setVelocity(velocity.x*this.magicSpeed,velocity.y*this.magicSpeed);
+        }
+        explode(){
+          this.body.enable = false;
+          this.anims.play('magicBlastExplode',
+          true);
         }
         deflectFrom(player){
           let vectorAngle = Phaser.Math.Angle.Between(player.x,player.y,this.x,this.y);
