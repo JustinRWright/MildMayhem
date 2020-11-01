@@ -17,12 +17,44 @@ export default class Player extends Phaser.Physics.Arcade.Sprite
             //
             this.x = x;
             this.y = y;
-          
+            this.scene = scene;
+            this.stunned = false;
             this.setPlayerSpeed(400);
-            
+           
         }
-        update(){
-          
+        
+        playStun(){
+            this.toggleStun();
+            let timedEvent = this.scene.time.delayedCall(1000, this.onEvent, [], this);
+            console.log("playStun was called");
+            //console.log(timedEvent.getProgress());
+        }
+        knockBack(gameObj){
+          let gameObjCenter = gameObj.getCenter();
+          let playerCenter = this.getCenter();
+          let distance = Phaser.Math.Distance.Between(gameObjCenter['x'],gameObjCenter['y'],playerCenter['x'],playerCenter['y']);
+          let vectorAngle = Phaser.Math.Angle.Between(gameObjCenter['x'],gameObjCenter['y'],playerCenter['x'],playerCenter['y']);
+          console.log("distance is: " + distance);
+          console.log("vectorAngle is: " + vectorAngle);
+          let movementX = Math.cos(vectorAngle)*distance;
+          let movementY = Math.sin(vectorAngle)*distance;
+          this.setPosition(this.getX()+movementX,this.getY()+movementY);
+        }
+        onEvent(){
+          this.toggleStun();
+        }
+        toggleStun(){
+          this.stunned = !this.stunned;
+          if (this.stunned === false){
+            this.setAlpha(1);
+          }
+          else {
+            this.setAlpha(.5);
+          }
+          console.log("stunned is: " + this.stunned);
+        }
+        getStun(){
+          return this.stunned;
         }
         setPlayerSpeed(speed)
         {
@@ -81,6 +113,12 @@ export default class Player extends Phaser.Physics.Arcade.Sprite
         }
         getOrientationVector(){
           return this.orientationVector;
+        }
+        setHealthBar(healthBar){
+          this.healthBar = healthBar;
+        }
+        getHealthBar(){
+          return this.healthBar;
         }
         getX()
         {

@@ -24,32 +24,49 @@ let LocalGameScene = {
         },
 
     create: function()
-        {
+        {   
+            //Deflect Magic Blast with sword
             this.deflectBlast = function(magicBlast,swordHitbox){
                 if(swordHitbox.inSwordSweep(magicBlast)){
                     magicBlast.deflectFrom(swordHitbox.getOwner());
                 }
 
             };
+            //Callback function for player/magicBlast Collision
             this.playerHit = function(magicBlast,player){
                
                 if (magicBlast.getOwner()!==player){
                     console.log("hit by enemy!");
+                    magicBlast.explode();
+                    if (player.getStun() === false){
+                        player.playStun();
+                        player.getHealthBar().decrease(3);
+                        player.knockBack(magicBlast);
+                    }
+                    
                 }
             }
             console.log("config is: " + this.controlConfig);
             this.player1 = new Player(this, 400, 500,'player');
-            this.healthBarP1 = new HealthBar({scene: this, x: 0, y:570});
             this.player2 = new Player(this, 400, 100, 'otherPlayer');
+                
+            this.healthBarP1 = new HealthBar({scene: this, x: 0, y:570});
+            this.healthBarP2 = new HealthBar({scene: this, x: 0, y:0});
+            this.player1.setHealthBar(this.healthBarP1);
+            this.player2.setHealthBar(this.healthBarP2);
+
             this.controlsP1 = new Controls(this,{directionals: 'WASD', magicBlast: 'p', swordSwing: 'SPACE'});
             this.controlsP2 = new Controls(this,{directionals: 'ArrowKeys', magicBlast: 'NUMKEY9', swordSwing: 'NUMKEY0'});
+            
             this.magicBlasts = this.physics.add.group();
             this.swordHitBoxes = this.physics.add.group();
+            
             this.players = this.physics.add.group();
             this.players.add(this.player1);
             this.players.add(this.player2);
             this.physics.add.overlap(this.magicBlasts,this.swordHitBoxes,this.deflectBlast);
             this.physics.add.overlap(this.magicBlasts,this.players,this.playerHit);
+            
             this.createMagicBlast = function(player){
                     //Create magic Blast
                     var magicBlast = new MagicBlast(this,player.getX(),
@@ -86,16 +103,20 @@ let LocalGameScene = {
 
     update: function()
         {
-        //console.log("control config is: " + this.controlConfig);
+        
         //get Player input
         this.movementVectorP1 = this.controlsP1.getMovementVector();
         this.movementVectorP2 = this.controlsP2.getMovementVector();
 
-        this.player1.setPlayerVelocity(this.movementVectorP1);
-        this.player1.setOrientationVector(this.movementVectorP1);
-
-        this.player2.setPlayerVelocity(this.movementVectorP2);
-        this.player2.setOrientationVector(this.movementVectorP2);
+        if(!this.player1.getStun()){
+            this.player1.setPlayerVelocity(this.movementVectorP1);
+            this.player1.setOrientationVector(this.movementVectorP1);
+        }
+       
+        if(!this.player2.getStun()){
+            this.player2.setPlayerVelocity(this.movementVectorP2);
+            this.player2.setOrientationVector(this.movementVectorP2);
+        }
 
         let attackInputsP1 = this.controlsP1.getAttackInput();
         let attackInputsP2 = this.controlsP2.getAttackInput();
