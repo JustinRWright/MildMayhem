@@ -13,8 +13,10 @@ export default class Player extends Phaser.Physics.Arcade.Sprite
             this.body.setSize(30,61);
             this.createAnimations(scene);
             //Tracks changes in player orientation
-            this.orientationVector = {x: 0, y: 1};
+            //Player starts out looking forwards so x: 0, y: -1 makes sense as initial value
+            this.orientationVector = {x: 0, y: -1};
             //
+            this.alive = true;
             this.x = x;
             this.y = y;
             this.scene = scene;
@@ -51,7 +53,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite
           else {
             this.setAlpha(.5);
           }
-          console.log("stunned is: " + this.stunned);
+          
         }
         getStun(){
           return this.stunned;
@@ -105,6 +107,12 @@ export default class Player extends Phaser.Physics.Arcade.Sprite
            this.swinging = true;
          }
         }
+        gameOver(){
+          this.alive = false;
+        }
+        isAlive(){
+          return this.alive;
+        }
         getWidth(){
           return this.body.width;
         }
@@ -153,5 +161,6 @@ export default class Player extends Phaser.Physics.Arcade.Sprite
             frameRate: 10,
             repeat: -1
           });
+          
         }
     }

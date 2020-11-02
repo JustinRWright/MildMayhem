@@ -6,6 +6,7 @@ import SwordSwing from "../sprites/SwordSwing.js";
 import Phaser from 'phaser';
 import bckg from '../assets/bckg.png';
 import HealthBar from "../sprites/HealthBar.js";
+import CoolDown from "../sprites/CoolDown.js";
 let LocalGameScene = {
     
     
@@ -32,6 +33,13 @@ let LocalGameScene = {
                 }
 
             };
+           
+            this.explosionAnim = this.anims.create({
+                key: 'explode',
+                frames: this.anims.generateFrameNumbers('explosion',{ start: 1, end: 23}),
+                frameRate: 10,
+                repeat: -1
+            });
             //Callback function for player/magicBlast Collision
             this.playerHit = function(magicBlast,player){
                
@@ -40,22 +48,42 @@ let LocalGameScene = {
                     magicBlast.explode();
                     if (player.getStun() === false){
                         player.playStun();
-                        player.getHealthBar().decrease(3);
+                        if(player.getHealthBar().decrease(4)){
+                            player.gameOver();
+                            player.anims.play('explode', true);
+                            //Win Screen and link people back to main menu
+                           
+                            
+                        };
+
                         player.knockBack(magicBlast);
                     }
                     
                 }
             }
             console.log("config is: " + this.controlConfig);
-            this.player1 = new Player(this, 400, 500,'player');
-            this.player2 = new Player(this, 400, 100, 'otherPlayer');
-                
-            this.healthBarP1 = new HealthBar({scene: this, x: 0, y:570});
-            this.healthBarP2 = new HealthBar({scene: this, x: 0, y:0});
-            this.player1.setHealthBar(this.healthBarP1);
-            this.player2.setHealthBar(this.healthBarP2);
+            
+            this.player1 = new Player(this, 400, 500,'player',this.explosionAnim);
+            this.player2 = new Player(this, 400, 100, 'otherPlayer',this.explosionAnim);
+            this.leftWall = this.physics.add.sprite(-55,300,'vwall');
+            this.rightWall = this.physics.add.sprite(-55,300,'vwall');
+            this.leftWall = this.physics.add.sprite(-55,300,'vwall');
+            this.leftWall = this.physics.add.sprite(-55,300,'vwall');
+            this.youWin = this.add.text(150,300-60,'PLAYER2 WINS ',{fontSize: '70px', color: '#66FF00'});
+            this.youWin.setVisible(false);
 
-            this.controlsP1 = new Controls(this,{directionals: 'WASD', magicBlast: 'p', swordSwing: 'SPACE'});
+            this.healthBarP1 = new HealthBar({scene: this, x: 0, y:584});
+            this.healthBarP2 = new HealthBar({scene: this, x: 0, y:0});
+
+            this.swordCoolDownP1 = new CoolDown(this, 230, 560, 'swordCool', 1000);
+            this.swordCoolDownP2 = new CoolDown(this, 570, 40, 'swordCool', 1000);
+           
+            this.magicCoolDownP1 = new CoolDown(this, 278, 560, 'blastCool', 1000);
+            this.magicCoolDownP2 = new CoolDown(this, 618, 40, 'blastCool', 1000);
+            
+           
+
+            this.controlsP1 = new Controls(this,{directionals: 'GamePad', magicBlast: 'p', swordSwing: 'SPACE'});
             this.controlsP2 = new Controls(this,{directionals: 'ArrowKeys', magicBlast: 'NUMKEY9', swordSwing: 'NUMKEY0'});
             
             this.magicBlasts = this.physics.add.group();
@@ -64,6 +92,10 @@ let LocalGameScene = {
             this.players = this.physics.add.group();
             this.players.add(this.player1);
             this.players.add(this.player2);
+
+            this.player1.setHealthBar(this.healthBarP1);
+            this.player2.setHealthBar(this.healthBarP2);
+
             this.physics.add.overlap(this.magicBlasts,this.swordHitBoxes,this.deflectBlast);
             this.physics.add.overlap(this.magicBlasts,this.players,this.playerHit);
             
@@ -79,7 +111,7 @@ let LocalGameScene = {
                     magicBlast.setBounce(1);
                     
             };
-            this.checkForSwingThenSwing = function(attackInput, player){
+            this.checkForSwingThenSwing = function(attackInput, player, coolDown){
                 //Check if swordSwing exists, and then check if it belongs to the player
                 this.swordHitBoxes.getChildren().forEach(swordSwing => {
                     if (swordSwing.getOwner() === player) {
@@ -87,7 +119,7 @@ let LocalGameScene = {
                     }
                 });
                 //Check if sword swing can be activated
-                 if ((attackInput.swordSwingFiring && typeof swordToCheck == 'undefined')){
+                 if ((attackInput.swordSwingFiring && typeof swordToCheck == 'undefined' && !coolDown.isActive())){
                     //Set sword swing spawn point
                     let swordSpawnX = player.getX();
                     let swordSpawnY = player.getY();
@@ -95,6 +127,7 @@ let LocalGameScene = {
                     //Create new sword swing
                     let newSwordSwing = new SwordSwing(this,swordSpawnX,swordSpawnY,'swordSwing',{owner: player});
                     newSwordSwing.swingSword();
+                    coolDown.startCoolDown();
                     this.swordHitBoxes.add(newSwordSwing);
                    
                  }
@@ -103,30 +136,63 @@ let LocalGameScene = {
 
     update: function()
         {
-        
+        /*    
+        let pad: Phaser.Input.Gamepad.Gamepad;
+        if (this.input.gamepad.total){
+            
+            pad = this.input.gamepad.getPad(0);
+
+            const xAxis = pad.axes[0].getValue();
+            const yAxis = pad.axes[1].getValue();
+            let directionalVector = {x: 0, y: 0};
+            if (yAxis > 0){
+                directionalVector.y = 1;
+            }
+            if (xAxis < 0){
+                directionalVector.x = -1;
+            }
+            if (xAxis > 0){
+                directionalVector.x = 1;
+            }
+            if (yAxis < 0){
+                directionalVector.y = -1;
+            }
+            console.log(directionalVector);
+        }
+       */
+        if (!this.player1.isAlive()){
+            this.youWin.setVisible(true);
+        }
+        else if(!this.player2.isAlive()){
+            this.youWin.setVisible(true);
+            this.youWin.setText('PLAYER1 WINS');
+        }
         //get Player input
         this.movementVectorP1 = this.controlsP1.getMovementVector();
         this.movementVectorP2 = this.controlsP2.getMovementVector();
 
-        if(!this.player1.getStun()){
+        //Check if the player is stunned
+        if(!this.player1.getStun() && this.player1.isAlive()){
             this.player1.setPlayerVelocity(this.movementVectorP1);
             this.player1.setOrientationVector(this.movementVectorP1);
         }
        
-        if(!this.player2.getStun()){
+        if(!this.player2.getStun() && this.player2.isAlive()){
             this.player2.setPlayerVelocity(this.movementVectorP2);
             this.player2.setOrientationVector(this.movementVectorP2);
         }
 
+        //Get attack inputs every cycle
         let attackInputsP1 = this.controlsP1.getAttackInput();
         let attackInputsP2 = this.controlsP2.getAttackInput();
 
-        //this.physics.add.overlap(this.player1, this.magicBlasts,this.deflectBlast,this);
         //Check for user firing magic blast
-        if (attackInputsP1.magicBlastFiring){
+        if (attackInputsP1.magicBlastFiring && !this.magicCoolDownP1.isActive()){
+           this.magicCoolDownP1.startCoolDown();
            this.createMagicBlast(this.player1);
         };
-        if (attackInputsP2.magicBlastFiring){
+        if (attackInputsP2.magicBlastFiring && !this.magicCoolDownP2.isActive()){
+           this.magicCoolDownP2.startCoolDown();
            this.createMagicBlast(this.player2);
         };
         //Check if sword swings exist, and update them as needed
@@ -139,11 +205,9 @@ let LocalGameScene = {
             
         }
         
-        //Check for user swinging sword
-        //The animation runs on a timer which gets reset if the player is pressing space for more than one game tick, therefore I had to run !this.swordSwing.isSwinging, this needs to get changed because it's so complicated and ugly
-        
-        this.checkForSwingThenSwing(attackInputsP1, this.player1);
-        this.checkForSwingThenSwing(attackInputsP2, this.player2);
+        //Check for user swinging sword and then swing, starting the cooldown
+        this.checkForSwingThenSwing(attackInputsP1, this.player1, this.swordCoolDownP1);
+        this.checkForSwingThenSwing(attackInputsP2, this.player2, this.swordCoolDownP2);
 
         
         }
