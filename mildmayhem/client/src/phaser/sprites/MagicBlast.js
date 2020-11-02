@@ -11,7 +11,7 @@ export default class MagicBlast extends Phaser.Physics.Arcade.Sprite
             //Adds physics to sprite
             scene.physics.add.existing(this);
             this.setScale(.4);
-            this.magicSpeed = 600;
+            this.magicSpeed = 800;
             this.setCircle(85);
             this.createAnimations(scene);
             this.anims.play('magicBlastSpin',true);
@@ -50,13 +50,17 @@ export default class MagicBlast extends Phaser.Physics.Arcade.Sprite
           return this.owner;
         }
         setMagicBlastVelocity(velocity){
-           console.log('MagicBlast velocity in is: ' + JSON.stringify(velocity));
-          this.body.setVelocity(velocity.x*this.magicSpeed,velocity.y*this.magicSpeed);
+          
+          let vectorAngle = Phaser.Math.Angle.Between(0,0,velocity.x,velocity.y);
+          this.body.setVelocity(velocity.x*Math.abs(Math.cos(vectorAngle))*this.magicSpeed,velocity.y*Math.abs(Math.sin(vectorAngle))*this.magicSpeed);
         }
         explode(){
-          this.body.enable = false;
-          this.anims.play('magicBlastExplode',
-          true);
+          if (this.body){
+            this.body.enable = false;
+            this.anims.play('magicBlastExplode',
+            true);
+          }
+         
         }
         deflectFrom(player){
           let vectorAngle = Phaser.Math.Angle.Between(player.x,player.y,this.x,this.y);

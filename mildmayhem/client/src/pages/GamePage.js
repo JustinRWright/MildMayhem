@@ -19,6 +19,9 @@ class GamePage extends Component {
           gravity: { y: 0 }
         }
       },
+      input: {
+        gamepad: true
+      },
       scene: {
         init: function() {
           //Here we can pass in the Control Config and any other data the Phaser scene needs from React

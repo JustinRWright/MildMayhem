@@ -6,7 +6,7 @@ export default class Controls extends Phaser.GameObjects.Sprite
         {
             super(scene,type);
             this.setKeyInput(scene,type);
-            
+            this.scene = scene;
         }
         setKeyInput(scene,{directionals,magicBlast,swordSwing,dodge}={}){
           //Potentially can add more configurable controls by using if statements here in the future
@@ -22,6 +22,19 @@ export default class Controls extends Phaser.GameObjects.Sprite
             this.directionals = scene.input.keyboard.createCursorKeys();
            
           }
+          else if (directionals === 'GamePad'){
+            
+            //Checks to see if a gamepad exists
+            let timedEvent = this.scene.time.delayedCall(100, this.onEvent, [], this);
+            const xAxis = 0;
+            const yAxis = 0;
+            this.directionals = {
+                up: {isDown: yAxis > 0 ? true : false},
+                down: {isDown: yAxis < 0 ? true : false},
+                left: {isDown: xAxis > 0 ? true : false},
+                right: {isDown: xAxis > 0 ? true : false},
+              }
+          }
           if (magicBlast === 'p'){
             this.magicBlastAttack = scene.input.keyboard.addKeys({p: Phaser.Input.Keyboard.KeyCodes.P});
           }
@@ -35,9 +48,25 @@ export default class Controls extends Phaser.GameObjects.Sprite
             this.swordSwing = scene.input.keyboard.addKeys({spaceBar: Phaser.Input.Keyboard.KeyCodes.NUMPAD_ZERO});
           }
         }
+        onEvent(){
+          console.log("Event has been called");
+           if (this.scene.input.gamepad.total){
+                console.log("gamePad detected!");
+                this.pad = this.scene.input.gamepad.getPad(0);
+                let xAxis = this.pad.axes[0].getValue();
+                let yAxis = this.pad.axes[1].getValue();
+                /*this.directionals = {
+                  up: {isDown: yAxis < 0 ? true : false},
+                  down: {isDown: yAxis > 0 ? true : false},
+                  left: {isDown: xAxis > 0 ? true : false},
+                  right: {isDown: xAxis > 0 ? true : false},
+                }*/
+                
+            }
+        }
         getMovementVector(){
          return {
-           //Gets the vector for a directional key press(y is inverted)
+           //Gets the vector for a directional press(y is inverted)
            x: ((this.directionals.right.isDown)? 1:0)+((this.directionals.left.isDown)? -1:0),
            y: ((this.directionals.up.isDown)? -1:0)+((this.directionals.down.isDown)? 1:0)};
         }
