@@ -22,6 +22,7 @@ let LocalGameScene = {
             this.load.spritesheet('explosion','https://i.imgur.com/UHZiUKC.png', {frameWidth: 192, frameHeight: 192});
             this.load.spritesheet('player', 'https://i.imgur.com/nRFZx7v.png', { frameWidth: 68, frameHeight: 68 });
             this.load.spritesheet('otherPlayer','https://i.imgur.com/V78wgrC.png', { frameWidth: 68, frameHeight: 68 });
+            this.load.spritesheet('Background','https://i.imgur.com/T6q69wx.png', {frameWidth: 800, frameHeight: 600});
         },
 
     create: function()
@@ -64,26 +65,35 @@ let LocalGameScene = {
                 }
             }
             console.log("config is: " + JSON.stringify(this.controlConfig));
+            this.background = this.add.sprite(400,300,'Background');
+            this.anims.create({
+                key: 'glow',
+                frames: this.anims.generateFrameNumbers('Background', { start: 1, end: 12 }),
+                frameRate: 4,
+                repeat: -1
+            });
+            this.background.anims.play('glow');
+            console.log(this.background.anims.setYoyo(true));
+            
             
             this.player1 = new Player(this, 400, 500,'player',this.explosionAnim);
             this.player2 = new Player(this, 400, 100, 'otherPlayer',this.explosionAnim);
-            this.leftWall = this.physics.add.sprite(-55,300,'vwall');
-            this.rightWall = this.physics.add.sprite(-55,300,'vwall');
-            this.leftWall = this.physics.add.sprite(-55,300,'vwall');
-            this.leftWall = this.physics.add.sprite(-55,300,'vwall');
+
+          
+           
             this.youWin = this.add.text(150,300-60,'PLAYER2 WINS ',{fontSize: '70px', color: '#66FF00'});
             this.youWin.setVisible(false);
 
             this.healthBarP1 = new HealthBar({scene: this, x: 0, y:584});
             this.healthBarP2 = new HealthBar({scene: this, x: 0, y:0});
 
-            this.swordCoolDownP1 = new CoolDown(this, 230, 560, 'swordCool', 1000);
-            this.swordCoolDownP2 = new CoolDown(this, 570, 40, 'swordCool', 1000);
+            this.swordCoolDownP1 = new CoolDown(this, 230, 560, 'swordCool', 700);
+            this.swordCoolDownP2 = new CoolDown(this, 570, 40, 'swordCool', 700);
            
             this.magicCoolDownP1 = new CoolDown(this, 278, 560, 'blastCool', 1000);
             this.magicCoolDownP2 = new CoolDown(this, 618, 40, 'blastCool', 1000);
             
-           
+
 
             this.controlsP1 = new Controls(this,{directionals: this.controlConfig.player1.Movement, magicBlast: this.controlConfig.player1.MagicBlast, swordSwing: this.controlConfig.player1.SwordSlash});
             this.controlsP2 = new Controls(this,{directionals: this.controlConfig.player2.Movement, magicBlast: this.controlConfig.player2.MagicBlast, swordSwing: this.controlConfig.player2.SwordSlash});
@@ -97,10 +107,31 @@ let LocalGameScene = {
 
             this.player1.setHealthBar(this.healthBarP1);
             this.player2.setHealthBar(this.healthBarP2);
+            this.player1.setBounce(1);
+            this.player2.setBounce(1);
 
             this.physics.add.overlap(this.magicBlasts,this.swordHitBoxes,this.deflectBlast);
             this.physics.add.overlap(this.magicBlasts,this.players,this.playerHit);
             
+            this.leftWall = this.physics.add.sprite(-55,300,'vwall');
+            this.leftWall.body.immovable = true;
+            
+            this.rightWall = this.physics.add.sprite(855,300,'vwall');
+            this.rightWall.body.immovable = true;
+            this.topWall = this.physics.add.sprite(400,-55,'wall');
+            this.topWall.body.immovable = true;
+            this.bottomWall = this.physics.add.sprite(400,655,'wall');
+            this.bottomWall.body.immovable = true;
+            
+            this.walls = this.physics.add.staticGroup();
+            this.walls.add(this.leftWall);
+            this.walls.add(this.rightWall);
+            this.walls.add(this.topWall);
+            this.walls.add(this.bottomWall);
+            
+            
+            this.physics.add.collider(this.magicBlasts,this.walls);
+            this.physics.add.collider(this.walls,this.players);
             this.createMagicBlast = function(player){
                     //Create magic Blast
                     var magicBlast = new MagicBlast(this,player.getX(),
@@ -161,7 +192,7 @@ let LocalGameScene = {
             this.player2.setOrientationVector(this.movementVectorP2);
         }
 
-        //Get attack inputs every cycle
+        //Get attack inputs every update cycle
         let attackInputsP1 = this.controlsP1.getAttackInput();
         let attackInputsP2 = this.controlsP2.getAttackInput();
 
