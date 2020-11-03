@@ -5,8 +5,10 @@ import bckg from '../phaser/assets/bckg.png';
 //import LocalGame from '../phaser/scenes/game.js';
 import LocalGameScene from '../phaser/scenes/LocalGameScene.js';
 class GamePage extends Component {
-
-  state = {
+  constructor(props){
+    super(props);
+    let controlConfig = this.props.controlConfig;
+    this.state = {
     initialize: true,
     game: {
       type: Phaser.AUTO,
@@ -25,7 +27,7 @@ class GamePage extends Component {
       scene: {
         init: function() {
           //Here we can pass in the Control Config and any other data the Phaser scene needs from React
-          this.controlConfig = "blahblahblah"
+          this.controlConfig = controlConfig;
         },
         preload: LocalGameScene.preload,
         create: LocalGameScene.create,
@@ -34,6 +36,36 @@ class GamePage extends Component {
       
     }
   }
+  }
+  /*state = {
+    initialize: true,
+    game: {
+      type: Phaser.AUTO,
+      width: 800,
+      height: 600,
+      physics: {
+        default: 'arcade',
+        arcade: {
+          debug: true,
+          gravity: { y: 0 }
+        }
+      },
+      input: {
+        gamepad: true
+      },
+      scene: {
+        init: function() {
+          //Here we can pass in the Control Config and any other data the Phaser scene needs from React
+          this.controlConfig = this.props.controlConfig;
+        },
+        preload: LocalGameScene.preload,
+        create: LocalGameScene.create,
+        update: LocalGameScene.update
+      }
+      
+    }
+  }
+  */
   render() {
     const { initialize, game } = this.state
     console.log(game.scene)

@@ -9,7 +9,7 @@ class MatchRoomBox extends React.Component {
         
     toggleHighlight = () => {
       this.setState({highlight: !this.state.highlight});
-      console.log("highlight Toggled");
+      //console.log("highlight Toggled");
     }
   render() {
     let highlightCSS = this.state.highlight;
@@ -20,7 +20,7 @@ class MatchRoomBox extends React.Component {
     else {
       highlightColor = "3px Solid Black";
     }
-    return <div onMouseEnter={this.toggleHighlight} onMouseLeave={this.toggleHighlight}
+    return <div onClick = {this.props.onClick} onMouseEnter={this.toggleHighlight} onMouseLeave={this.toggleHighlight}
      style={{border: highlightColor,
       textAlign: 'center', width: 200, height: 200, margin: 'auto'}}>
               <div>{this.props.matchType}</div>

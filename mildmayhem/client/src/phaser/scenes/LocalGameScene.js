@@ -46,8 +46,10 @@ let LocalGameScene = {
                 if (magicBlast.getOwner()!==player){
                     console.log("hit by enemy!");
                     magicBlast.explode();
+                    //Check if player is stunned, if not, play stun animation and calculate damage
                     if (player.getStun() === false){
                         player.playStun();
+                        //When the Healthbar reaches 0, this evaluates to true
                         if(player.getHealthBar().decrease(4)){
                             player.gameOver();
                             player.anims.play('explode', true);
@@ -61,7 +63,7 @@ let LocalGameScene = {
                     
                 }
             }
-            console.log("config is: " + this.controlConfig);
+            console.log("config is: " + JSON.stringify(this.controlConfig));
             
             this.player1 = new Player(this, 400, 500,'player',this.explosionAnim);
             this.player2 = new Player(this, 400, 100, 'otherPlayer',this.explosionAnim);
@@ -83,8 +85,8 @@ let LocalGameScene = {
             
            
 
-            this.controlsP1 = new Controls(this,{directionals: 'GamePad', magicBlast: 'p', swordSwing: 'SPACE'});
-            this.controlsP2 = new Controls(this,{directionals: 'ArrowKeys', magicBlast: 'NUMKEY9', swordSwing: 'NUMKEY0'});
+            this.controlsP1 = new Controls(this,{directionals: this.controlConfig.player1.Movement, magicBlast: this.controlConfig.player1.MagicBlast, swordSwing: this.controlConfig.player1.SwordSlash});
+            this.controlsP2 = new Controls(this,{directionals: this.controlConfig.player2.Movement, magicBlast: this.controlConfig.player2.MagicBlast, swordSwing: this.controlConfig.player2.SwordSlash});
             
             this.magicBlasts = this.physics.add.group();
             this.swordHitBoxes = this.physics.add.group();
@@ -136,30 +138,7 @@ let LocalGameScene = {
 
     update: function()
         {
-        /*    
-        let pad: Phaser.Input.Gamepad.Gamepad;
-        if (this.input.gamepad.total){
-            
-            pad = this.input.gamepad.getPad(0);
-
-            const xAxis = pad.axes[0].getValue();
-            const yAxis = pad.axes[1].getValue();
-            let directionalVector = {x: 0, y: 0};
-            if (yAxis > 0){
-                directionalVector.y = 1;
-            }
-            if (xAxis < 0){
-                directionalVector.x = -1;
-            }
-            if (xAxis > 0){
-                directionalVector.x = 1;
-            }
-            if (yAxis < 0){
-                directionalVector.y = -1;
-            }
-            console.log(directionalVector);
-        }
-       */
+        
         if (!this.player1.isAlive()){
             this.youWin.setVisible(true);
         }

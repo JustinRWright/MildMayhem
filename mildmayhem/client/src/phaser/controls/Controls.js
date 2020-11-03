@@ -18,14 +18,28 @@ export default class Controls extends Phaser.GameObjects.Sprite
                 left:Phaser.Input.Keyboard.KeyCodes.A,
                 right:Phaser.Input.Keyboard.KeyCodes.D
             });
+            if (magicBlast === 'P'){
+              this.magicBlastAttack = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.P);
+            }
+            if (swordSwing === 'SPACE'){
+            this.swordSwing = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+          }
           }
           else if (directionals === 'ArrowKeys'){
             this.directionals = scene.input.keyboard.createCursorKeys();
-           
+            if (magicBlast === 'NumPad9'){
+              this.magicBlastAttack = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.NUMPAD_NINE);
+            }
+            if (swordSwing === 'NumPad0'){
+              this.swordSwing = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.NUMPAD_ZERO);
+            }
+            
           }
           else if (directionals === 'GamePad'){
             this.gamePadMode = true;
             console.log("game pad mode active" + this.gamePadMode);
+            this.swordSwing = {};
+            this.magicBlastAttack = {};
             const xAxis = 0;
             const yAxis = 0;
             this.directionals = {
@@ -33,34 +47,26 @@ export default class Controls extends Phaser.GameObjects.Sprite
                 down: {isDown: yAxis < 0 ? true : false},
                 left: {isDown: xAxis > 0 ? true : false},
                 right: {isDown: xAxis > 0 ? true : false},
-              }
-            /*
+              };
             this.scene.input.gamepad.on('down', function (pad, button, index) {
-               console.log("connected!");
-                
-                this.scene.input.gamepad = pad;
-                this.directionals = {
-                  up: {isDown: this.scene.input.gamepad.axes[0].getValue() > 0 ? true : false},
-                  down: {isDown: this.scene.input.gamepad.axes[0].getValue() < 0 ? true : false},
-                  left: {isDown: this.scene.input.gamepad.axes[0].getValue() > 0 ? true : false},
-                  right: {isDown: this.scene.input.gamepad.axes[0].getValue() > 0 ? true : false},
-              }
-                
+              this.swordSwing.isDown = pad.X;
+              this.magicBlastAttack.isDown = pad.R2;
+              //console.log('padx is: ' + pad.X);
+              //console.log('padR2 is: ' + pad.R2);
             }, this);
-           */
+           this.scene.input.gamepad.on('up', function (pad, button, index) {
+              this.swordSwing.isDown = false;
+              this.magicBlastAttack.isDown = false;
+              //console.log('padx is: ' + pad.X);
+              //console.log('padR2 is: ' + pad.R2);
+            }, this);
           }
-          if (magicBlast === 'p'){
-            this.magicBlastAttack = scene.input.keyboard.addKeys({p: Phaser.Input.Keyboard.KeyCodes.P});
-          }
-          else if (magicBlast === 'NUMKEY9'){
-            this.magicBlastAttack = scene.input.keyboard.addKeys({p: Phaser.Input.Keyboard.KeyCodes.NUMPAD_NINE});
-          }
-          if (swordSwing === 'SPACE'){
-            this.swordSwing = scene.input.keyboard.addKeys({spaceBar: Phaser.Input.Keyboard.KeyCodes.SPACE});
-          }
-          else if (swordSwing === 'NUMKEY0'){
-            this.swordSwing = scene.input.keyboard.addKeys({spaceBar: Phaser.Input.Keyboard.KeyCodes.NUMPAD_ZERO});
-          }
+          
+          
+          
+          
+          
+         
         }
         
         getMovementVector(){
@@ -102,7 +108,7 @@ export default class Controls extends Phaser.GameObjects.Sprite
            y: ((this.directionals.up.isDown)? -1:0)+((this.directionals.down.isDown)? 1:0)};
         }
         getAttackInput(){
-          return {magicBlastFiring: this.magicBlastAttack.p.isDown,swordSwingFiring: this.swordSwing.spaceBar.isDown};
+          return {magicBlastFiring: this.magicBlastAttack.isDown,swordSwingFiring: this.swordSwing.isDown};
           
         }
         
