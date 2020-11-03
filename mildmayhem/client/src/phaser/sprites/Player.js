@@ -34,13 +34,14 @@ export default class Player extends Phaser.Physics.Arcade.Sprite
         knockBack(gameObj){
           let gameObjCenter = gameObj.getCenter();
           let playerCenter = this.getCenter();
-          let distance = Phaser.Math.Distance.Between(gameObjCenter['x'],gameObjCenter['y'],playerCenter['x'],playerCenter['y']);
+          //let distance = Phaser.Math.Distance.Between(gameObjCenter['x'],gameObjCenter['y'],playerCenter['x'],playerCenter['y']);
           let vectorAngle = Phaser.Math.Angle.Between(gameObjCenter['x'],gameObjCenter['y'],playerCenter['x'],playerCenter['y']);
-          console.log("distance is: " + distance);
-          console.log("vectorAngle is: " + vectorAngle);
-          let movementX = Math.cos(vectorAngle)*distance;
-          let movementY = Math.sin(vectorAngle)*distance;
-          this.setPosition(this.getX()+movementX,this.getY()+movementY);
+          //console.log("distance is: " + distance);
+          //console.log("vectorAngle is: " + vectorAngle);
+          let knockBackVel = 1200;
+          let movementX = Math.cos(vectorAngle)*knockBackVel;
+          let movementY = Math.sin(vectorAngle)*knockBackVel;
+          this.setVelocity(movementX,movementY);
         }
         onEvent(){
           this.toggleStun();
