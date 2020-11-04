@@ -2,12 +2,13 @@ import Phaser from 'phaser';
 export default class Controls extends Phaser.GameObjects.Sprite
     {
 
-        constructor (scene,type)
+        constructor (scene,type,gamePadCount,gamePadNumber)
         {
-            super(scene,type);
+            super(scene,type,gamePadCount);
             this.setKeyInput(scene,type);
             this.scene = scene;
-            
+            this.gamePadCount = gamePadCount;
+            this.gamePadNumber = gamePadNumber;
         }
         setKeyInput(scene,{directionals,magicBlast,swordSwing,dodge}={}){
           //Potentially can add more configurable controls by using if statements here in the future
@@ -36,6 +37,7 @@ export default class Controls extends Phaser.GameObjects.Sprite
             
           }
           else if (directionals === 'GamePad'){
+            
             this.gamePadMode = true;
             console.log("game pad mode active" + this.gamePadMode);
             this.swordSwing = {};
@@ -75,17 +77,24 @@ export default class Controls extends Phaser.GameObjects.Sprite
 
             let pad: Phaser.Input.Gamepad.Gamepad;
             if (this.scene.input.gamepad.total){ 
-                pad = this.scene.input.gamepad.getPad(0);
-
-                const xAxis = pad.axes[0].getValue();
-                const yAxis = pad.axes[1].getValue();
-               
-                this.directionals = {
-                  up: {isDown: yAxis < 0 ? true : false},
-                  down: {isDown: yAxis > 0 ? true : false},
-                  left: {isDown: xAxis < 0 ? true : false},
-                  right: {isDown: xAxis > 0 ? true : false},
+                if (this.scene.input.gamepad.total>=this.gamePadCount){
+                  pad = this.scene.input.gamepad.getPad(this.gamePadNumber-1);
+                  //console.log(this.scene.input.gamepad.total);
+                  const xAxis = pad.axes[0].getValue();
+                  const yAxis = pad.axes[1].getValue();
+                
+                  this.directionals = {
+                    up: {isDown: yAxis < 0 ? true : false},
+                    down: {isDown: yAxis > 0 ? true : false},
+                    left: {isDown: xAxis < 0 ? true : false},
+                    right: {isDown: xAxis > 0 ? true : false},
               }
+                }
+                else {
+                  console.log("Hey you didn't connect enough controllers");
+                }
+                
+                
             }
 
 
