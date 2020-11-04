@@ -94,9 +94,14 @@ let LocalGameScene = {
             this.magicCoolDownP2 = new CoolDown(this, 618, 40, 'blastCool', 1000);
             
 
-             console.log("controlConfig is: " + JSON.stringify(this.controlConfig));
-            this.controlsP1 = new Controls(this,{directionals: this.controlConfig.player1.Movement, magicBlast: this.controlConfig.player1.MagicBlast, swordSwing: this.controlConfig.player1.SwordSlash});
-            this.controlsP2 = new Controls(this,{directionals: this.controlConfig.player2.Movement, magicBlast: this.controlConfig.player2.MagicBlast, swordSwing: this.controlConfig.player2.SwordSlash});
+             let pad: Phaser.Input.Gamepad.Gamepad;
+             let gamePadCount = ((this.controlConfig.player1.Movement==='GamePad')? 1:0);
+             gamePadCount += ((this.controlConfig.player2.Movement=='GamePad')? 1:0);
+           
+            
+           
+            this.controlsP1 = new Controls(this,{directionals: this.controlConfig.player1.Movement, magicBlast: this.controlConfig.player1.MagicBlast, swordSwing: this.controlConfig.player1.SwordSlash},gamePadCount,1);
+            this.controlsP2 = new Controls(this,{directionals: this.controlConfig.player2.Movement, magicBlast: this.controlConfig.player2.MagicBlast, swordSwing: this.controlConfig.player2.SwordSlash},gamePadCount,2);
             
             this.magicBlasts = this.physics.add.group();
             this.swordHitBoxes = this.physics.add.group();
