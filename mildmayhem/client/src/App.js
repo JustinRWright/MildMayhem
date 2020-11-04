@@ -34,15 +34,17 @@ class App extends Component {
     return (
       
       <Router>
-        <div>
-        <Switch>
-          <Route path="/" exact >
-            <MenuPage passControlConfig={this.controlConfig}/>
-          </Route>
-          <Route path="/game">
-            <GamePage controlConfig={this.state.controlConfig}/>
-          </Route>
-        </Switch>
+        <div >
+          
+            <Switch>
+              <Route path="/" exact >
+                <MenuPage passControlConfig={this.controlConfig}/>
+              </Route>
+              <Route path="/game">
+                <GamePage controlConfig={this.state.controlConfig}/>
+              </Route>
+            </Switch>
+         
         </div>
       </Router>
       

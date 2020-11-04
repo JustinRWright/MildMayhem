@@ -16,11 +16,11 @@ class ControlsButton extends React.Component {
         let highlight = this.props.selected;
         let highlightColor = "3px Solid Black";
         if (highlight){
-            highlightColor = "3px Solid Green";
+            highlightColor = "4px Solid #1f39bd";
         }
         return <div>
             <div style={{paddingTop: this.props.paddingTop}}></div>
-            <div onClick = {this.toggle} style = {{border: highlightColor}}>
+            <div onClick = {this.toggle} style = {{cursor: 'pointer',borderRadius: 2, border: highlightColor}}>
                     <img width="100%" src={this.props.image} alt="Game Room Image" /> 
             </div>
         </div>
