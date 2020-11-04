@@ -34,7 +34,7 @@ let LocalGameScene = {
                 }
 
             };
-           
+            //console.log(this.props.returnMP);
             this.explosionAnim = this.anims.create({
                 key: 'explode',
                 frames: this.anims.generateFrameNumbers('explosion',{ start: 1, end: 23}),
@@ -64,7 +64,7 @@ let LocalGameScene = {
                     
                 }
             }
-            console.log("config is: " + JSON.stringify(this.controlConfig));
+           
             this.background = this.add.sprite(400,300,'Background');
             this.anims.create({
                 key: 'glow',
@@ -76,8 +76,8 @@ let LocalGameScene = {
             console.log(this.background.anims.setYoyo(true));
             
             
-            this.player1 = new Player(this, 400, 500,'player',this.explosionAnim);
-            this.player2 = new Player(this, 400, 100, 'otherPlayer',this.explosionAnim);
+            this.player1 = new Player(this, 400, 500,'player', this.explosionAnim);
+            this.player2 = new Player(this, 400, 100, 'otherPlayer', this.explosionAnim);
 
           
            
@@ -94,7 +94,7 @@ let LocalGameScene = {
             this.magicCoolDownP2 = new CoolDown(this, 618, 40, 'blastCool', 1000);
             
 
-
+             console.log("controlConfig is: " + JSON.stringify(this.controlConfig));
             this.controlsP1 = new Controls(this,{directionals: this.controlConfig.player1.Movement, magicBlast: this.controlConfig.player1.MagicBlast, swordSwing: this.controlConfig.player1.SwordSlash});
             this.controlsP2 = new Controls(this,{directionals: this.controlConfig.player2.Movement, magicBlast: this.controlConfig.player2.MagicBlast, swordSwing: this.controlConfig.player2.SwordSlash});
             
@@ -113,9 +113,9 @@ let LocalGameScene = {
             this.physics.add.overlap(this.magicBlasts,this.swordHitBoxes,this.deflectBlast);
             this.physics.add.overlap(this.magicBlasts,this.players,this.playerHit);
             
+            //4 walls on the outside
             this.leftWall = this.physics.add.sprite(-55,300,'vwall');
             this.leftWall.body.immovable = true;
-            
             this.rightWall = this.physics.add.sprite(855,300,'vwall');
             this.rightWall.body.immovable = true;
             this.topWall = this.physics.add.sprite(400,-55,'wall');
@@ -129,6 +129,13 @@ let LocalGameScene = {
             this.walls.add(this.topWall);
             this.walls.add(this.bottomWall);
             
+            //midline barrier wall
+            this.midWall = this.physics.add.sprite(400,300,'wall');
+            this.midWall.setScale(1,.08);
+            this.midWall.setVisible(false);
+            this.midWall.body.immovable = true;
+
+            this.physics.add.collider(this.midWall,this.players);
             
             this.physics.add.collider(this.magicBlasts,this.walls);
             this.physics.add.collider(this.walls,this.players);

@@ -4,7 +4,7 @@ import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import MatchRoomBox from '../components/MatchRoomBox.js';
 import InfoMenuBox from '../components/InfoMenuBox.js';
-import LocalGameImage from '../images/GameShot.png';
+import LocalGameImage from '../images/GameShot2.png';
 import OnlineGameImage from '../images/OnlineGame.png';
 import { Link } from 'react-router-dom';
 
@@ -26,7 +26,6 @@ class MenuPage extends React.Component {
             //console.log("props menupage are" + JSON.stringify(this.props));
         };
   controlConfigSelected = (controlConfig) => {
-      //console.log("controlConfig is: " + controlConfig);
       if (controlConfig === "keyboard1"){
           this.setState({controls: {
               player1: {
@@ -42,9 +41,9 @@ class MenuPage extends React.Component {
           this.setState({controls: {
               player1: this.state.controls.player1,
               player2: {
-                Movement: 'WASD',
-                SwordSlash: 'SPACE',
-                MagicBlast: 'P'
+                Movement: 'ArrowKeys',
+                SwordSlash: 'NumPad0',
+                MagicBlast: 'NumPad9'
               },
 
           }});
@@ -78,30 +77,42 @@ class MenuPage extends React.Component {
   };
   render() {
     
-    return <div style={{maxWidth: 800, minWidth:800, minHeight:600, maxHeight:600, margin: 'auto'}}>
+    return <div style={{backgroundColor: '#031316', borderRadius: 15, maxWidth: 800, minWidth:800, minHeight:600, maxHeight:600, margin: 'auto'}}>
     <Grid container>
         <Grid item xs={12}>
-            <div style={{textAlign: 'center', padding: 20, border: '1px solid'}}>Select a Match</div>
+            <div style={{textAlign: 'center', borderRadius: 15, backgroundColor: 'black', fontSize: 30, fontFamily: 'Audiowide', padding: 20, border: '4px solid #1f39bd'}}>
+            <div style={{color: '#39FF14'}}><u>
+            Mild Mayhem
+            </u>
+            </div>
+            
+            </div>
         </Grid>
         <Grid item xs={4}>
             <InfoMenuBox setControlConfig={this.controlConfigSelected}></InfoMenuBox>
         </Grid>
 
         <Grid item xs = {4}>
-            <div style={{paddingTop: 40, paddingBottom: 40}}>
+            <div style={{paddingTop: 40, paddingBottom: 30}}>
+                <Link style={{color: 'black'}}>
                 <MatchRoomBox image={OnlineGameImage} matchType={'Create Online Room'}></MatchRoomBox>
+                </Link>
             </div>
         </Grid>
         <Grid item xs = {4}>
-            <div style={{paddingTop: 40, paddingBottom: 40}}> 
-                <Link to='/game'>
+            <div style={{paddingTop: 40, paddingBottom: 30}}> 
+                <Link to='/game' style={{color: 'black'}}>
                     <MatchRoomBox onClick={this.matchRoomClicked} image={LocalGameImage} matchType={'Create Local Room'}></MatchRoomBox>
                 </Link>
             </div>
             
         </Grid>
-        <Grid item xs = {12}>
-                <div style={{textAlign: 'center', verticalAlign: 'top', padding: 100, border: '1px solid'}}>Available Online Matches</div>
+        <Grid item xs = {1}>
+        </Grid>
+        <Grid item xs = {10}>
+                <div style={{ borderRadius: 15, backgroundColor: '#9A9A9A', textAlign: 'center', verticalAlign: 'top', padding: 100, border: '1px solid'}}>Available Online Matches</div>
+        </Grid>
+        <Grid item xs = {1}>
         </Grid>
     </Grid>
    
