@@ -99,8 +99,10 @@ let LocalGameScene = {
              gamePadCount += ((this.controlConfig.player2.Movement=='GamePad')? 1:0);
            
             
-           
+            console.log(this.input.Gamepad);
+
             this.controlsP1 = new Controls(this,{directionals: this.controlConfig.player1.Movement, magicBlast: this.controlConfig.player1.MagicBlast, swordSwing: this.controlConfig.player1.SwordSlash},gamePadCount,1);
+            
             this.controlsP2 = new Controls(this,{directionals: this.controlConfig.player2.Movement, magicBlast: this.controlConfig.player2.MagicBlast, swordSwing: this.controlConfig.player2.SwordSlash},gamePadCount,2);
             
             this.magicBlasts = this.physics.add.group();
