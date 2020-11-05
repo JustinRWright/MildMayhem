@@ -8,17 +8,17 @@ class InfoMenuBox extends React.Component {
   constructor(props) {
             super(props);
             this.state = {showControls: true,
-            showStats: true,
+            showNotes: true,
             controlSetToggle1: true,
             controlSetToggle2: true}; 
             
         }
     
-    showStats = () => {
-      this.setState({showControls: false, showStats: true});
+    showNotes = () => {
+      this.setState({showControls: false, showNotes: true});
     }
     showControls = () => {
-      this.setState({showControls: true, showStats: false});
+      this.setState({showControls: true, showNotes: false});
     }
     onClick = (id) =>
     {
@@ -41,14 +41,14 @@ class InfoMenuBox extends React.Component {
     let controlSetToggle1 = this.state.controlSetToggle1;
     let controlSetToggle2 = this.state.controlSetToggle2;
     let controlsHighlightColor = '3px solid black';
-    let statsHighlightColor = '3px solid black';
+    let notesHighlightColor = '3px solid black';
     let controls = this.state.showControls;
-    let stats = this.state.showStats;
+    let notes = this.state.showNotes;
     let textP1;
     let textP2;
     let keyBoardButtons;
     let gamePadButtons;
-    let statsPageGridPadding;
+    let notesPageGridPadding;
     let controlColor = '#9A9A9A';
     let statColor = '#9A9A9A';
     if (controls){
@@ -102,11 +102,12 @@ class InfoMenuBox extends React.Component {
          }
        
     }
-    else if (stats){
+    else if (notes){
         statColor = '#9A9A9A';
-        statsHighlightColor = '3px solid #1f39bd';
-        statsPageGridPadding = <Grid item xs = {2}> </Grid>
-        textP1 = <p><br></br>So how's it goin'?<br></br><br></br>Wins: 0<br></br><br></br> Losses: 0<br></br><br></br> Perfect Wins: 0</p>
+        notesHighlightColor = '3px solid #1f39bd';
+        notesPageGridPadding = <Grid item xs = {2}> </Grid>
+        let textNotes = <p></p>
+        //textP1 = <p><br></br>So how's it goin'?<br></br><br></br>Wins: 0<br></br><br></br> Losses: 0<br></br><br></br> Perfect Wins: 0</p>
     }
     return <div style={{ paddingLeft: 20, paddingTop: 20, height: '100%'}}>
                 <Grid container>
@@ -116,8 +117,8 @@ class InfoMenuBox extends React.Component {
                         </div>
                     </Grid>
                     <Grid item xs = {6}>
-                        <div onClick={this.showStats} style={{cursor: 'pointer', borderRadius: 15,backgroundColor: statColor, textAlign: 'center',  padding: 10, border: statsHighlightColor}}>
-                            Stats
+                        <div onClick={this.showNotes} style={{cursor: 'pointer', borderRadius: 15,backgroundColor: statColor, textAlign: 'center',  padding: 10, border: notesHighlightColor}}>
+                            Notes
                         </div>
                     </Grid>
                     
@@ -125,7 +126,7 @@ class InfoMenuBox extends React.Component {
                
                 <div style={{backgroundColor: 'black', borderRadius: 15, textAlign: 'center', color: '#39FF14',verticalAlign: 'center', fontSize: 13,height:200, border: '4px solid black'}}>
                     <Grid container>
-                        {statsPageGridPadding}
+                        {notesPageGridPadding}
                         {keyBoardButtons}
                         <Grid item xs = {8}>
                             <p>Welcome to Mild Mayhem!!<br></br>

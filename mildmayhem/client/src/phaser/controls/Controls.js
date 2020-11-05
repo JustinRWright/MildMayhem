@@ -50,7 +50,13 @@ export default class Controls extends Phaser.GameObjects.Sprite
                 left: {isDown: xAxis > 0 ? true : false},
                 right: {isDown: xAxis > 0 ? true : false},
               };
+            this.scene.input.gamepad.once('connected', function (pad, event) {
+              console.log('pad index is: ' + pad.index);
+              //console.log('padx is: ' + pad.X);
+              //console.log('padR2 is: ' + pad.R2);
+            }, this);
             this.scene.input.gamepad.on('down', function (pad, button, index) {
+              console.log("button pressed" + button);
               this.swordSwing.isDown = pad.X;
               this.magicBlastAttack.isDown = pad.R2;
               //console.log('padx is: ' + pad.X);
@@ -76,10 +82,17 @@ export default class Controls extends Phaser.GameObjects.Sprite
           if (this.gamePadMode){
 
             let pad: Phaser.Input.Gamepad.Gamepad;
-            if (this.scene.input.gamepad.total){ 
+            if (this.scene.input.gamepad.total&&this.scene.input.gamepad.isActive()){ 
                 if (this.scene.input.gamepad.total>=this.gamePadCount){
-                  pad = this.scene.input.gamepad.getPad(this.gamePadNumber-1);
-                  //console.log(this.scene.input.gamepad.total);
+                  //console.log(this.scene.input.gamepad);
+                  pad = this.scene.input.gamepad.pad1
+                  
+                  if (this.scene.input.gamepad.pad2 && this.gamePadNumber===2){
+                    pad = this.scene.input.gamepad.pad2;
+                  }
+
+                  
+                  
                   const xAxis = pad.axes[0].getValue();
                   const yAxis = pad.axes[1].getValue();
                 
@@ -92,24 +105,15 @@ export default class Controls extends Phaser.GameObjects.Sprite
                 }
                 else {
                   console.log("Hey you didn't connect enough controllers");
+                  //We should create a callback function here that resets the control scheme that is missing
+                  //and inform the user of the error of their ways.
                 }
                 
                 
             }
 
 
-            /*
-            if(this.input.gamepad.total){
-              let pad = this.scene.input.gamepad.getPad(0);
-              console.log("we have set up the gamepad thing");
-               this.directionals = {
-                  up: {isDown: pad.axes[0].getValue() > 0 ? true : false},
-                  down: {isDown: pad.gamepad.axes[0].getValue() < 0 ? true : false},
-                  left: {isDown: pad.axes[0].getValue() > 0 ? true : false},
-                  right: {isDown: pad.axes[0].getValue() > 0 ? true : false},
-              }
-            }
-            */
+       
            }
          return {
            //Gets the vector for a directional press(y is inverted)
