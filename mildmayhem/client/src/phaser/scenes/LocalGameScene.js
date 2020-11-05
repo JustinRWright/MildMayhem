@@ -7,6 +7,7 @@ import Phaser from 'phaser';
 import bckg from '../assets/bckg.png';
 import HealthBar from "../sprites/HealthBar.js";
 import CoolDown from "../sprites/CoolDown.js";
+import LightningBolt from '../sprites/lightningBolt.js';
 let LocalGameScene = {
     
     
@@ -23,6 +24,9 @@ let LocalGameScene = {
             this.load.spritesheet('player', 'https://i.imgur.com/nRFZx7v.png', { frameWidth: 68, frameHeight: 68 });
             this.load.spritesheet('otherPlayer','https://i.imgur.com/V78wgrC.png', { frameWidth: 68, frameHeight: 68 });
             this.load.spritesheet('Background','https://i.imgur.com/T6q69wx.png', {frameWidth: 800, frameHeight: 600});
+            this.load.image('dodgeCool', 'https://i.imgur.com/mTklmkU.png');
+            this.load.spritesheet('lightningBolt', 'https://i.imgur.com/3MskIUy.png', {frameWidth: 16, frameHeight: 1000});
+            this.load.image('lightningCool', 'https://i.imgur.com/FVquIxw.png');
         },
 
     create: function()
@@ -47,8 +51,8 @@ let LocalGameScene = {
                 if (magicBlast.getOwner()!==player){
                     console.log("hit by enemy!");
                     magicBlast.explode();
-                    //Check if player is stunned, if not, play stun animation and calculate damage
-                    if (player.getStun() === false){
+                    //Check if player is stunned or dodging, if neither is true, play stun animation and calculate damage
+                    if (player.getStun() === false || player.getDodging() === false){
                         player.playStun();
                         //When the Healthbar reaches 0, this evaluates to true
                         if(player.getHealthBar().decrease(4)){
@@ -93,6 +97,11 @@ let LocalGameScene = {
             this.magicCoolDownP1 = new CoolDown(this, 278, 560, 'blastCool', 1000);
             this.magicCoolDownP2 = new CoolDown(this, 618, 40, 'blastCool', 1000);
             
+            this.dodgeCoolDownP1 = new CoolDown(this, 326, 560, 'dodgeCool', 1000);
+            this.dodgeCoolDownP2 = new CoolDown(this, 665, 40, 'dodgeCool', 1000);
+
+            this.lightningCoolDownP1 = new CoolDown(this, 374, 560, 'lightningCool', 1000);
+            this.lightningCoolDownP2 = new CoolDown(this, 713, 40, 'lightningCool', 1000);
 
              let pad: Phaser.Input.Gamepad.Gamepad;
              let gamePadCount = ((this.controlConfig.player1.Movement==='GamePad')? 1:0);
@@ -194,30 +203,48 @@ let LocalGameScene = {
         //get Player input
         this.movementVectorP1 = this.controlsP1.getMovementVector();
         this.movementVectorP2 = this.controlsP2.getMovementVector();
+        this.player1.setOrientationVector(this.movementVectorP1);
+        this.player2.setOrientationVector(this.movementVectorP2);
 
-        //Check if the player is stunned
-        if(!this.player1.getStun() && this.player1.isAlive()){
+        //Check to make sure the player is not stunned, alive, and is not dodging
+        if(!this.player1.getStun() && this.player1.isAlive() && !this.player1.getDodging()){
             this.player1.setPlayerVelocity(this.movementVectorP1);
-            this.player1.setOrientationVector(this.movementVectorP1);
         }
-       
-        if(!this.player2.getStun() && this.player2.isAlive()){
+
+        if(!this.player2.getStun() && this.player2.isAlive() && !this.player2.getDodging()){
             this.player2.setPlayerVelocity(this.movementVectorP2);
-            this.player2.setOrientationVector(this.movementVectorP2);
         }
 
         //Get attack inputs every update cycle
-        let attackInputsP1 = this.controlsP1.getAttackInput();
-        let attackInputsP2 = this.controlsP2.getAttackInput();
+        let attackInputsP1 = this.controlsP1.getMoveInput();
+        let attackInputsP2 = this.controlsP2.getMoveInput();
 
         //Check for user firing magic blast
         if (attackInputsP1.magicBlastFiring && !this.magicCoolDownP1.isActive()){
            this.magicCoolDownP1.startCoolDown();
            this.createMagicBlast(this.player1);
         };
+         //Check for user firing magic blast
+        if (attackInputsP1.lightningStrikeFiring && !this.lightningCoolDownP1.isActive()){
+           this.lightningCoolDownP1.startCoolDown();
+           let lightningBolt = new LightningBolt(this,this.player1.getX(),this.player1.getY(),'lightningBolt',{owner: this.player1});
+        };
+        if (attackInputsP2.lightningStrikeFiring && !this.lightningCoolDownP2.isActive()){
+           this.lightningCoolDownP2.startCoolDown();
+           let lightningBolt = new LightningBolt(this,this.player2.getX(),this.player2.getY(),'lightningBolt',{owner: this.player2});
+        };
         if (attackInputsP2.magicBlastFiring && !this.magicCoolDownP2.isActive()){
            this.magicCoolDownP2.startCoolDown();
            this.createMagicBlast(this.player2);
+        };
+        //check for user dodging and check that they aren't already in dodge mode
+        if (attackInputsP1.dodgeFiring && !this.player1.getDodging() && !this.dodgeCoolDownP1.isActive()){
+            this.dodgeCoolDownP1.startCoolDown();
+            this.player1.dodge();
+        };
+        if (attackInputsP2.dodgeFiring && !this.player2.getDodging() && !this.dodgeCoolDownP2.isActive()){
+            this.dodgeCoolDownP2.startCoolDown();
+            this.player2.dodge();
         };
         //Check if sword swings exist, and update them as needed
         let swordSwings = this.swordHitBoxes.getChildren();

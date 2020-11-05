@@ -56,6 +56,21 @@ export default class Player extends Phaser.Physics.Arcade.Sprite
           }
           
         }
+        dodge(){
+          this.body.setVelocity(this.orientationVector.x*1500,this.orientationVector.y*1500);
+          this.dodging = true;
+          this.setBounce(0);
+          console.log(this.orientationVector);
+          let timedEvent = this.scene.time.delayedCall(150, this.finishedDodging, [], this);
+        }
+        finishedDodging(){
+          this.setBounce(0);
+          this.dodging = false;
+          this.body.setVelocity(0,0);
+        }
+        getDodging(){
+          return this.dodging;
+        }
         getStun(){
           return this.stunned;
         }
