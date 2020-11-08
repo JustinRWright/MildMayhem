@@ -9,8 +9,8 @@ export default class LightningBolt extends Phaser.Physics.Arcade.Sprite
             scene.add.existing(this);
 
             //Adds physics to sprite
-            scene.physics.add.existing(this);
-            
+            //scene.physics.add.existing(this);
+            //this.body.enable = false;
             this.createAnimations(scene);
             this.anims.play('lightningStrike',true);
             

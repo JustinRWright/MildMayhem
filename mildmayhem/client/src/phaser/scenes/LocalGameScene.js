@@ -8,6 +8,7 @@ import bckg from '../assets/bckg.png';
 import HealthBar from "../sprites/HealthBar.js";
 import CoolDown from "../sprites/CoolDown.js";
 import LightningBolt from '../sprites/lightningBolt.js';
+import LightningHB from '../sprites/lightningBoltHitbox.js';
 let LocalGameScene = {
     
     
@@ -68,7 +69,33 @@ let LocalGameScene = {
                     
                 }
             }
-           
+            this.playerHitLightning = function(lightningBolt,player){
+                if(lightningBolt.getOwner()!==player){
+                    console.log("hit by lightning Bolt!");
+
+                    if (player.getStun() === false || player.getDodging() === false){
+                        player.playStun();
+                        if(player.getHealthBar().decrease(4)){
+                            player.gameOver();
+                            player.anims.play('explode', true);
+                        }
+
+                        player.knockBack(lightningBolt);
+                        //Race condition with hitbox tween here?
+                        //lightningBolt.destroy();
+
+                        //Destroy the animation associated with these hitboxes
+                        lightningBolt.destroyAnimationSprite();
+
+                        //Find all other associated lightning bolt hitboxes and destroy them
+                        lightningBolt.scene.lightningBolts.getChildren().forEach(lightningBolt => {
+                            if (lightningBolt.getOwner() !== player) {
+                                lightningBolt.body.enable = false;
+                            }
+                    });
+                }
+            }
+            }
             this.background = this.add.sprite(400,300,'Background');
             this.anims.create({
                 key: 'glow',
@@ -100,8 +127,8 @@ let LocalGameScene = {
             this.dodgeCoolDownP1 = new CoolDown(this, 326, 560, 'dodgeCool', 1000);
             this.dodgeCoolDownP2 = new CoolDown(this, 665, 40, 'dodgeCool', 1000);
 
-            this.lightningCoolDownP1 = new CoolDown(this, 374, 560, 'lightningCool', 1000);
-            this.lightningCoolDownP2 = new CoolDown(this, 713, 40, 'lightningCool', 1000);
+            this.lightningCoolDownP1 = new CoolDown(this, 374, 560, 'lightningCool', 5000);
+            this.lightningCoolDownP2 = new CoolDown(this, 713, 40, 'lightningCool', 5000);
 
              let pad: Phaser.Input.Gamepad.Gamepad;
              let gamePadCount = ((this.controlConfig.player1.Movement==='GamePad')? 1:0);
@@ -116,7 +143,8 @@ let LocalGameScene = {
             
             this.magicBlasts = this.physics.add.group();
             this.swordHitBoxes = this.physics.add.group();
-            
+            this.lightningBolts = this.physics.add.group();
+
             this.players = this.physics.add.group();
             this.players.add(this.player1);
             this.players.add(this.player2);
@@ -128,6 +156,7 @@ let LocalGameScene = {
 
             this.physics.add.overlap(this.magicBlasts,this.swordHitBoxes,this.deflectBlast);
             this.physics.add.overlap(this.magicBlasts,this.players,this.playerHit);
+            this.physics.add.overlap(this.lightningBolts,this.players,this.playerHitLightning);
             
             //4 walls on the outside
             this.leftWall = this.physics.add.sprite(-55,300,'vwall');
@@ -224,10 +253,20 @@ let LocalGameScene = {
            this.magicCoolDownP1.startCoolDown();
            this.createMagicBlast(this.player1);
         };
-         //Check for user firing magic blast
+         //Check for user firing lighting blast
         if (attackInputsP1.lightningStrikeFiring && !this.lightningCoolDownP1.isActive()){
            this.lightningCoolDownP1.startCoolDown();
            let lightningBolt = new LightningBolt(this,this.player1.getX(),this.player1.getY(),'lightningBolt',{owner: this.player1});
+           let lightningBoltHB1 = new LightningHB(this,this.player1.getX(),this.player1.getY(),'magicBlast',{owner: this.player1, animationSprite: lightningBolt, Olength: 100});
+           let lightningBoltHB2 = new LightningHB(this,this.player1.getX(),this.player1.getY(),'magicBlast',{owner: this.player1, animationSprite: lightningBolt, Olength: 50});
+           let lightningBoltHB3 = new LightningHB(this,this.player1.getX(),this.player1.getY(),'magicBlast',{owner: this.player1, animationSprite: lightningBolt, Olength: 25});
+           let lightningBoltHB4 = new LightningHB(this,this.player1.getX(),this.player1.getY(),'magicBlast',{owner: this.player1, animationSprite: lightningBolt, Olength: 75});
+           this.lightningBolts.add(lightningBoltHB1);
+           this.lightningBolts.add(lightningBoltHB2);
+           this.lightningBolts.add(lightningBoltHB3);
+           this.lightningBolts.add(lightningBoltHB4);
+           //lightningBoltHB.setLightningHBVelocity(this.player1.getOrientationVector());
+         
         };
         if (attackInputsP2.lightningStrikeFiring && !this.lightningCoolDownP2.isActive()){
            this.lightningCoolDownP2.startCoolDown();
