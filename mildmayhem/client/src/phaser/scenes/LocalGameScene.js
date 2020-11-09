@@ -48,22 +48,19 @@ let LocalGameScene = {
             });
             //Callback function for player/magicBlast Collision
             this.playerHit = function(magicBlast,player){
-               
+               //Check that the magicBlast is hitting the right player
                 if (magicBlast.getOwner()!==player){
-                    console.log("hit by enemy!");
                     magicBlast.explode();
                     //Check if player is stunned or dodging, if neither is true, play stun animation and calculate damage
                     if (player.getStun() === false || player.getDodging() === false){
                         player.playStun();
-                        //When the Healthbar reaches 0, this evaluates to true
+                        //When the healthbar reaches 0, this evaluates to true
                         if(player.getHealthBar().decrease(4)){
                             player.gameOver();
                             player.anims.play('explode', true);
-                            //Win Screen and link people back to main menu
-                           
-                            
+                            //Win Screen and link people back to main menu   
                         };
-
+                        //Knock opponent backwards
                         player.knockBack(magicBlast);
                     }
                     
@@ -71,19 +68,16 @@ let LocalGameScene = {
             }
             this.playerHitLightning = function(lightningBolt,player){
                 if(lightningBolt.getOwner()!==player){
-                    console.log("hit by lightning Bolt!");
-
                     if (player.getStun() === false || player.getDodging() === false){
                         player.playStun();
+
                         if(player.getHealthBar().decrease(4)){
                             player.gameOver();
                             player.anims.play('explode', true);
                         }
 
                         player.knockBack(lightningBolt);
-                        //Race condition with hitbox tween here?
-                        //lightningBolt.destroy();
-
+                      
                         //Destroy the animation associated with these hitboxes
                         lightningBolt.destroyAnimationSprite();
 
@@ -96,25 +90,27 @@ let LocalGameScene = {
                 }
             }
             }
+
+            //Glowing Background Sprite
             this.background = this.add.sprite(400,300,'Background');
             this.anims.create({
                 key: 'glow',
                 frames: this.anims.generateFrameNumbers('Background', { start: 1, end: 12 }),
                 frameRate: 4,
-                repeat: -1
+                repeat: -1,
+                yoyo: true
             });
             this.background.anims.play('glow');
-            console.log(this.background.anims.setYoyo(true));
-            
-            
+
+            //Create Both Players
             this.player1 = new Player(this, 400, 500,'player', this.explosionAnim);
             this.player2 = new Player(this, 400, 100, 'otherPlayer', this.explosionAnim);
-
-          
-           
+            
+            //Create Win Text
             this.youWin = this.add.text(150,300-60,'PLAYER2 WINS ',{fontSize: '70px', color: '#66FF00'});
             this.youWin.setVisible(false);
 
+            //Create Health Bars
             this.healthBarP1 = new HealthBar({scene: this, x: 0, y:584});
             this.healthBarP2 = new HealthBar({scene: this, x: 0, y:0});
 
@@ -130,30 +126,32 @@ let LocalGameScene = {
             this.lightningCoolDownP1 = new CoolDown(this, 374, 560, 'lightningCool', 5000);
             this.lightningCoolDownP2 = new CoolDown(this, 713, 40, 'lightningCool', 5000);
 
-             let pad: Phaser.Input.Gamepad.Gamepad;
-             let gamePadCount = ((this.controlConfig.player1.Movement==='GamePad')? 1:0);
-             gamePadCount += ((this.controlConfig.player2.Movement=='GamePad')? 1:0);
-           
-            
-            console.log(this.input.Gamepad);
+            //Checks for the amount of gamepads connected to the phaser game, if the passed controls do not match the quantity of connected gamepads,
+            //the controls will be reset
+            let pad: Phaser.Input.Gamepad.Gamepad;
+            let gamePadCount = ((this.controlConfig.player1.Movement==='GamePad')? 1:0);
+            gamePadCount += ((this.controlConfig.player2.Movement=='GamePad')? 1:0);
 
             this.controlsP1 = new Controls(this,{directionals: this.controlConfig.player1.Movement, magicBlast: this.controlConfig.player1.MagicBlast, swordSwing: this.controlConfig.player1.SwordSlash},gamePadCount,1);
-            
             this.controlsP2 = new Controls(this,{directionals: this.controlConfig.player2.Movement, magicBlast: this.controlConfig.player2.MagicBlast, swordSwing: this.controlConfig.player2.SwordSlash},gamePadCount,2);
             
             this.magicBlasts = this.physics.add.group();
             this.swordHitBoxes = this.physics.add.group();
             this.lightningBolts = this.physics.add.group();
 
+            //Create a sprite group in order to handle collisions
             this.players = this.physics.add.group();
             this.players.add(this.player1);
             this.players.add(this.player2);
 
+            //Attach healthbars to the selected players
             this.player1.setHealthBar(this.healthBarP1);
             this.player2.setHealthBar(this.healthBarP2);
+
             this.player1.setBounce(1);
             this.player2.setBounce(1);
 
+            //Collision handling
             this.physics.add.overlap(this.magicBlasts,this.swordHitBoxes,this.deflectBlast);
             this.physics.add.overlap(this.magicBlasts,this.players,this.playerHit);
             this.physics.add.overlap(this.lightningBolts,this.players,this.playerHitLightning);
@@ -182,8 +180,10 @@ let LocalGameScene = {
 
             this.physics.add.collider(this.midWall,this.players);
             
+            //The order of the objects in collider matters, magicBlasts will bounce off the walls in this order
             this.physics.add.collider(this.magicBlasts,this.walls);
             this.physics.add.collider(this.walls,this.players);
+            
             this.createMagicBlast = function(player){
                     //Create magic Blast
                     var magicBlast = new MagicBlast(this,player.getX(),
@@ -192,6 +192,7 @@ let LocalGameScene = {
                     this.magicBlasts.add(magicBlast);
                     //Fire in direction of player orientation
                     magicBlast.setMagicBlastVelocity(player.getOrientationVector());
+                    //Set magicBlast bounce
                     magicBlast.setCollideWorldBounds(true);
                     magicBlast.setBounce(1);
                     
@@ -222,6 +223,7 @@ let LocalGameScene = {
     update: function()
         {
         
+        //Checks if player 1 and player2 are alive, can events be used for this instead?
         if (!this.player1.isAlive()){
             this.youWin.setVisible(true);
         }
@@ -229,7 +231,8 @@ let LocalGameScene = {
             this.youWin.setVisible(true);
             this.youWin.setText('PLAYER1 WINS');
         }
-        //get Player input
+
+        //Get Player input
         this.movementVectorP1 = this.controlsP1.getMovementVector();
         this.movementVectorP2 = this.controlsP2.getMovementVector();
         this.player1.setOrientationVector(this.movementVectorP1);
@@ -253,8 +256,13 @@ let LocalGameScene = {
            this.magicCoolDownP1.startCoolDown();
            this.createMagicBlast(this.player1);
         };
-         //Check for user firing lighting blast
-        if (attackInputsP1.lightningStrikeFiring && !this.lightningCoolDownP1.isActive()){
+         if (attackInputsP2.magicBlastFiring && !this.magicCoolDownP2.isActive()){
+           this.magicCoolDownP2.startCoolDown();
+           this.createMagicBlast(this.player2);
+        };
+
+        //Check for user firing Lightning Bolt
+        if (attackInputsP1.lightningBoltFiring && !this.lightningCoolDownP1.isActive()){
            this.lightningCoolDownP1.startCoolDown();
            let lightningBolt = new LightningBolt(this,this.player1.getX(),this.player1.getY(),'lightningBolt',{owner: this.player1});
            let lightningBoltHB1 = new LightningHB(this,this.player1.getX(),this.player1.getY(),'magicBlast',{owner: this.player1, animationSprite: lightningBolt, Olength: 100});
@@ -265,17 +273,21 @@ let LocalGameScene = {
            this.lightningBolts.add(lightningBoltHB2);
            this.lightningBolts.add(lightningBoltHB3);
            this.lightningBolts.add(lightningBoltHB4);
-           //lightningBoltHB.setLightningHBVelocity(this.player1.getOrientationVector());
-         
         };
-        if (attackInputsP2.lightningStrikeFiring && !this.lightningCoolDownP2.isActive()){
+        if (attackInputsP2.lightningBoltFiring && !this.lightningCoolDownP2.isActive()){
            this.lightningCoolDownP2.startCoolDown();
            let lightningBolt = new LightningBolt(this,this.player2.getX(),this.player2.getY(),'lightningBolt',{owner: this.player2});
+           let lightningBoltHB1 = new LightningHB(this,this.player2.getX(),this.player2.getY(),'magicBlast',{owner: this.player2, animationSprite: lightningBolt, Olength: 100});
+           let lightningBoltHB2 = new LightningHB(this,this.player2.getX(),this.player2.getY(),'magicBlast',{owner: this.player2, animationSprite: lightningBolt, Olength: 50});
+           let lightningBoltHB3 = new LightningHB(this,this.player2.getX(),this.player2.getY(),'magicBlast',{owner: this.player2, animationSprite: lightningBolt, Olength: 25});
+           let lightningBoltHB4 = new LightningHB(this,this.player2.getX(),this.player2.getY(),'magicBlast',{owner: this.player2, animationSprite: lightningBolt, Olength: 75});
+           this.lightningBolts.add(lightningBoltHB1);
+           this.lightningBolts.add(lightningBoltHB2);
+           this.lightningBolts.add(lightningBoltHB3);
+           this.lightningBolts.add(lightningBoltHB4);
         };
-        if (attackInputsP2.magicBlastFiring && !this.magicCoolDownP2.isActive()){
-           this.magicCoolDownP2.startCoolDown();
-           this.createMagicBlast(this.player2);
-        };
+
+       
         //check for user dodging and check that they aren't already in dodge mode
         if (attackInputsP1.dodgeFiring && !this.player1.getDodging() && !this.dodgeCoolDownP1.isActive()){
             this.dodgeCoolDownP1.startCoolDown();
@@ -285,11 +297,13 @@ let LocalGameScene = {
             this.dodgeCoolDownP2.startCoolDown();
             this.player2.dodge();
         };
-        //Check if sword swings exist, and update them as needed
+
+        //Check if sword swings exist, and update them as needed, 
+        //this is the best way I can think of for tracking and following player position in the main loop
         let swordSwings = this.swordHitBoxes.getChildren();
         if (swordSwings.length>0){
             swordSwings.forEach(swordSwing => {
-            swordSwing.update();
+                swordSwing.update();
             }
             );
             
@@ -298,8 +312,6 @@ let LocalGameScene = {
         //Check for user swinging sword and then swing, starting the cooldown
         this.checkForSwingThenSwing(attackInputsP1, this.player1, this.swordCoolDownP1);
         this.checkForSwingThenSwing(attackInputsP2, this.player2, this.swordCoolDownP2);
-
-        
         }
     
     
