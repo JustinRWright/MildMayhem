@@ -22,8 +22,6 @@ export default class SwordSwing extends Phaser.Physics.Arcade.Sprite
           
             this.createAnimations(scene);
             this.on('animationcomplete', function() {
-              //console.log("animation completed!");
-              console.log("anims key for sword is: " + this.anims);
               this.swinging = false;
               this.destroy();
               
