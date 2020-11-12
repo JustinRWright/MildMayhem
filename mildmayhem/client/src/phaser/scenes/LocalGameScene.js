@@ -59,6 +59,9 @@ let LocalGameScene = {
                             player.gameOver();
                             player.anims.play('explode', true);
                             //Win Screen and link people back to main menu   
+                            //How could we access the react router DOM here?
+
+                            let timedEvent = player.scene.time.delayedCall(3000, player.scene.redirect, [], this);
                         };
                         //Knock opponent backwards
                         player.knockBack(magicBlast);
@@ -90,7 +93,9 @@ let LocalGameScene = {
                 }
             }
             }
-
+            this.redirect = function(){
+                  window.location.replace('http://localhost:3000/');
+            }
             //Glowing Background Sprite
             this.background = this.add.sprite(400,300,'Background');
             this.anims.create({

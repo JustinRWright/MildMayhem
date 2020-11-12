@@ -10,6 +10,7 @@ class GamePage extends Component {
     let controlConfig = this.props.controlConfig;
     this.state = {
     initialize: true,
+    //This is the Phaser game code
     game: {
       type: Phaser.AUTO,
       width: 800,
@@ -41,7 +42,6 @@ class GamePage extends Component {
   
   render() {
     const { initialize, game } = this.state
-  
     return (
       <div style={{maxWidth: 800, minWidth:800, minHeight:600, maxHeight:600, margin: 'auto'}}>
         <IonPhaser game={game} initialize={initialize} />
