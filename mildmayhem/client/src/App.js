@@ -34,8 +34,7 @@ class App extends Component {
     return (
       
       <Router>
-        <div >
-          
+        <div>
             <Switch>
               <Route path="/" exact >
                 <MenuPage passControlConfig={this.controlConfig}/>

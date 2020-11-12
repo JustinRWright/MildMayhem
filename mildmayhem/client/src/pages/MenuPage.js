@@ -23,7 +23,6 @@ class MenuPage extends React.Component {
                     MagicBlast: 'NumPad9'
                 }
             }};
-            //console.log("props menupage are" + JSON.stringify(this.props));
         };
   controlConfigSelected = (controlConfig) => {
       if (controlConfig === "keyboard1"){
@@ -72,7 +71,7 @@ class MenuPage extends React.Component {
       }
   };
   matchRoomClicked = () => {
-      //console.log("matchroom clicked");
+      
       this.props.passControlConfig(this.state.controls);
   };
   render() {
