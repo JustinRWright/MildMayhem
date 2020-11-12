@@ -4,7 +4,7 @@ import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import MatchRoomBox from '../components/MatchRoomBox.js';
 import InfoMenuBox from '../components/InfoMenuBox.js';
-import LocalGameImage from '../images/GameShot2.png';
+import LocalGameImage from '../images/GameShot5.png';
 import OnlineGameImage from '../images/OnlineGame.png';
 import { Link } from 'react-router-dom';
 

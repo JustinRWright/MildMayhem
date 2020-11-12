@@ -10,10 +10,17 @@ class InfoMenuBox extends React.Component {
             this.state = {showControls: false,
             showNotes: true,
             controlSetToggle1: true,
-            controlSetToggle2: true}; 
+            controlSetToggle2: true,
+            highlightControls: false,
+            highlightNotes: false}; 
             
         }
-    
+    toggleControlsHighlight = () => {
+        this.setState({highlightControls: !this.state.highlightControls});
+    }
+    toggleNotesHighlight = () => {
+        this.setState({highlightNotes: !this.state.highlightNotes});
+    }
     showNotes = () => {
       this.setState({showControls: false, showNotes: true});
     }
@@ -41,7 +48,11 @@ class InfoMenuBox extends React.Component {
     let controlSetToggle1 = this.state.controlSetToggle1;
     let controlSetToggle2 = this.state.controlSetToggle2;
     let controlsHighlightColor = '3px solid black';
+
     let notesHighlightColor = '3px solid black';
+    let highlightControls = this.state.highlightControls;
+    let highlightNotes = this.state.highlightNotes;
+
     let controls = this.state.showControls;
     let notes = this.state.showNotes;
     let textP1;
@@ -52,6 +63,12 @@ class InfoMenuBox extends React.Component {
     let notesPageGridPadding;
     let controlColor = '#9A9A9A';
     let statColor = '#9A9A9A';
+    if (highlightControls){
+        controlsHighlightColor = '3px Solid Green';
+    }
+    if (highlightNotes){
+        notesHighlightColor = '3px Solid Green';
+    }
     if (controls){
         controlColor = '#9A9A9A';
         controlsHighlightColor = '3px solid #1f39bd';
@@ -146,12 +163,12 @@ class InfoMenuBox extends React.Component {
     return <div style={{ paddingLeft: 20, paddingTop: 10, height: '100%'}}>
                 <Grid container>
                     <Grid item xs = {6}>
-                        <div onClick={this.showControls} style={{cursor: 'pointer', borderRadius: 15,backgroundColor: controlColor, textAlign: 'center', padding: 10, border: controlsHighlightColor}}>
+                        <div onClick={this.showControls} onMouseEnter={this.toggleControlsHighlight} onMouseLeave={this.toggleControlsHighlight} style={{cursor: 'pointer', borderRadius: 15,backgroundColor: controlColor, textAlign: 'center', padding: 10, border: controlsHighlightColor}}>
                             Controls
                         </div>
                     </Grid>
                     <Grid item xs = {6}>
-                        <div onClick={this.showNotes} style={{cursor: 'pointer', borderRadius: 15,backgroundColor: statColor, textAlign: 'center',  padding: 10, border: notesHighlightColor}}>
+                        <div onClick={this.showNotes} onMouseEnter={this.toggleNotesHighlight} onMouseLeave={this.toggleNotesHighlight} style={{cursor: 'pointer', borderRadius: 15,backgroundColor: statColor, textAlign: 'center',  padding: 10, border: notesHighlightColor}}>
                             Notes
                         </div>
                     </Grid>

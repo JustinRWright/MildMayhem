@@ -19,6 +19,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite
             this.alive = true;
             this.x = x;
             this.y = y;
+            this.dodging = false;
             this.scene = scene;
             this.stunned = false;
             this.setPlayerSpeed(400);
