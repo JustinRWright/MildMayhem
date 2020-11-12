@@ -22,9 +22,9 @@ let LocalGameScene = {
             this.load.image('blastCool', 'https://i.imgur.com/d4Enueh.png');
             this.load.spritesheet('magicBlast', 'https://i.imgur.com/dEhNPqO.png', {frameWidth: 150, frameHeight: 150});
             this.load.spritesheet('explosion','https://i.imgur.com/UHZiUKC.png', {frameWidth: 192, frameHeight: 192});
-            this.load.spritesheet('player', 'https://i.imgur.com/nRFZx7v.png', { frameWidth: 68, frameHeight: 68 });
-            this.load.spritesheet('otherPlayer','https://i.imgur.com/V78wgrC.png', { frameWidth: 68, frameHeight: 68 });
-            this.load.spritesheet('Background','https://i.imgur.com/T6q69wx.png', {frameWidth: 800, frameHeight: 600});
+            this.load.spritesheet('player', 'https://i.imgur.com/WlEeiKT.png', { frameWidth: 68, frameHeight: 68 });
+            this.load.spritesheet('otherPlayer','https://i.imgur.com/NYAJusD.png', { frameWidth: 68, frameHeight: 68 });
+            this.load.spritesheet('Background','https://i.imgur.com/8SzCikO.png', {frameWidth: 800, frameHeight: 600});
             this.load.image('dodgeCool', 'https://i.imgur.com/mTklmkU.png');
             this.load.spritesheet('lightningBolt', 'https://i.imgur.com/3MskIUy.png', {frameWidth: 16, frameHeight: 1000});
             this.load.image('lightningCool', 'https://i.imgur.com/FVquIxw.png');
@@ -70,8 +70,13 @@ let LocalGameScene = {
                 }
             }
             this.playerHitLightning = function(lightningBolt,player){
+                //Players cannot hit themselves with their own attacks
                 if(lightningBolt.getOwner()!==player){
-                    if (player.getStun() === false || player.getDodging() === false){
+                    console.log("collision happening");
+                    console.log("player.getStun() is: " + player.getStun());
+                    console.log("player.getDodging() is: " + player.getDodging());
+                    if (player.getStun() === false && player.getDodging() === false){
+                        console.log("collision happening here too");
                         player.playStun();
 
                         if(player.getHealthBar().decrease(4)){
