@@ -94,14 +94,14 @@ class MenuPage extends React.Component {
         <Grid item xs = {4}>
             <div style={{paddingTop: 40, paddingBottom: 30}}>
                 <Link style={{color: 'black'}}>
-                <MatchRoomBox image={OnlineGameImage} matchType={'Create Online Room'}></MatchRoomBox>
+                <MatchRoomBox image={OnlineGameImage} matchType={'Start Online Room'}></MatchRoomBox>
                 </Link>
             </div>
         </Grid>
         <Grid item xs = {4}>
             <div style={{paddingTop: 40, paddingBottom: 30}}> 
                 <Link to='/game' style={{color: 'black'}}>
-                    <MatchRoomBox onClick={this.matchRoomClicked} image={LocalGameImage} matchType={'Create Local Room'}></MatchRoomBox>
+                    <MatchRoomBox onClick={this.matchRoomClicked} image={LocalGameImage} matchType={'Start Local Room'}></MatchRoomBox>
                 </Link>
             </div>
             

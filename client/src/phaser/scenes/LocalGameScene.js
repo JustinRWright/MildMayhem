@@ -82,8 +82,10 @@ let LocalGameScene = {
                         if(player.getHealthBar().decrease(4)){
                             player.gameOver();
                             player.anims.play('explode', true);
+                            //Send players back to main menu
+                            let timedEvent = player.scene.time.delayedCall(3000, player.scene.redirect, [], this);
                         }
-
+                        //
                         player.knockBack(lightningBolt);
                       
                         //Destroy the animation associated with these hitboxes
@@ -99,7 +101,7 @@ let LocalGameScene = {
             }
             }
             this.redirect = function(){
-                  window.location.replace('http://localhost:3000/');
+                  window.location.replace('https://mildmayhem.herokuapp.com/');
             }
             //Glowing Background Sprite
             this.background = this.add.sprite(400,300,'Background');
