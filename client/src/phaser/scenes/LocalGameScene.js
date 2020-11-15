@@ -85,7 +85,7 @@ let LocalGameScene = {
                             //Send players back to main menu
                             let timedEvent = player.scene.time.delayedCall(3000, player.scene.redirect, [], this);
                         }
-                        //
+                        
                         player.knockBack(lightningBolt);
                       
                         //Destroy the animation associated with these hitboxes
