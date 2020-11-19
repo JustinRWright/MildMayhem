@@ -1,12 +1,18 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const socketIo = require("socket.io");
+const http = require("http");
 
 const app = express();
 const port = process.env.PORT || 5000;
 
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+const server = http.createServer(app);
+
+const io = socketIo(server);
 app.get('/api/hello', (req, res) => {
   res.send({ express: 'Hello From Express' });
 });
@@ -18,4 +24,4 @@ app.post('/api/world', (req, res) => {
   );
 });
 
-app.listen(port, () => console.log(`Listening on port ${port}`));
+app.listen(port, () => console.log(`client server.js Listening on port ${port}`));

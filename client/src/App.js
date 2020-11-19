@@ -5,6 +5,8 @@ import GamePage from './pages/GamePage.js';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import Phaser from 'phaser'
 import { IonPhaser } from '@ion-phaser/react';
+const ENDPOINT = "http://127.0.0.1:5000";
+
 class App extends Component {
  constructor(props) {
             super(props);

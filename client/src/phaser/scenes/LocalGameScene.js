@@ -9,6 +9,9 @@ import HealthBar from "../sprites/HealthBar.js";
 import CoolDown from "../sprites/CoolDown.js";
 import LightningBolt from '../sprites/lightningBolt.js';
 import LightningHB from '../sprites/lightningBoltHitbox.js';
+import io from "socket.io-client";
+//import io from "socket.io-proxy";
+const ENDPOINT = "http://localhost:5000";
 let LocalGameScene = {
     
     
@@ -32,6 +35,10 @@ let LocalGameScene = {
 
     create: function()
         {   
+            this.socket = io.connect(ENDPOINT, {reconnect: true});
+            this.socket.on("connection", function (socket) {
+                console.log("connected to server")
+            });
             //Deflect Magic Blast with sword
             this.deflectBlast = function(magicBlast,swordHitbox){
                 if(swordHitbox.inSwordSweep(magicBlast)){
@@ -101,7 +108,7 @@ let LocalGameScene = {
             }
             }
             this.redirect = function(){
-                  window.location.replace('https://mildmayhem.herokuapp.com/');
+                  window.location.replace('http://localhost:3000/');
             }
             //Glowing Background Sprite
             this.background = this.add.sprite(400,300,'Background');

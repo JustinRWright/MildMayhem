@@ -8,7 +8,11 @@
   },
   "dependencies": {
     "body-parser": "^1.19.0",
-    "express": "^4.17.1"
+    "bufferutil": "^4.0.2",
+    "express": "^4.17.1",
+    "socket.io": "^3.0.2",
+    "socket.io-proxy": "^1.0.3",
+    "utf-8-validate": "^5.0.3"
   },
   "devDependencies": {
     "concurrently": "^4.1.2"
