@@ -21,13 +21,12 @@ export default class SwordSwing extends Phaser.Physics.Arcade.Sprite
           
           
             this.createAnimations(scene);
+            //When the swing completes, the sword is destroyed
             this.on('animationcomplete', function() {
               this.swinging = false;
               this.destroy();
-              
-              //this.anims.stop();
             },this);
-            //this.anims.play('magicBlastSpin',true);
+           
 
            
             this.x = x;
@@ -46,19 +45,23 @@ export default class SwordSwing extends Phaser.Physics.Arcade.Sprite
           
         }
         update(){
+          //This is called in the update l
           if (this.swinging){
             this.followOwner();
           }
         }
+        //Orients sword to player, so that the sword doesn't just swing up all the time
         orientSword(playerOrientationVector){
          
           //Convert orientation vector to degrees, shift 90 degrees(The sword animation starts by facing up, it also inverts the orientation y vector as the yaxis is inverted)
           let newOrientation = (Math.atan2(-playerOrientationVector.y,-playerOrientationVector.x)*180/Math.PI-90);
-          //console.log("sword orientation is: " + (newOrientation));
+         
           this.angle = newOrientation; 
           
         }
+        
         swingSword(){
+
           this.swinging = true;
           this.orientSword(this.owner.getOrientationVector());
           this.anims.play('swordSlash');
@@ -78,6 +81,7 @@ export default class SwordSwing extends Phaser.Physics.Arcade.Sprite
           //**A -270 degrees seems to be automatically converted to 90 inside of phaser.arcade.sprite.angle after it is set
           let collisionAngle = Phaser.Math.Angle.Between(gameObject.x,gameObject.y,this.x,this.y)*180/Math.PI-90;
          
+          //This is the collision width of the object
           if (collisionAngle>this.angle-60&&collisionAngle<this.angle+60){
             return true;
           }
