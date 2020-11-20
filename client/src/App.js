@@ -25,7 +25,7 @@ class App extends Component {
             }
           }
           };
-  //callback function which comes all the way from the button component in the React application, without redux, 
+  //Callback function which comes all the way from the button component in the React application, without redux, 
   //I believe state has to be managed/updated like this, which I think it isn't the best way to do it
   //I forget the term but basically you have to pass this one callback function through the entire program if there
   // isn't a common parent component
