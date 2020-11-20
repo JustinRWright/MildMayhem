@@ -1,8 +1,6 @@
 import React, { Component } from 'react'
 import Phaser from 'phaser';
 import { IonPhaser } from '@ion-phaser/react';
-import bckg from '../phaser/assets/bckg.png';
-//import LocalGame from '../phaser/scenes/game.js';
 import LocalGameScene from '../phaser/scenes/LocalGameScene.js';
 class GamePage extends Component {
   constructor(props){
@@ -44,6 +42,7 @@ class GamePage extends Component {
     const { initialize, game } = this.state
     return (
       <div style={{maxWidth: 800, minWidth:800, minHeight:600, maxHeight:600, margin: 'auto'}}>
+      {/*Take a look at: https://github.com/proyecto26/ion-phaser/tree/master/react in order to see how this is implemented*/}
         <IonPhaser game={game} initialize={initialize} />
       </div>
     )

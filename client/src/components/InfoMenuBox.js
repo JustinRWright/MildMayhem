@@ -15,18 +15,23 @@ class InfoMenuBox extends React.Component {
             highlightNotes: false}; 
             
         }
+    //Highlights controls tab on menu box
     toggleControlsHighlight = () => {
         this.setState({highlightControls: !this.state.highlightControls});
     }
+    //Highlights notes tab on menu box
     toggleNotesHighlight = () => {
         this.setState({highlightNotes: !this.state.highlightNotes});
     }
+    //Toggles text under tabs
     showNotes = () => {
       this.setState({showControls: false, showNotes: true});
     }
+    //Toggles text under tabs
     showControls = () => {
       this.setState({showControls: true, showNotes: false});
     }
+    //Callback that was passed a prop into ControlsButton.js
     onClick = (id) =>
     {
         if (id === "keyboard1" || id === "gamepad1"){
@@ -45,24 +50,32 @@ class InfoMenuBox extends React.Component {
     }
    
   render() {
+    //this variable changes the displayed text values for controls
     let controlSetToggle1 = this.state.controlSetToggle1;
     let controlSetToggle2 = this.state.controlSetToggle2;
-    let controlsHighlightColor = '3px solid black';
 
+    //default for unselected higlight of tab is 3px solid black 
+    let controlsHighlightColor = '3px solid black';
     let notesHighlightColor = '3px solid black';
+
+    //This tracks which tab should be highlighted, informing the user of current selection
     let highlightControls = this.state.highlightControls;
     let highlightNotes = this.state.highlightNotes;
 
     let controls = this.state.showControls;
     let notes = this.state.showNotes;
+
+    //These are variables as they need changed based on state during each render
     let textP1;
     let textP2;
     let textNotes;
+    //These buttons are rendered in the controls tab
     let keyBoardButtons;
     let gamePadButtons;
+
+    //padding to center notes div
     let notesPageGridPadding;
-    let controlColor = '#9A9A9A';
-    let statColor = '#9A9A9A';
+
     if (highlightControls){
         controlsHighlightColor = '3px Solid Green';
     }
@@ -70,7 +83,7 @@ class InfoMenuBox extends React.Component {
         notesHighlightColor = '3px Solid Green';
     }
     if (controls){
-        controlColor = '#9A9A9A';
+       
         controlsHighlightColor = '3px solid #1f39bd';
         keyBoardButtons = <Grid item xs = {2}>
                             <ControlsButton id = {"keyboard1"} image={KeyBoardIcon} paddingTop = {35} onClick = {this.onClick} selected={this.state.controlSetToggle1}></ControlsButton>
@@ -151,24 +164,23 @@ class InfoMenuBox extends React.Component {
        
     }
     else if (notes){
-        statColor = '#9A9A9A';
+        
         notesHighlightColor = '3px solid #1f39bd';
         notesPageGridPadding = <Grid item xs = {2}> </Grid>
         textNotes = <div style = {{paddingTop: 13}}><div style = {{ backgroundColor: '#9A9A9A', fontSize: 14, borderRadius: 15, color: 'black', border: '1px solid black'}}>
         <p><u>v0.0.1</u> <br></br> <b>Hello, and welcome to Mild Mayhem!</b> <br></br>The goal is simple, defeat your opponent! Use your lightning bolts and magic blasts. You can deflect the magic blasts with your sword and dodge through attacks.</p>
         </div>
         </div>
-        //textP1 = <p><br></br>So how's it goin'?<br></br><br></br>Wins: 0<br></br><br></br> Losses: 0<br></br><br></br> Perfect Wins: 0</p>
     }
     return <div style={{ paddingLeft: 20, paddingTop: 10, height: '100%'}}>
                 <Grid container>
                     <Grid item xs = {6}>
-                        <div onClick={this.showControls} onMouseEnter={this.toggleControlsHighlight} onMouseLeave={this.toggleControlsHighlight} style={{cursor: 'pointer', borderRadius: 15,backgroundColor: controlColor, textAlign: 'center', padding: 10, border: controlsHighlightColor}}>
+                        <div onClick={this.showControls} onMouseEnter={this.toggleControlsHighlight} onMouseLeave={this.toggleControlsHighlight} style={{cursor: 'pointer', borderRadius: 15,backgroundColor: '#9A9A9A', textAlign: 'center', padding: 10, border: controlsHighlightColor}}>
                             Controls
                         </div>
                     </Grid>
                     <Grid item xs = {6}>
-                        <div onClick={this.showNotes} onMouseEnter={this.toggleNotesHighlight} onMouseLeave={this.toggleNotesHighlight} style={{cursor: 'pointer', borderRadius: 15,backgroundColor: statColor, textAlign: 'center',  padding: 10, border: notesHighlightColor}}>
+                        <div onClick={this.showNotes} onMouseEnter={this.toggleNotesHighlight} onMouseLeave={this.toggleNotesHighlight} style={{cursor: 'pointer', borderRadius: 15,backgroundColor: '#9A9A9A', textAlign: 'center',  padding: 10, border: notesHighlightColor}}>
                             Notes
                         </div>
                     </Grid>
@@ -177,11 +189,13 @@ class InfoMenuBox extends React.Component {
                
                 <div style={{backgroundColor: 'black', borderRadius: 15, textAlign: 'center', color: '#39FF14',verticalAlign: 'center', fontSize: 13,height:220, border: '4px solid black'}}>
                     <Grid container>
+                        {/*These curly braced jsx values dissappear if they are not set in render, great for a changing info box values*/}
                         {notesPageGridPadding}
                         {keyBoardButtons}
                         <Grid item xs = {8}>
                             {textP1}
                             {textNotes}
+                             {/*distance between control text*/}
                             <div style={{paddingTop: 6}}>
                             </div>
                             {textP2}   

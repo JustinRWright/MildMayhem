@@ -6,14 +6,14 @@ class MatchRoomBox extends React.Component {
             super(props);
             this.state = {highlight: false}
             };
-        
+    //Highlights object
     toggleHighlight = () => {
       this.setState({highlight: !this.state.highlight});
-      //console.log("highlight Toggled");
     }
   render() {
     let highlightCSS = this.state.highlight;
     let highlightColor;
+    
     if (highlightCSS){
       highlightColor = "3px Solid Green";
     }
