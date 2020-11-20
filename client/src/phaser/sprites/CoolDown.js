@@ -10,6 +10,7 @@ export default class CoolDown extends Phaser.Physics.Arcade.Sprite
             scene.add.existing(this);
             this.setScale(.5);
             this.active = false;
+            //Duration of cooldown
             this.coolDownMS = coolDownMS;
             this.x = x;
             this.y = y;
@@ -18,6 +19,7 @@ export default class CoolDown extends Phaser.Physics.Arcade.Sprite
         }
         startCoolDown(){
             this.active = true;
+            //Change opacity
             this.setAlpha(.5);
             let timedEvent = this.scene.time.delayedCall(this.coolDownMS, this.onEvent, [], this);
         }

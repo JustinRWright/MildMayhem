@@ -5,7 +5,7 @@ import GamePage from './pages/GamePage.js';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import Phaser from 'phaser'
 import { IonPhaser } from '@ion-phaser/react';
-const ENDPOINT = "http://127.0.0.1:5000";
+
 
 class App extends Component {
  constructor(props) {
@@ -25,10 +25,10 @@ class App extends Component {
             }
           }
           };
+  //callback function which comes all the way from the button component in the React application, without redux, 
+  //I believe state has to be managed like this
   controlConfig = (dataFromMenuPage) => {
-    console.log("controls data from MenuPage is: " + dataFromMenuPage);
     this.setState({controlConfig: dataFromMenuPage});
-    console.log("state is now: " + JSON.stringify(this.state.controlConfig));
   };
  
   render() {
@@ -39,9 +39,11 @@ class App extends Component {
         <div>
             <Switch>
               <Route path="/" exact >
+                {/*Getting the control configuration from here*/}
                 <MenuPage passControlConfig={this.controlConfig}/>
               </Route>
               <Route path="/game">
+                {/*We are passing the control configuration into the game*/}
                 <GamePage controlConfig={this.state.controlConfig}/>
               </Route>
             </Switch>

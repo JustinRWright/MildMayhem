@@ -22,23 +22,25 @@ export default class Player extends Phaser.Physics.Arcade.Sprite
             this.dodging = false;
             this.scene = scene;
             this.stunned = false;
+            //This can be passed into contructor later
+            //Should I use getters and setters like this?
             this.setPlayerSpeed(400);
            
         }
         
+        //Starts stun for player
         playStun(){
             this.toggleStun();
+            //calls a timer which removes player stun after 1 second
             let timedEvent = this.scene.time.delayedCall(1000, this.onEvent, [], this);
-            console.log("playStun was called");
-            //console.log(timedEvent.getProgress());
         }
         knockBack(gameObj){
+          //This code finds the angle between the player and the object that damaged the player,
+          //then it sends the player flying in the exact opposite direction
           let gameObjCenter = gameObj.getCenter();
           let playerCenter = this.getCenter();
-          //let distance = Phaser.Math.Distance.Between(gameObjCenter['x'],gameObjCenter['y'],playerCenter['x'],playerCenter['y']);
           let vectorAngle = Phaser.Math.Angle.Between(gameObjCenter['x'],gameObjCenter['y'],playerCenter['x'],playerCenter['y']);
-          //console.log("distance is: " + distance);
-          //console.log("vectorAngle is: " + vectorAngle);
+          
           let knockBackVel = 1200;
           let movementX = Math.cos(vectorAngle)*knockBackVel;
           let movementY = Math.sin(vectorAngle)*knockBackVel;
@@ -48,6 +50,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite
           this.toggleStun();
         }
         toggleStun(){
+          //While player is stunned, changed the player opacity
           this.stunned = !this.stunned;
           if (this.stunned === false){
             this.setAlpha(1);
@@ -58,10 +61,12 @@ export default class Player extends Phaser.Physics.Arcade.Sprite
           
         }
         dodge(){
+          //Changes player velocity and sets dodge property 
           this.body.setVelocity(this.orientationVector.x*1500,this.orientationVector.y*1500);
           this.dodging = true;
           this.setBounce(0);
           console.log(this.orientationVector);
+          //This calls after the dodge cooldown completes
           let timedEvent = this.scene.time.delayedCall(150, this.finishedDodging, [], this);
         }
         finishedDodging(){
@@ -69,6 +74,8 @@ export default class Player extends Phaser.Physics.Arcade.Sprite
           this.dodging = false;
           this.body.setVelocity(0,0);
         }
+        //These two functions are for checking collisions in the scene code,
+        //In the event that player is hit while stunned, the player shouldn't take damage or do anything else that's strange.
         getDodging(){
           return this.dodging;
         }
@@ -79,8 +86,10 @@ export default class Player extends Phaser.Physics.Arcade.Sprite
         {
           this.playerSpeed = speed;
         }
+
         setPlayerVelocity(velocityVector)
         {
+          
           this.body.setVelocity(velocityVector.x*this.playerSpeed,velocityVector.y*this.playerSpeed);
           //Not Moving
           if(velocityVector.x === 0 && velocityVector.y === 0){
@@ -105,36 +114,22 @@ export default class Player extends Phaser.Physics.Arcade.Sprite
         
         }
         setOrientationVector(velocityVector){
-          //Check to make sure 0,0 is not passed in
+          //Check to make sure 0,0 is not passed in(that is not a direction)
           if(Math.abs(velocityVector.x)+Math.abs(velocityVector.y)>0){
             //Check to see if there is a change in orientation
             if (this.orientationVector.x !== velocityVector.x || this.orientationVector.y !== velocityVector.y){
               
               this.orientationVector = velocityVector;
               
-              //console.log("Change detected! Orientation vector is: " + JSON.stringify(this.orientationVector));
+             
             }
           }
-        }
-        checkSwinging(isSwordSwinging){
-          if (isSwordSwinging){
-           return; 
-         }
-         else {
-           this.swinging = true;
-         }
         }
         gameOver(){
           this.alive = false;
         }
         isAlive(){
           return this.alive;
-        }
-        getWidth(){
-          return this.body.width;
-        }
-        getHeight(){
-          return this.body.height;
         }
         getOrientationVector(){
           return this.orientationVector;
@@ -153,6 +148,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite
         {
           return this.y;
         }
+        //Create player animations
         createAnimations(scene){
           scene.anims.create({
             key: this.texture.key + 'left',

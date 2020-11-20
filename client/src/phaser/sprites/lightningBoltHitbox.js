@@ -11,14 +11,17 @@ export default class lightningHB extends Phaser.Physics.Arcade.Sprite
             //Adds physics to sprite
             scene.physics.add.existing(this);
             this.setCircle(16);
+            //The sprite is an invisible hitbox
             this.setVisible(false);
 
             this.texture = texture;
 
+            //Track which animation sprite this lightning hitbox belongs to. This is needed for collisions.
             this.animationSprite = animationSprite;
+
             this.owner = owner;
-            this.firstx = x+owner.width-8;
-            this.firsty = y+owner.height-8;
+            
+            //Center 
             this.x = x+owner.width-8;
             this.y = y+owner.height-8;
             this.oscillationLength = Olength;
@@ -40,13 +43,14 @@ export default class lightningHB extends Phaser.Physics.Arcade.Sprite
                 onComplete: onCompleteHandler,
                 onCompleteParams: [this.scene]
             });
-           //Recursive function that allows for a growing oscillation length to our circular hitbox, simulating a non AABB hitbox effectively
+           //Recursive callback function that allows for a growing oscillation length to our circular hitbox, simulating a non AABB hitbox effectively
            function onCompleteHandler(tween, targets, scene){
                 let self = targets[0];
                 if(self){
-               
+                        //Each iteration, this multiplies the distance,
+                        //an exponential growth occurs
                         self.oscillationLength *= 3;
-                    
+                    //This runs while the hitboxes don't move at max length
                     if (self.oscillationLength <= 1000*self.startingOlength/100){
                             self.scene.tweens.add({
                             targets: self,
@@ -58,10 +62,12 @@ export default class lightningHB extends Phaser.Physics.Arcade.Sprite
                         
                         });
                     }
+                    //This runs once the hitboxes have reached the maximum range of movement
                     else {
                         if (self){
                             self.scene.tweens.add({
                             targets: self,
+                            //1000 is maximum blast length, then a ratio of that length is calculated in x and y distances
                             x: self.x + 1000*self.orientationx*self.startingOlength/100,
                             y: self.y + 1000*self.orientationy*self.startingOlength/100,
                             duration: 100,
@@ -74,12 +80,14 @@ export default class lightningHB extends Phaser.Physics.Arcade.Sprite
                 }
                
             };
+            //This function destroys the object
             function countRuns(tween, targets, scene){
                 let self = targets[0];
                 self.destroy();
             }
             
         }
+        //Reference to animation sprite to destroy for collisions
         destroyAnimationSprite(){
             this.animationSprite.destroy();
         }

@@ -1,7 +1,9 @@
 import Phaser from 'phaser';
 export default class HealthBar extends Phaser.GameObjects.Sprite
  {
-    //This is from the Phaser3 healthbar example, with a few tweaks it seems to work great for this game
+    //This is from the Phaser3 healthbar example,
+    //https://phaser.io/examples/v3/view/game-objects/graphics/health-bars-demo
+    // with a few tweaks it seems to work great for this game
     constructor (config)
     {
         super(config.scene,config.x,config.y);

@@ -4,13 +4,20 @@ export default class Controls extends Phaser.GameObjects.Sprite
 
         constructor (scene,type,gamePadCount,gamePadNumber)
         {
+            //Information is being passed from the react application into here for control config
             super(scene,type,gamePadCount,gamePadNumber);
             this.setKeyInput(scene,type);
             this.scene = scene;
+            //The gamePad Count and gamePad number are tracked to make sure that the passed
+            //gamepad amounts are equal to the detected gamepads in the scene,
+            //Otherwise errors will occurs
+            //The onConnect listener does not seem to work normally,  
+            //But I am sure there is a better solution for this
             this.gamePadCount = gamePadCount;
             this.gamePadNumber = gamePadNumber;
             
         }
+
         setWASDControls(){
           this.directionals = this.directionals = this.scene.input.keyboard.addKeys({
                 up:Phaser.Input.Keyboard.KeyCodes.W,
@@ -83,13 +90,15 @@ export default class Controls extends Phaser.GameObjects.Sprite
         }
         
         getMovementVector(){
-         
+         //This function returns an x and y value that can easily be multiplied onto
+         //direction values in the scene, ex: {x:0*velocity,y:1*velocity}, 
           if (this.gamePadMode){
             let pad: Phaser.Input.Gamepad.Gamepad;
 
-            //If there are enough controllers connected and the gamepad isActive at all then...
+            //If there are any controllers connected and the gamepad isActive at all then...
             if (this.scene.input.gamepad.total&&this.scene.input.gamepad.isActive()){ 
                
+                //If the total amount of gamepads are greater than or equal to the desired amount...
                 if (this.scene.input.gamepad.total>=this.gamePadCount){
                  
                   pad = this.scene.input.gamepad.pad1
@@ -135,7 +144,7 @@ export default class Controls extends Phaser.GameObjects.Sprite
        
            }
          return {
-           //Gets the vector for a directional press(y is inverted)
+           //Gets the vector for a directional press(y is inverted as it is in phaser/html5)
            x: ((this.directionals.right.isDown)? 1:0)+((this.directionals.left.isDown)? -1:0),
            y: ((this.directionals.up.isDown)? -1:0)+((this.directionals.down.isDown)? 1:0)};
         }
