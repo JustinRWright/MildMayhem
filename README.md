@@ -10,6 +10,7 @@ I used Phaser 3 for the game component, and React to develop a fun and interacti
 
 This game is fun for anyone who likes fast paced competitive fighting games that require mastery, strategy, player reads, and quick thinking. I hope that nostalgia for the old adventure games with new mechanics brings something fun to the table for everyone.
 
+## Important Links
 - [Deployed Game](https://mildmayhem.herokuapp.com/)
 - [Client Code](https://github.com/JustinRWright/MildMayhemFull/tree/main/client)
 
