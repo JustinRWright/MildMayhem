@@ -40,7 +40,7 @@ Project is created with:
 
 ## Client Side Development Code Instructions
 1. git clone
-2. cd into MildMayhemFull/client
+2. cd into MildMayhem/client
 3. npm install
 4. npm start
 
