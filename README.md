@@ -2,7 +2,7 @@
 
 ![Imgur](https://i.imgur.com/05jtKiO.png)
 ![Imgur](https://i.imgur.com/Qnjj9rJ.png)
-Mild Mayhem is a web based online multiplayer game. Taking inspiration from games such as Trials of Mana(The Mana Series), and Legend of Zelda, this game incorporates old top down 2D adventure game battle mechanics and turns them into something new and fun. 
+Mild Mayhem is a web based online multiplayer game. Taking inspiration from the Mana Series, and old Zelda games, this game incorporates old top down 2D adventure game battle mechanics and turns them into something new and fun. 
 
 I used Phaser 3 for the game component, and React to develop a fun and interactive menu.
 
