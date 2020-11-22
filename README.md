@@ -4,9 +4,9 @@
 ![Imgur](https://i.imgur.com/Qnjj9rJ.png)
 Mild Mayhem is a web based online multiplayer game. Taking inspiration from games such as Trials of Mana(The Mana Series), and Legend of Zelda, this game incorporates old top down 2D adventure game battle mechanics and turns them into something new and fun. 
 
-The backend is built with NodeJS, and Express. It is hosted on Heroku.
+I used Phaser 3 for the game component, and React to develop a fun and interactive menu.
 
-I used Phaser 3 for the game component, and React to develop a fun and interactive menu. 
+The backend is built with NodeJS, and Express. It is hosted on Heroku. The implementation of online multiplayer is currently being developed, but the game can be played locally at the moment.
 
 This game is fun for anyone who likes fast paced competitive fighting games that require mastery, strategy, player reads, and quick thinking. I hope that nostalgia for the old adventure games with new mechanics brings something fun to the table for everyone.
 
@@ -15,6 +15,7 @@ This game is fun for anyone who likes fast paced competitive fighting games that
 - [Client Code](https://github.com/JustinRWright/MildMayhemFull/tree/main/client)
 
 ## Table of contents
+* [Special Thanks](#thank-you-to-all-collaborators)
 * [Story and Journey](#story-and-journey)
 * [Technologies](#technologies)
 * [Development Setup](#client-side-development-code-instructions)
