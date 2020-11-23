@@ -22,7 +22,7 @@ This game is fun for anyone who likes fast paced competitive fighting games that
 * [Mock Up](#mock-up)
 
 ## Thank You To All Collaborators
-Thank you to Nathaniel Wallace for coming on board to contribute, and to Willibab for spell artwork: https://itch.io/profile/willibab. 
+Thank you to Nathaniel Wallace for coming on board to contribute, and to Willibab for the magic ball spell artwork: https://itch.io/profile/willibab. 
 
 ## Story and Journey
 

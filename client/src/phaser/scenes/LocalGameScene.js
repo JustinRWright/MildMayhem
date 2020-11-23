@@ -9,6 +9,8 @@ import HealthBar from "../sprites/HealthBar.js";
 import CoolDown from "../sprites/CoolDown.js";
 import LightningBolt from '../sprites/lightningBolt.js';
 import LightningHB from '../sprites/lightningBoltHitbox.js';
+import io from 'socket.io-client';
+//import proxy from 'socket.io-proxy';
 let LocalGameScene = {
     
     
@@ -36,6 +38,12 @@ let LocalGameScene = {
 
     create: function()
         {   
+            const socket = io('http://localhost:8080', {
+                transports: ['websocket'],
+                path: '/socket'
+            });
+            //proxy.init('http://localhost:8080');
+            //var socket = proxy.connect('http://localhost:8080');
            /*I define some of the functions ex:this.deflectBlast
            this way instead of outside of the preload/create/update
            because that is the way they don't throw an error while using IonPhaser,
