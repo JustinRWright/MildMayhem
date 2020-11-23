@@ -75,10 +75,13 @@ be set as the attack.*/
       }
   };
   //When a match room is clicked, the control config is passed to the game for the game start
-  matchRoomClicked = () => {
-      
+  matchRoomClicked = (gameType) => {
+      this.props.passGameConfig(gameType);
       this.props.passControlConfig(this.state.controls);
   };
+  gameSelect = (gameType) => {
+      this.props.passGameConfig(gameType)
+  }
   render() {
     //I set the resolution to 800*600, which is the size of an old school NewGrounds web game. It is currently not responsive
     //This could be changed for a mobile depoloyment or something
@@ -103,8 +106,8 @@ be set as the attack.*/
         {/*Online match box*/}
         <Grid item xs = {4}>
             <div style={{paddingTop: 40, paddingBottom: 30}}>
-                <Link style={{color: 'black'}}>
-                    <MatchRoomBox image={OnlineGameImage} matchType={'Start Online Room'}></MatchRoomBox>
+                <Link to='/game' style={{color: 'black'}}>
+                    <MatchRoomBox onClick={() => this.matchRoomClicked('online')} image={OnlineGameImage} matchType={'Start Online Room'}></MatchRoomBox>
                 </Link>
             </div>
         </Grid>
@@ -114,7 +117,7 @@ be set as the attack.*/
             <div style={{paddingTop: 40, paddingBottom: 30}}> 
                 {/*route to game*/}
                 <Link to='/game' style={{color: 'black'}}>
-                    <MatchRoomBox onClick={this.matchRoomClicked} image={LocalGameImage} matchType={'Start Local Room'}></MatchRoomBox>
+                    <MatchRoomBox onClick={() => this.matchRoomClicked('offline')} image={LocalGameImage} matchType={'Start Local Room'}></MatchRoomBox>
                 </Link>
             </div>
         </Grid>

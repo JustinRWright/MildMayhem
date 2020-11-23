@@ -9,7 +9,7 @@ import HealthBar from "../sprites/HealthBar.js";
 import CoolDown from "../sprites/CoolDown.js";
 import LightningBolt from '../sprites/lightningBolt.js';
 import LightningHB from '../sprites/lightningBoltHitbox.js';
-
+import io from 'socket.io-client';
 //import proxy from 'socket.io-proxy';
 let LocalGameScene = {
     
@@ -38,8 +38,12 @@ let LocalGameScene = {
 
     create: function()
         {   
-           
-           
+            const socket = io('http://localhost:8080', {
+                transports: ['websocket'],
+                path: '/socket'
+            });
+            //proxy.init('http://localhost:8080');
+            //var socket = proxy.connect('http://localhost:8080');
            /*I define some of the functions ex:this.deflectBlast
            this way instead of outside of the preload/create/update
            because that is the way they don't throw an error while using IonPhaser,
@@ -135,7 +139,7 @@ let LocalGameScene = {
 
             //Create Both Players
             this.player1 = new Player(this, 400, 500,'player', this.explosionAnim);
-            this.player2 = new Player(this, 400, 100, 'otherPlayer', this.explosionAnim);
+  
             
             //Create Win Text
             this.youWin = this.add.text(150,300-60,'PLAYER2 WINS ',{fontSize: '70px', color: '#66FF00'});
@@ -166,7 +170,7 @@ let LocalGameScene = {
 
             //Create controls object which can be accessed in the update logic for game object interactions
             this.controlsP1 = new Controls(this,{directionals: this.controlConfig.player1.Movement, magicBlast: this.controlConfig.player1.MagicBlast, swordSwing: this.controlConfig.player1.SwordSlash},gamePadCount,1);
-            this.controlsP2 = new Controls(this,{directionals: this.controlConfig.player2.Movement, magicBlast: this.controlConfig.player2.MagicBlast, swordSwing: this.controlConfig.player2.SwordSlash},gamePadCount,2);
+           
             
             //These phaser groups allow for collisino detection of classes of objects at scale, for example all magic blasts have the same collision callack that is called
             this.magicBlasts = this.physics.add.group();
@@ -176,15 +180,15 @@ let LocalGameScene = {
             //Create a sprite group in order to handle collisions
             this.players = this.physics.add.group();
             this.players.add(this.player1);
-            this.players.add(this.player2);
+          
 
             //Attach healthbars to the selected players, this is so the game knows whose healthbar is whose
             this.player1.setHealthBar(this.healthBarP1);
-            this.player2.setHealthBar(this.healthBarP2);
+          
 
             //phaser has a prebuilt bounce physics setup, any value greater than 1 causes an exponential growth in object velocity as it multiplies each bounce
             this.player1.setBounce(1);
-            this.player2.setBounce(1);
+
 
             //Collision handling for object groups (group1, group2, callback)
             this.physics.add.overlap(this.magicBlasts,this.swordHitBoxes,this.deflectBlast);
@@ -270,43 +274,31 @@ let LocalGameScene = {
             this.youWin.setVisible(true);
             this.youWin.setText('PLAYER2 WINS');
         }
-        else if(!this.player2.isAlive()){
-            this.youWin.setVisible(true);
-            this.youWin.setText('PLAYER1 WINS');
-        }
-
+        
         //Get Player input
         this.movementVectorP1 = this.controlsP1.getMovementVector();
-        this.movementVectorP2 = this.controlsP2.getMovementVector();
+        
 
         //Set the orientation of the player
         this.player1.setOrientationVector(this.movementVectorP1);
-        this.player2.setOrientationVector(this.movementVectorP2);
+        
 
         //Check to make sure the player is not stunned, alive, and is not dodging
         if(!this.player1.getStun() && this.player1.isAlive() && !this.player1.getDodging()){
             this.player1.setPlayerVelocity(this.movementVectorP1);
         }
 
-        if(!this.player2.getStun() && this.player2.isAlive() && !this.player2.getDodging()){
-            this.player2.setPlayerVelocity(this.movementVectorP2);
-        }
+       
 
         //Get attack inputs every update cycle
         let attackInputsP1 = this.controlsP1.getMoveInput();
-        let attackInputsP2 = this.controlsP2.getMoveInput();
-
+       
         //Check for user firing magic blast and that the cooldown is not active
         if (attackInputsP1.magicBlastFiring && !this.magicCoolDownP1.isActive()){
            this.magicCoolDownP1.startCoolDown();
            this.createMagicBlast(this.player1);
         };
         
-         if (attackInputsP2.magicBlastFiring && !this.magicCoolDownP2.isActive()){
-           this.magicCoolDownP2.startCoolDown();
-           this.createMagicBlast(this.player2);
-        };
-
         //Check for user firing Lightning Bolt
         if (attackInputsP1.lightningBoltFiring && !this.lightningCoolDownP1.isActive()){
            this.lightningCoolDownP1.startCoolDown();
@@ -326,18 +318,7 @@ let LocalGameScene = {
            this.lightningBolts.add(lightningBoltHB3);
            this.lightningBolts.add(lightningBoltHB4);
         };
-        if (attackInputsP2.lightningBoltFiring && !this.lightningCoolDownP2.isActive()){
-           this.lightningCoolDownP2.startCoolDown();
-           let lightningBolt = new LightningBolt(this,this.player2.getX(),this.player2.getY(),'lightningBolt',{owner: this.player2});
-           let lightningBoltHB1 = new LightningHB(this,this.player2.getX(),this.player2.getY(),'magicBlast',{owner: this.player2, animationSprite: lightningBolt, Olength: 100});
-           let lightningBoltHB2 = new LightningHB(this,this.player2.getX(),this.player2.getY(),'magicBlast',{owner: this.player2, animationSprite: lightningBolt, Olength: 50});
-           let lightningBoltHB3 = new LightningHB(this,this.player2.getX(),this.player2.getY(),'magicBlast',{owner: this.player2, animationSprite: lightningBolt, Olength: 25});
-           let lightningBoltHB4 = new LightningHB(this,this.player2.getX(),this.player2.getY(),'magicBlast',{owner: this.player2, animationSprite: lightningBolt, Olength: 75});
-           this.lightningBolts.add(lightningBoltHB1);
-           this.lightningBolts.add(lightningBoltHB2);
-           this.lightningBolts.add(lightningBoltHB3);
-           this.lightningBolts.add(lightningBoltHB4);
-        };
+        
 
        
         //Check for user dodging and check that they aren't already in dodge mode
@@ -345,10 +326,7 @@ let LocalGameScene = {
             this.dodgeCoolDownP1.startCoolDown();
             this.player1.dodge();
         };
-        if (attackInputsP2.dodgeFiring && !this.player2.getDodging() && !this.dodgeCoolDownP2.isActive()){
-            this.dodgeCoolDownP2.startCoolDown();
-            this.player2.dodge();
-        };
+       
 
         //Check if sword swings exist, and update them as needed, 
         //this is the best way I can think of for tracking and following player position in the main loop
@@ -367,7 +345,7 @@ let LocalGameScene = {
         //Check for user swinging sword and then swing, starting the cooldown
         //I think functions are supposed to do only one thing, I'll fix this later
         this.checkForSwingThenSwing(attackInputsP1, this.player1, this.swordCoolDownP1);
-        this.checkForSwingThenSwing(attackInputsP2, this.player2, this.swordCoolDownP2);
+    
         }
     
     
