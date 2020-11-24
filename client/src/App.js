@@ -10,6 +10,9 @@ import { IonPhaser } from '@ion-phaser/react';
 class App extends Component {
  constructor(props) {
             super(props);
+            //listens for a new online room creation
+           
+
             //ControlConfig is a default value
             this.state = {controlConfig: {
                 player1: {
@@ -30,6 +33,7 @@ class App extends Component {
   //I believe state has to be managed/updated like this, which I think it isn't the best way to do it
   //I forget the term but basically you have to pass this one callback function through the entire program if there
   // isn't a common parent component
+  
   controlConfig = (dataFromMenuPage) => {
     this.setState({controlConfig: dataFromMenuPage});
   };
@@ -46,7 +50,7 @@ class App extends Component {
             <Switch>
               <Route path="/" exact >
                 {/*Getting the control configuration from here*/}
-                <MenuPage passControlConfig={this.controlConfig} passGameConfig={this.gameConfig}/>
+                <MenuPage passControlConfig={this.controlConfig} addNewRoom={this.addNewRoom} passGameConfig={this.gameConfig}/>
               </Route>
               <Route path="/game">
                 {/*We are passing the control configuration into the game*/}

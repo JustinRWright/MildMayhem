@@ -38,10 +38,13 @@ let LocalGameScene = {
 
     create: function()
         {   
-            const socket = io('http://localhost:8080', {
+           /*this.socket = io('http://localhost:8080', {
                 transports: ['websocket'],
                 path: '/socket'
-            });
+            });*/
+            if (this.gameConfig === 'createOnline'){
+                this.socket.emit('createOnlineRoom');
+            }
             //proxy.init('http://localhost:8080');
             //var socket = proxy.connect('http://localhost:8080');
            /*I define some of the functions ex:this.deflectBlast
@@ -166,7 +169,7 @@ let LocalGameScene = {
             //the controls will be reset, this can be fixed later
             let pad: Phaser.Input.Gamepad.Gamepad;
             let gamePadCount = ((this.controlConfig.player1.Movement==='GamePad')? 1:0);
-            gamePadCount += ((this.controlConfig.player2.Movement=='GamePad')? 1:0);
+           
 
             //Create controls object which can be accessed in the update logic for game object interactions
             this.controlsP1 = new Controls(this,{directionals: this.controlConfig.player1.Movement, magicBlast: this.controlConfig.player1.MagicBlast, swordSwing: this.controlConfig.player1.SwordSlash},gamePadCount,1);
@@ -282,13 +285,28 @@ let LocalGameScene = {
         //Set the orientation of the player
         this.player1.setOrientationVector(this.movementVectorP1);
         
+        // emit player movement data
+        var x = this.player1.x;
+        var y = this.player1.y;
+        var d = this.player1.getOrientationVector();
+        if (this.player1.oldPosition && (x !== this.player1.oldPosition.x || y !== this.player1.oldPosition.y || d !== this.player1.oldPosition.direction)) {
+          this.socket.emit('playerMovement', { x: x, y: y, direction: d });
+        }
+ 
+        // save old position data
+        this.player1.oldPosition = {
+          x: x,
+          y: y,
+          direction: d
+        };
+
 
         //Check to make sure the player is not stunned, alive, and is not dodging
         if(!this.player1.getStun() && this.player1.isAlive() && !this.player1.getDodging()){
             this.player1.setPlayerVelocity(this.movementVectorP1);
         }
 
-       
+
 
         //Get attack inputs every update cycle
         let attackInputsP1 = this.controlsP1.getMoveInput();

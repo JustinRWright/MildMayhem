@@ -3,13 +3,17 @@ import Phaser from 'phaser';
 import { IonPhaser } from '@ion-phaser/react';
 import LocalGameScene from '../phaser/scenes/LocalGameScene.js';
 import OnlineGameScene from '../phaser/scenes/OnlineGameScene.js';
+import {socket} from '../api';
 class GamePage extends Component {
   constructor(props){
     super(props);
     let gameConfig = this.props.gameConfig;
     console.log("gameConfig is: " + gameConfig);
     let newScene = LocalGameScene;
-    if (gameConfig=='online'){
+    if (gameConfig==='createOnline'){
+      newScene = OnlineGameScene;
+    }
+    else if (gameConfig=='joinOnline'){
       newScene = OnlineGameScene;
     }
     let controlConfig = this.props.controlConfig;
@@ -34,6 +38,8 @@ class GamePage extends Component {
         init: function() {
           //Here we can pass in the Control Config and any other data the Phaser scene needs from React
           this.controlConfig = controlConfig;
+          this.gameConfig = gameConfig;
+          this.socket = socket;
         },
         preload:newScene.preload,
         create: newScene.create,
