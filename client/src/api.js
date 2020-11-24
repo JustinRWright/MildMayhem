@@ -4,8 +4,11 @@ const socket = io('http://localhost:8080', {
                 path: '/socket'
             });
 function subscribeToOnlineRoomCreate(cb) {
-    socket.on('addRoom', room => cb(null,room));
+    socket.on('showRooms', room => cb(null,room));
     socket.emit('subscribeToOnlineRoomCreate')
 }
+function checkRoomCreation(){
+    socket.emit('checkRoomCreation');
+}
 
-export {subscribeToOnlineRoomCreate,socket};
+export {subscribeToOnlineRoomCreate,checkRoomCreation,socket};

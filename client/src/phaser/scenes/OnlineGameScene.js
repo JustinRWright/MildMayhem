@@ -45,6 +45,13 @@ let LocalGameScene = {
             if (this.gameConfig === 'createOnline'){
                 this.socket.emit('createOnlineRoom');
             }
+            window.addEventListener('beforeunload', function(e) {
+                //If player was room host...
+                if (this.gameConfig){
+                    //Destroy Room on Server
+                    this.socket.emit('destroyOnlineRoom');
+                }
+            });
             //proxy.init('http://localhost:8080');
             //var socket = proxy.connect('http://localhost:8080');
            /*I define some of the functions ex:this.deflectBlast

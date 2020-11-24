@@ -7,14 +7,14 @@ import InfoMenuBox from '../components/InfoMenuBox.js';
 import LocalGameImage from '../images/GameShot5.png';
 import OnlineGameImage from '../images/OnlineGame.png';
 import { Link } from 'react-router-dom';
-import {subscribeToOnlineRoomCreate} from '../api';
+import {subscribeToOnlineRoomCreate, checkRoomCreation} from '../api';
 class MenuPage extends React.Component {
   constructor(props) {
             super(props);
            
             
             this.state = {
-                rooms: [],
+                rooms: {},
                 controls: {
                 player1: {
                     Movement: 'WASD',
@@ -29,15 +29,16 @@ class MenuPage extends React.Component {
             }};
         };
 componentDidMount(){
+    checkRoomCreation();
     subscribeToOnlineRoomCreate((err, room) => {
-        console.log("room is: " + room);
+        console.log("room is: " + JSON.stringify(room));
        
-        let newRooms =  this.state.rooms;
-        newRooms = newRooms.concat(room);
-        console.log("newRooms is: " + newRooms);
+        let newRooms = room;
+        //newRooms = newRooms.concat(room);
+        console.log("newRooms is: " + JSON.stringify(newRooms));
         this.setRoomState(newRooms);
         //this.setState({rooms: newRooms});
-        console.log('this.state.rooms is: ' + this.state.rooms);
+        console.log('this.state.rooms is: ' + JSON.stringify(this.state.rooms));
     });
 }
 componentDidUpdate(){
@@ -106,7 +107,7 @@ be set as the attack.*/
   }
   render() {
     let roomCount = this.state.rooms;
-    console.log('roomCount is: ' + roomCount);
+    console.log('roomCount is: ' + JSON.stringify(roomCount));
     let joinMatchBox;
     if(this.state.rooms){
        
@@ -171,9 +172,10 @@ be set as the attack.*/
                 <div style={{ borderRadius: 15, backgroundColor: '#9A9A9A', align: 'left', textAlign: 'left', minHeight:200, maxHeight:200, border: '1px solid'}}>
                 <Grid container>
                 {
-                    roomCount.map((room, index) => (
+                    
+                    Object.keys(roomCount).map((room, index) => (
                         <Grid item xs = {4}>
-                            <MatchRoomBox key={index} onClick={() => this.matchRoomClicked('joinOnline')} image={LocalGameImage} matchType={room}></MatchRoomBox>
+                            <MatchRoomBox key={roomCount[room].id} onClick={() => this.matchRoomClicked('joinOnline')} image={LocalGameImage} matchType={roomCount[room].name}></MatchRoomBox>
                         </Grid>
                     ))
 
