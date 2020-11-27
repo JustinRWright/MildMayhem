@@ -115,25 +115,25 @@ export default class Player extends Phaser.Physics.Arcade.Sprite
         }
         setMovementAnim(velocityVector){
            //Not Moving
-            if(velocityVector.x === 0 && velocityVector.y === 0){
-              this.anims.stop();
-            }
-            //Moving Up
-            else if (velocityVector.y > 0){
-              this.anims.play(this.texture.key + 'down', true);
-            }
-            //Moving Down
-            else if (velocityVector.y < 0){
-              this.anims.play(this.texture.key + 'up', true);
-            }
-            //Moving Right
-            else if (velocityVector.x > 0) {
-              this.anims.play(this.texture.key + 'right', true);
-            }
-            //Moving Left
-            else if (velocityVector.x < 0) {
-              this.anims.play(this.texture.key + 'left', true);
-            }
+              if(velocityVector.x === 0 && velocityVector.y === 0){
+                this.anims.stop();
+              }
+              //Moving Up
+              else if (velocityVector.y > 0){
+                this.anims.play(this.texture.key + 'down', true);
+              }
+              //Moving Down
+              else if (velocityVector.y < 0){
+                this.anims.play(this.texture.key + 'up', true);
+              }
+              //Moving Right
+              else if (velocityVector.x > 0) {
+                this.anims.play(this.texture.key + 'right', true);
+              }
+              //Moving Left
+              else if (velocityVector.x < 0) {
+                this.anims.play(this.texture.key + 'left', true);
+              }
         }
         setOrientationVector(velocityVector){
           //Check to make sure 0,0 is not passed in(that is not a direction)

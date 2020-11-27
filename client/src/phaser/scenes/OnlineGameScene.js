@@ -141,6 +141,7 @@ let LocalGameScene = {
                 this.player2.createAnimations(this);
                 console.log('my id is: ' + this.socket.id);    
                 this.player2.setVisible(true);
+               
             }
             if (this.gameConfig === 'createOnline'){
                 this.player1 = new Player(this, 400, 500,'player', this.explosionAnim);
@@ -149,8 +150,14 @@ let LocalGameScene = {
                 this.player2.createAnimations(this);
                 this.player2.setVisible(false);
                 this.socket.emit('createOnlineRoom');
+                this.socket.emit('getRoomName');
+                
             }
-            
+
+            this.socket.on('yourRoomName', function(roomName) {
+                console.log('myroomName is called here');
+                self.roomName = roomName;
+            });
             this.socket.on('opponentJoined', function(opponentSocketId) {
                 self.player2.setVisible(true);
                 console.log('opponentJoined, id: ' + opponentSocketId);

@@ -60,6 +60,14 @@ io.on("connection", (socket) => {
 
     //Shows all rooms to players
     io.broadcast.emit('showRooms', gameRooms);
+  
+  });
+
+  socket.on('getRoomName', () => {
+    console.log('getRoomName was called here');
+    console.log('socket Id is: ' + socket.id);
+    console.log('roomname is: ' + gameRooms[socket.id].name);
+    socket.emit('yourRoomName', gameRooms[socket.id].name);
   });
 
   socket.on('joinRoom', function(playerId) {
