@@ -8,6 +8,7 @@ class GamePage extends Component {
   constructor(props){
     super(props);
     let gameConfig = this.props.gameConfig;
+    let roomName = this.props.roomName;
     console.log("gameConfig is: " + gameConfig);
     let newScene = LocalGameScene;
     if (gameConfig==='createOnline'){
@@ -39,11 +40,12 @@ class GamePage extends Component {
           //Here we can pass in the Control Config and any other data the Phaser scene needs from React
           this.controlConfig = controlConfig;
           this.gameConfig = gameConfig;
+          this.roomName = roomName;
           this.socket = socket;
         },
-        preload:newScene.preload,
+        preload: newScene.preload,
         create: newScene.create,
-        update: newScene.update
+        update: newScene.update,
       }
       
     }

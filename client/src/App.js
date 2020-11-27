@@ -26,7 +26,8 @@ class App extends Component {
                     MagicBlast: 'NumPad9'
                 }
             },
-            gameConfig: 'offline'
+            gameConfig: 'offline',
+            roomName: 'Null'
           }
           };
   //Callback function which comes all the way from the button component in the React application, without redux, 
@@ -37,8 +38,8 @@ class App extends Component {
   controlConfig = (dataFromMenuPage) => {
     this.setState({controlConfig: dataFromMenuPage});
   };
-  gameConfig = (gameSelectionFromMenuPage) => {
-    this.setState({gameConfig: gameSelectionFromMenuPage});
+  gameConfig = (gameSelectionFromMenuPage,roomNameFromMenuPage) => {
+    this.setState({gameConfig: gameSelectionFromMenuPage,roomName: roomNameFromMenuPage});
 
   }
   render() {
@@ -54,7 +55,7 @@ class App extends Component {
               </Route>
               <Route path="/game">
                 {/*We are passing the control configuration into the game*/}
-                <GamePage controlConfig={this.state.controlConfig} gameConfig={this.state.gameConfig}/>
+                <GamePage controlConfig={this.state.controlConfig} gameConfig={this.state.gameConfig} roomName={this.state.roomName}/>
               </Route>
             </Switch>
          

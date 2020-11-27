@@ -7,7 +7,7 @@ import InfoMenuBox from '../components/InfoMenuBox.js';
 import LocalGameImage from '../images/GameShot5.png';
 import OnlineGameImage from '../images/OnlineGame.png';
 import { Link } from 'react-router-dom';
-import {subscribeToOnlineRoomCreate, checkRoomCreation} from '../api';
+import {subscribeToShowRooms, checkRoomCreation, joinRoom} from '../api';
 class MenuPage extends React.Component {
   constructor(props) {
             super(props);
@@ -29,21 +29,15 @@ class MenuPage extends React.Component {
             }};
         };
 componentDidMount(){
+    
     checkRoomCreation();
-    subscribeToOnlineRoomCreate((err, room) => {
-        console.log("room is: " + JSON.stringify(room));
-       
+    //Whenever the rooms on the server are updated, the room state is set again
+    subscribeToShowRooms((err, room) => {
         let newRooms = room;
-        //newRooms = newRooms.concat(room);
-        console.log("newRooms is: " + JSON.stringify(newRooms));
         this.setRoomState(newRooms);
-        //this.setState({rooms: newRooms});
-        console.log('this.state.rooms is: ' + JSON.stringify(this.state.rooms));
     });
 }
-componentDidUpdate(){
-  
-}
+
 setRoomState = (newRooms) => {
     this.setState({rooms: newRooms});
 }
@@ -98,29 +92,18 @@ be set as the attack.*/
       }
   };
   //When a match room is clicked, the control config is passed to the game for the game start
-  matchRoomClicked = (gameType) => {
-      this.props.passGameConfig(gameType);
+  matchRoomClicked = (gameType,roomName,playerId) => {
+      if(gameType === 'joinOnline'){
+        joinRoom(playerId);
+      }
+      
+      this.props.passGameConfig(gameType,roomName);
       this.props.passControlConfig(this.state.controls);
   };
-  gameSelect = (gameType) => {
-      this.props.passGameConfig(gameType)
-  }
   render() {
     let roomCount = this.state.rooms;
     console.log('roomCount is: ' + JSON.stringify(roomCount));
     let joinMatchBox;
-    if(this.state.rooms){
-       
-      /*  joinMatchBox = roomCount.forEach(room => { 
-            console.log("this ran");
-            return(<MatchRoomBox onClick={() => this.matchRoomClicked('joinOnline')} image={LocalGameImage} matchType={'Room1'}></MatchRoomBox>)
-        
-        })
-         console.log("joinMatchBox is: " + joinMatchBox);
-          */
-    }
-   
-    
     
     //I set the resolution to 800*600, which is the size of an old school NewGrounds web game. It is currently not responsive
     //This could be changed for a mobile depoloyment or something
@@ -175,7 +158,9 @@ be set as the attack.*/
                     
                     Object.keys(roomCount).map((room, index) => (
                         <Grid item xs = {4}>
-                            <MatchRoomBox key={roomCount[room].id} onClick={() => this.matchRoomClicked('joinOnline')} image={LocalGameImage} matchType={roomCount[room].name}></MatchRoomBox>
+                            <Link to='/game' style={{color: 'black'}}>
+                                <MatchRoomBox key={roomCount[room].id} onClick={() => this.matchRoomClicked('joinOnline', roomCount[room].name, roomCount[room].id)} image={LocalGameImage} matchType={roomCount[room].name}></MatchRoomBox>
+                            </Link>
                         </Grid>
                     ))
 

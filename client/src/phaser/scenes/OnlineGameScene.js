@@ -38,22 +38,7 @@ let LocalGameScene = {
 
     create: function()
         {   
-           /*this.socket = io('http://localhost:8080', {
-                transports: ['websocket'],
-                path: '/socket'
-            });*/
-            if (this.gameConfig === 'createOnline'){
-                this.socket.emit('createOnlineRoom');
-            }
-            window.addEventListener('beforeunload', function(e) {
-                //If player was room host...
-                if (this.gameConfig){
-                    //Destroy Room on Server
-                    this.socket.emit('destroyOnlineRoom');
-                }
-            });
-            //proxy.init('http://localhost:8080');
-            //var socket = proxy.connect('http://localhost:8080');
+            
            /*I define some of the functions ex:this.deflectBlast
            this way instead of outside of the preload/create/update
            because that is the way they don't throw an error while using IonPhaser,
@@ -147,10 +132,43 @@ let LocalGameScene = {
             //Refactoring idea: make every variable passed into constructors 
             //descriptive javascript properties for readability
 
-            //Create Both Players
-            this.player1 = new Player(this, 400, 500,'player', this.explosionAnim);
-  
+            let self = this;
+            console.log('gameconfig is: ' + this.gameConfig);
+            if (this.gameConfig === 'joinOnline') {
+                this.player1 = new Player(this, 400, 200,'otherPlayer', this.explosionAnim);
+                this.player2 = new Player(self, 400, 500,'player', self.explosionAnim);
+                this.player1.createAnimations(this);
+                this.player2.createAnimations(this);
+                console.log('my id is: ' + this.socket.id);    
+                this.player2.setVisible(true);
+            }
+            if (this.gameConfig === 'createOnline'){
+                this.player1 = new Player(this, 400, 500,'player', this.explosionAnim);
+                this.player2 = new Player(self, 400, 200,'otherPlayer', self.explosionAnim);
+                this.player1.createAnimations(this);
+                this.player2.createAnimations(this);
+                this.player2.setVisible(false);
+                this.socket.emit('createOnlineRoom');
+            }
             
+            this.socket.on('opponentJoined', function(opponentSocketId) {
+                self.player2.setVisible(true);
+                console.log('opponentJoined, id: ' + opponentSocketId);
+                self.opponentSocketId = opponentSocketId;
+                self.socket.emit('confirmJoinRoom', opponentSocketId);
+            });
+            this.socket.on('joinedRoom', function(opponentSocketId) {
+                console.log('joined Room socket event happened')
+                self.opponentSocketId = opponentSocketId;
+            });
+            self.socket.on('playerMoved', function (player2){
+                    console.log('player2 moved');
+                    self.player2.x = player2.x;
+                    self.player2.y = player2.y;
+                    self.player2.setOrientationVector(player2.direction);
+                    self.player2.setMovementAnim(player2.direction);
+            });
+           
             //Create Win Text
             this.youWin = this.add.text(150,300-60,'PLAYER2 WINS ',{fontSize: '70px', color: '#66FF00'});
             this.youWin.setVisible(false);
@@ -194,6 +212,7 @@ let LocalGameScene = {
 
             //Attach healthbars to the selected players, this is so the game knows whose healthbar is whose
             this.player1.setHealthBar(this.healthBarP1);
+
           
 
             //phaser has a prebuilt bounce physics setup, any value greater than 1 causes an exponential growth in object velocity as it multiplies each bounce
@@ -235,7 +254,10 @@ let LocalGameScene = {
             //will only bounce off the walls if this.magicBlasts is the first argument
             this.physics.add.collider(this.magicBlasts,this.walls);
             this.physics.add.collider(this.walls,this.players);
-            
+             
+          
+
+           
             
             this.createMagicBlast = function(player){
                     //Create magic Blast
@@ -274,6 +296,9 @@ let LocalGameScene = {
                    
                  }
             };
+            
+            
+           
         },
 
     update: function()
@@ -291,13 +316,14 @@ let LocalGameScene = {
 
         //Set the orientation of the player
         this.player1.setOrientationVector(this.movementVectorP1);
-        
+        console.log("roomName is: " + this.roomName);
         // emit player movement data
         var x = this.player1.x;
         var y = this.player1.y;
         var d = this.player1.getOrientationVector();
         if (this.player1.oldPosition && (x !== this.player1.oldPosition.x || y !== this.player1.oldPosition.y || d !== this.player1.oldPosition.direction)) {
-          this.socket.emit('playerMovement', { x: x, y: y, direction: d });
+            console.log('opponentSocketId is: ' + this.opponentSocketId);
+            this.socket.emit('playerMovement', { x: x, y: y, direction: d , roomName: this.roomName});
         }
  
         // save old position data
@@ -306,8 +332,20 @@ let LocalGameScene = {
           y: y,
           direction: d
         };
-
-
+        // save player movement data
+         x = this.player2.x;
+         y = this.player2.y;
+         d = this.player2.getOrientationVector();
+        if (this.player2.oldPosition && (x !== this.player2.oldPosition.x || y !== this.player2.oldPosition.y || d !== this.player2.oldPosition.direction)) {
+            //Stop animation if not moving
+            this.player2.anims.stop();
+        }
+        // save old position data
+        this.player2.oldPosition = {
+          x: x,
+          y: y,
+          direction: d
+        };
         //Check to make sure the player is not stunned, alive, and is not dodging
         if(!this.player1.getStun() && this.player1.isAlive() && !this.player1.getDodging()){
             this.player1.setPlayerVelocity(this.movementVectorP1);

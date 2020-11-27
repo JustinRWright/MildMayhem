@@ -3,12 +3,14 @@ const socket = io('http://localhost:8080', {
                 transports: ['websocket'],
                 path: '/socket'
             });
-function subscribeToOnlineRoomCreate(cb) {
+function subscribeToShowRooms(cb) {
     socket.on('showRooms', room => cb(null,room));
-    socket.emit('subscribeToOnlineRoomCreate')
 }
 function checkRoomCreation(){
     socket.emit('checkRoomCreation');
 }
+function joinRoom(playerId){
+    socket.emit('joinRoom', playerId);
+}
 
-export {subscribeToOnlineRoomCreate,checkRoomCreation,socket};
+export {subscribeToShowRooms,checkRoomCreation,socket,joinRoom};
