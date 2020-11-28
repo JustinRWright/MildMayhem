@@ -84,18 +84,24 @@ io.on("connection", (socket) => {
   });
 
   socket.on('joinRoom', function(playerId) {
-
-    //Joins the the room of the opposing player
-    socket.join(gameRooms[playerId].name);
-
-    //Save and link opponent id to gameRoom
-    gameRooms[playerId].opponent = socket.id;
     
-    io.to(playerId).emit('opponentJoined', socket.id);
+    if (typeof gameRooms[playerId] !== 'undefind'){
+      //Joins the the room of the opposing player
+      socket.join(gameRooms[playerId].name);
+
+      //Save and link opponent id to gameRoom
+      gameRooms[playerId].opponent = socket.id;
+      
+      io.to(playerId).emit('opponentJoined', socket.id);
+    }
+    
   });
  
   socket.on('destroyOnlineRoom', () => {
-    destroyRoom(socket);
+    if (gameRooms[socket.id] !== 'undefined'){
+      destroyRoom(socket);
+    }
+    
     //Update all user of new rooms
     io.broadcast.emit('showRooms', gameRooms);
   });
@@ -141,8 +147,18 @@ io.on("connection", (socket) => {
     destroyRoom(socket);
     console.log('getRooms called');
     console.log('gameRooms are: ' + JSON.stringify(gameRooms));
+    //Sort available and send them to users;
+    let availableRooms = {};
+    Object.keys(gameRooms).forEach(gameRoom => {
+
+      //If the room has no opponent then it is available...
+      if (gameRoom.opponent !== 'undefined'){
+        availableRooms[gameRooms[gameRoom].id] = gameRooms[gameRoom];
+      }
+    });
+    console.log('availableRooms are' + JSON.stringify(availableRooms));
     //Update user of new rooms
-    io.emit('updateRooms', gameRooms);
+    io.emit('updateRooms', availableRooms);
   });
   socket.on("disconnect", () => {
     console.log("Client disconnected");
