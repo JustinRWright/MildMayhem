@@ -14,6 +14,7 @@ export default class CoolDown extends Phaser.Physics.Arcade.Sprite
             this.coolDownMS = coolDownMS;
             this.x = x;
             this.y = y;
+            this.scene = scene;
             
             
         }
@@ -21,7 +22,11 @@ export default class CoolDown extends Phaser.Physics.Arcade.Sprite
             this.active = true;
             //Change opacity
             this.setAlpha(.5);
-            let timedEvent = this.scene.time.delayedCall(this.coolDownMS, this.onEvent, [], this);
+            console.log('scene is: ' + this.scene);
+            if(this.scene){
+                let timedEvent = this.scene.time.delayedCall(this.coolDownMS, this.onEvent, [], this);
+            }
+            //let timedEvent = this.scene.time.delayedCall(this.coolDownMS, this.onEvent, [], this);
         }
         isActive()
         {

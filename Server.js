@@ -29,12 +29,25 @@ server.listen(port, () => console.log(`Outer Server.js Listening on port ${port}
 
 let interval;
 function destroyRoom(socket){
-
+        
+  
+  //Loop through all saved gameRooms
   for (let i = 0; i < Object.keys(gameRooms).length; i++) {
+    //Check to see if the client was the host of a gameroom
+    //(checking for undefined error)
     let gameRoomDataTest = typeof gameRooms[socket.id];
     if (gameRoomDataTest !== 'undefined'){
+      //If the player is a host of the gameroom
       if (gameRooms[socket.id].id === socket.id){
-        roomCount --;
+        //roomCount --;
+        //Disconnect every client from the socketIO Room
+        socket.leave(gameRooms[socket.id].name);
+        console.log('opponent Socket is: ' + gameRooms[socket.id].opponent);
+        //let opponentSocket = io.sockets.connected[gameRooms[socket.id].opponent]
+        //opponentSocket.leave(gameRooms[socket.id].name);
+        
+        console.log('left room');
+        //Delete this gameRoom
         delete gameRooms[socket.id];
       }
     }
@@ -75,11 +88,13 @@ io.on("connection", (socket) => {
     //Joins the the room of the opposing player
     socket.join(gameRooms[playerId].name);
 
+    //Save and link opponent id to gameRoom
+    gameRooms[playerId].opponent = socket.id;
+    
     io.to(playerId).emit('opponentJoined', socket.id);
   });
  
   socket.on('destroyOnlineRoom', () => {
-
     destroyRoom(socket);
     //Update all user of new rooms
     io.broadcast.emit('showRooms', gameRooms);
@@ -112,21 +127,23 @@ io.on("connection", (socket) => {
   socket.on("damagePlayer", function(roomName){
     console.log("player damaged");
     io.to(roomName).emit('playerDamaged');
-  }
-  )
+  });
+  socket.on("startDodgeCoolDown", function(roomName){
+    console.log('dodge activated');
+    io.to(roomName).emit('dodgeCoolDownStarted');
+  });
   socket.on('destroyOnlineRoom', () => {
-
     destroyRoom(socket);
     //Update all user of new rooms
     io.broadcast.emit('showRooms', gameRooms);
   });
-
   socket.on('getRooms', () => {
     destroyRoom(socket);
-    //Update all user of new rooms
-    io.broadcast.emit('showRooms', gameRooms);
+    console.log('getRooms called');
+    console.log('gameRooms are: ' + JSON.stringify(gameRooms));
+    //Update user of new rooms
+    io.emit('updateRooms', gameRooms);
   });
-
   socket.on("disconnect", () => {
     console.log("Client disconnected");
     //delete any gameRoom that may have been open

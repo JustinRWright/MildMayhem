@@ -9,7 +9,9 @@ class GamePage extends Component {
     super(props);
     let gameConfig = this.props.gameConfig;
     let roomName = this.props.roomName;
-    console.log("gameConfig is: " + gameConfig);
+    //console.log("gameConfig is: " + gameConfig);
+    //let newScene = new Object();
+    console.log('gamePage constructor called');
     let newScene = LocalGameScene;
     if (gameConfig==='createOnline'){
       newScene = OnlineGameScene;
@@ -51,7 +53,10 @@ class GamePage extends Component {
     }
   }
   }
-  
+  componentWillUnmount() {
+    console.log('componentUnmounted');
+    socket.removeAllListeners()
+}
   
   render() {
     const { initialize, game } = this.state

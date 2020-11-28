@@ -7,10 +7,11 @@ import InfoMenuBox from '../components/InfoMenuBox.js';
 import LocalGameImage from '../images/GameShot5.png';
 import OnlineGameImage from '../images/OnlineGame.png';
 import { Link } from 'react-router-dom';
-import {subscribeToShowRooms, getRooms, joinRoom} from '../api';
+import {subscribeToShowRooms, socket, getRooms, joinRoom} from '../api';
 class MenuPage extends React.Component {
   constructor(props) {
             super(props);
+            console.log('menupage constructor called');
            
             
             this.state = {
@@ -29,17 +30,26 @@ class MenuPage extends React.Component {
             }};
         };
 componentDidMount(){
-    
+    //Remove event listeners in case user pressed back from online game
+    console.log('component mounted');
     
     //Whenever the rooms on the server are updated, the room state is set again
     subscribeToShowRooms((err, room) => {
         let newRooms = room;
         this.setRoomState(newRooms);
     });
+    getRooms((err, room) => {
+        console.log('room is: ' + JSON.stringify(room));
+        let newRooms = room;
+        this.setRoomState(newRooms);
+    });
     
-    getRooms();
+   
 }
-
+componentWillUnmount() {
+    console.log('componentUnmounted');
+    socket.removeAllListeners()
+}
 setRoomState = (newRooms) => {
     this.setState({rooms: newRooms});
 }
@@ -104,7 +114,7 @@ be set as the attack.*/
   };
   render() {
     let roomCount = this.state.rooms;
-    console.log('roomCount is: ' + JSON.stringify(roomCount));
+    //console.log('roomCount is: ' + JSON.stringify(roomCount));
     let joinMatchBox;
     
     //I set the resolution to 800*600, which is the size of an old school NewGrounds web game. It is currently not responsive
@@ -151,8 +161,9 @@ be set as the attack.*/
         </Grid>
 
         <Grid item xs = {10}>
-                <div style={{textAlign: 'center', paddingTop: 15}}>
-                Available Online Matches
+        
+                <div style={{ textAlign: 'center', paddingTop: 15, font: 25, color: '#39FF14'}}>
+                <b>Available Online Matches</b>
                 </div>
                 <div style={{ borderRadius: 15, backgroundColor: '#9A9A9A', align: 'left', textAlign: 'left', minHeight:200, maxHeight:200, border: '1px solid'}}>
                 <Grid container>

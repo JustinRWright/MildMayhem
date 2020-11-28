@@ -148,17 +148,33 @@ let LocalGameScene = {
             
             //Refactoring idea: make every variable passed into constructors 
             //descriptive javascript properties for readability
-
+            this.setCoolDowns = function(swordCoolDown,dodgeCoolDown,magicCoolDown,lightningCoolDown,position){
+               if (position === 'top'){
+                //Create Cooldowns: Note, final variable passed in is a timer, it sets how long the cooldown lasts in milliseconds            
+                this[swordCoolDown] = new CoolDown(this, 570, 40, 'swordCool', 700); 
+                this[magicCoolDown] = new CoolDown(this, 618, 40, 'blastCool', 1000);  
+                this[dodgeCoolDown] = new CoolDown(this, 665, 40, 'dodgeCool', 1000);
+                this[lightningCoolDown] = new CoolDown(this, 713, 40, 'lightningCool', 5000);
+               }
+               else if(position === 'bottom'){
+                this[swordCoolDown] = new CoolDown(this, 230, 560, 'swordCool', 700);
+                this[magicCoolDown] = new CoolDown(this, 278, 560, 'blastCool', 1000);
+                this[dodgeCoolDown] = new CoolDown(this, 326, 560, 'dodgeCool', 1000);
+                this[lightningCoolDown] = new CoolDown(this, 374, 560, 'lightningCool', 5000);
+               }
+            }
            //Create Health Bars
             this.healthBarP1 = new HealthBar({scene: this, x: 0, y:584});
             this.healthBarP2 = new HealthBar({scene: this, x: 0, y:0});
 
-            console.log('gameconfig is: ' + this.gameConfig);
+            //console.log('gameconfig is: ' + this.gameConfig);
             if (this.gameConfig === 'joinOnline') {
                 this.player1 = new Player(this, 400, 200,'otherPlayer', this.explosionAnim);
                 this.player2 = new Player(this, 400, 500,'player', this.explosionAnim);
                 this.player1.setHealthBar(this.healthBarP2);
                 this.player2.setHealthBar(this.healthBarP1);
+                this.setCoolDowns('swordCoolDownP1','dodgeCoolDownP1','magicCoolDownP1','lightningCoolDownP1',"top");
+                this.setCoolDowns('swordCoolDownP2','dodgeCoolDownP2','magicCoolDownP2','lightningCoolDownP2',"bottom");
                 this.player1.createAnimations(this);
                 this.player2.createAnimations(this);
                 console.log('my id is: ' + this.socket.id);    
@@ -172,26 +188,42 @@ let LocalGameScene = {
                 this.player1.setHealthBar(this.healthBarP1);
                 this.player2.setHealthBar(this.healthBarP2);
                 this.player1.createAnimations(this);
+                this.setCoolDowns('swordCoolDownP1','dodgeCoolDownP1','magicCoolDownP1','lightningCoolDownP1',"bottom");
+                this.setCoolDowns('swordCoolDownP2','dodgeCoolDownP2','magicCoolDownP2','lightningCoolDownP2',"top");
                 this.player2.createAnimations(this);
                 this.player2.setVisible(false);
                 this.socket.emit('createOnlineRoom');
                 this.socket.emit('getRoomName');
                 
             }
+            
+           /* //Create Cooldowns: Note, final variable passed in is a timer, it sets how long the cooldown lasts in milliseconds            
+            this.swordCoolDownP1 = new CoolDown(this, 230, 560, 'swordCool', 700);
+            this.swordCoolDownP2 = new CoolDown(this, 570, 40, 'swordCool', 700);
+           
+            this.magicCoolDownP1 = new CoolDown(this, 278, 560, 'blastCool', 1000);
+            this.magicCoolDownP2 = new CoolDown(this, 618, 40, 'blastCool', 1000);
+            
+            this.dodgeCoolDownP1 = new CoolDown(this, 326, 560, 'dodgeCool', 1000);
+            this.dodgeCoolDownP2 = new CoolDown(this, 665, 40, 'dodgeCool', 1000);
+
+            this.lightningCoolDownP1 = new CoolDown(this, 374, 560, 'lightningCool', 5000);
+            this.lightningCoolDownP2 = new CoolDown(this, 713, 40, 'lightningCool', 5000);
+            */
             this.player2.moving = false;
             this.player2.moveTimer = 0;
             this.socket.on('yourRoomName', function(roomName) {
-                console.log('myroomName is called here');
+                //console.log('myroomName is called here');
                 self.roomName = roomName;
             });
             this.socket.on('opponentJoined', function(opponentSocketId) {
                 self.player2.setVisible(true);
-                console.log('opponentJoined, id: ' + opponentSocketId);
+                //console.log('opponentJoined, id: ' + opponentSocketId);
                 self.opponentSocketId = opponentSocketId;
                 self.socket.emit('confirmJoinRoom', opponentSocketId);
             });
             this.socket.on('joinedRoom', function(opponentSocketId) {
-                console.log('joined Room socket event happened')
+                //console.log('joined Room socket event happened')
                 self.opponentSocketId = opponentSocketId;
             });
             this.socket.on('playerMoved', function (player2Movement){
@@ -213,7 +245,7 @@ let LocalGameScene = {
                self.createMagicBlast(self.player2);
            });
            this.socket.on('magicBlastDestroyed', function(){
-               console.log('magicBlastDestroyed ran');
+               //console.log('magicBlastDestroyed ran');
                
                 self.magicBlasts.getChildren().forEach(magicBlast => {
                     if (magicBlast.getOwner() !== self.player2) {
@@ -231,11 +263,15 @@ let LocalGameScene = {
                    let timedEvent = self.time.delayedCall(3000, self.redirect, [], self);
                }
            });
+           this.socket.on('dodgeCoolDownStarted', function(){
+               self.dodgeCoolDownP2.startCoolDown();
+           });
            this.socket.on('lightningBoltCreated', function(){
+               self.lightningCoolDownP2.startCoolDown();
                self.createLightningBolt(self.player2);
            });
            this.socket.on('lightningBoltDestroyed', function(){
-               console.log('animation destruction ran');
+               //console.log('animation destruction ran');
                          //Destroy the animation associated with these hitboxes
                         let lightningAnimDestroyed = false;
                         //Find all other associated lightning bolt hitboxes and destroy them
@@ -243,7 +279,7 @@ let LocalGameScene = {
                             if (lightningBolt.getOwner() !== self.player2) {
                                 lightningBolt.body.enable = false;
                                 if (lightningAnimDestroyed === false){
-                                    console.log('animation destruction ran');
+                                    //console.log('animation destruction ran');
                                     lightningAnimDestroyed = true;
                                     lightningBolt.destroyAnimationSprite();
                                 }
@@ -255,18 +291,7 @@ let LocalGameScene = {
             this.youWin.setVisible(false);
 
             
-            //Create Cooldowns: Note, final variable passed in is a timer, it sets how long the cooldown lasts in milliseconds            
-            this.swordCoolDownP1 = new CoolDown(this, 230, 560, 'swordCool', 700);
-            this.swordCoolDownP2 = new CoolDown(this, 570, 40, 'swordCool', 700);
-           
-            this.magicCoolDownP1 = new CoolDown(this, 278, 560, 'blastCool', 1000);
-            this.magicCoolDownP2 = new CoolDown(this, 618, 40, 'blastCool', 1000);
-            
-            this.dodgeCoolDownP1 = new CoolDown(this, 326, 560, 'dodgeCool', 1000);
-            this.dodgeCoolDownP2 = new CoolDown(this, 665, 40, 'dodgeCool', 1000);
-
-            this.lightningCoolDownP1 = new CoolDown(this, 374, 560, 'lightningCool', 5000);
-            this.lightningCoolDownP2 = new CoolDown(this, 713, 40, 'lightningCool', 5000);
+          
 
             //Checks for the amount of gamepads connected to the phaser game, if the passed controls do not match the quantity of connected gamepads,
             //the controls will be reset, this can be fixed later
@@ -333,12 +358,12 @@ let LocalGameScene = {
             this.physics.add.collider(this.magicBlasts,this.walls);
             this.physics.add.collider(this.walls,this.players);
              
-            this.createMagicBlast = function(player){
+            self.createMagicBlast = function(player){
                     //Create magic Blast
-                    var magicBlast = new MagicBlast(this,player.getX(),
+                    var magicBlast = new MagicBlast(self,player.getX(),
                     player.getY(),'magicBlast',{owner: player});
                     //Add to collision group
-                    this.magicBlasts.add(magicBlast);
+                    self.magicBlasts.add(magicBlast);
                     //Fire in direction of player orientation
                     magicBlast.setMagicBlastVelocity(player.getOrientationVector());
                     //Set magicBlast bounce
@@ -497,6 +522,7 @@ let LocalGameScene = {
         //Check for user dodging and check that they aren't already in dodge mode
         if (attackInputsP1.dodgeFiring && !this.player1.getDodging() && !this.dodgeCoolDownP1.isActive()){
             this.dodgeCoolDownP1.startCoolDown();
+            this.socket.emit('startDodgeCoolDown',this.roomName);
             this.player1.dodge();
         };
        
