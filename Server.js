@@ -89,7 +89,31 @@ io.on("connection", (socket) => {
     
     io.to(movementData.roomName).emit('playerMoved', movementData);
   });
-
+  socket.on("swingSword", function(roomName) {
+    console.log('swordswing on server');
+    io.to(roomName).emit('swordSwung');
+  });
+  socket.on("createMagicBlast", function(roomName) {
+    console.log('magicBlast on server');
+    io.to(roomName).emit('magicBlastCreated');
+  });
+  socket.on("destroyMagicBlast", function(roomName){
+    console.log('blow up magicBlast on server');
+    io.to(roomName).emit('magicBlastDestroyed');
+  });
+  socket.on("createLightningBolt", function(roomName){
+    console.log('lightningBolt Created');
+    io.to(roomName).emit('lightningBoltCreated');
+  });
+  socket.on("destroyLightningBolt", function(roomName){
+    console.log('lightningBolt destroyed');
+    io.to(roomName).emit('lightningBoltDestroyed');
+  });
+  socket.on("damagePlayer", function(roomName){
+    console.log("player damaged");
+    io.to(roomName).emit('playerDamaged');
+  }
+  )
   socket.on('destroyOnlineRoom', () => {
 
     destroyRoom(socket);

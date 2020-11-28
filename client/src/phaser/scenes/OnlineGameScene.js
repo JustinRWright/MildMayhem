@@ -38,7 +38,7 @@ let LocalGameScene = {
 
     create: function()
         {   
-            
+             let self = this;
            /*I define some of the functions ex:this.deflectBlast
            this way instead of outside of the preload/create/update
            because that is the way they don't throw an error while using IonPhaser,
@@ -61,13 +61,20 @@ let LocalGameScene = {
             this.playerHit = function(magicBlast,player){
                //Check that the magicBlast is hitting the right player
                 if (magicBlast.getOwner()!==player){
+                    //In online mode, only the opposing player(who does not active hitbox in your game) will get hit, when they do, this is called
+                    //Depending on how we implement magic blasts, this may require an index to be sent through for selecting and destroy the object
+                    console.log('this.roomName is: ' + self.roomName);
+                    self.socket.emit('destroyMagicBlast', self.roomName);
+                   
                     magicBlast.explode();
                     //Check if player is stunned or dodging, if neither is true, play stun animation and calculate damage
                     if (player.getStun() === false || player.getDodging() === false){
+                        self.socket.emit('damagePlayer', self.roomName);
                         player.playStun();
+                        //Reduce player health
                         //When the healthbar reaches 0, this evaluates to true
                         if(player.getHealthBar().decrease(4)){
-                            //This function 
+                            //This function has the player blow up
                             player.gameOver();
                             player.anims.play('explode', true);
                             //Win Screen and link people back to main menu   
@@ -91,7 +98,7 @@ let LocalGameScene = {
                         
                         //Stun is started for player
                         player.playStun();
-
+                        self.socket.emit('destroyLightningBolt', self.roomName);
                         if(player.getHealthBar().decrease(4)){
                             //Player dies
                             player.gameOver();
@@ -132,7 +139,7 @@ let LocalGameScene = {
             //Refactoring idea: make every variable passed into constructors 
             //descriptive javascript properties for readability
 
-            let self = this;
+           
             console.log('gameconfig is: ' + this.gameConfig);
             if (this.gameConfig === 'joinOnline') {
                 this.player1 = new Player(this, 400, 200,'otherPlayer', this.explosionAnim);
@@ -141,6 +148,7 @@ let LocalGameScene = {
                 this.player2.createAnimations(this);
                 console.log('my id is: ' + this.socket.id);    
                 this.player2.setVisible(true);
+                
                
             }
             if (this.gameConfig === 'createOnline'){
@@ -153,7 +161,8 @@ let LocalGameScene = {
                 this.socket.emit('getRoomName');
                 
             }
-
+            this.player2.moving = false;
+            this.player2.moveTimer = 0;
             this.socket.on('yourRoomName', function(roomName) {
                 console.log('myroomName is called here');
                 self.roomName = roomName;
@@ -168,14 +177,49 @@ let LocalGameScene = {
                 console.log('joined Room socket event happened')
                 self.opponentSocketId = opponentSocketId;
             });
-            self.socket.on('playerMoved', function (player2){
-                    console.log('player2 moved');
-                    self.player2.x = player2.x;
-                    self.player2.y = player2.y;
-                    self.player2.setOrientationVector(player2.direction);
-                    self.player2.setMovementAnim(player2.direction);
+            this.socket.on('playerMoved', function (player2Movement){
+               
+                    self.player2.moving = true;
+                    self.player2.x = player2Movement.x;
+                    self.player2.y = player2Movement.y;
+                    self.player2.setOrientationVector(player2Movement.direction);
+                    self.player2.setMovementAnim(player2Movement.direction);
             });
-           
+           this.socket.on('swordSwung', function(){
+               self.onlinePlayerSwing(self.player2, self.swordCoolDownP2);
+           })
+           this.socket.on('magicBlastCreated', function(){
+               self.magicCoolDownP2.startCoolDown();
+               self.createMagicBlast(self.player2);
+           });
+           this.socket.on('magicBlastDestroyed', function(){
+               console.log('magicBlastDestroyed ran');
+               
+                self.magicBlasts.getChildren().forEach(magicBlast => {
+                    if (magicBlast.getOwner() !== self.player2) {
+                        magicBlast.explode();
+                    }
+                });
+           });
+           this.socket.on('lightningBoltCreated', function(){
+               self.createLightningBolt(self.player2);
+           });
+           this.socket.on('lightningBoltDestroyed', function(){
+               console.log('animation destruction ran');
+                         //Destroy the animation associated with these hitboxes
+                        let lightningAnimDestroyed = false;
+                        //Find all other associated lightning bolt hitboxes and destroy them
+                        self.lightningBolts.getChildren().forEach(lightningBolt => {
+                            if (lightningBolt.getOwner() !== self.player2) {
+                                lightningBolt.body.enable = false;
+                                if (lightningAnimDestroyed === false){
+                                    console.log('animation destruction ran');
+                                    lightningAnimDestroyed = true;
+                                    lightningBolt.destroyAnimationSprite();
+                                }
+                            }
+                    });
+           });
             //Create Win Text
             this.youWin = this.add.text(150,300-60,'PLAYER2 WINS ',{fontSize: '70px', color: '#66FF00'});
             this.youWin.setVisible(false);
@@ -262,10 +306,6 @@ let LocalGameScene = {
             this.physics.add.collider(this.magicBlasts,this.walls);
             this.physics.add.collider(this.walls,this.players);
              
-          
-
-           
-            
             this.createMagicBlast = function(player){
                     //Create magic Blast
                     var magicBlast = new MagicBlast(this,player.getX(),
@@ -279,6 +319,25 @@ let LocalGameScene = {
                     magicBlast.setBounce(1);
                     
             };
+            this.createLightningBolt = function(player)
+            {
+                //DO NOT CALL SOCKET EMITS IN HERE, INFINITE FEEDBACK LOOP
+                 //create lightning Bolt animation object
+                let lightningBolt = new LightningBolt(this,player.getX(),player.getY(),'lightningBolt',{owner: player});
+                //Creates 4 lightning bolt hitboxes which are the WIDTH of the lightning bolt, they travel 
+                //at a speed so fast that it mimics a diagonal hitbox. This normally
+                //can't be created using Arcade physics and its Axis aligned bounding boxes;
+                let lightningBoltHB1 = new LightningHB(this,player.getX(),player.getY(),'magicBlast',{owner: player, animationSprite: lightningBolt, Olength: 100});
+                let lightningBoltHB2 = new LightningHB(this,player.getX(),player.getY(),'magicBlast',{owner: player, animationSprite: lightningBolt, Olength: 50});
+                let lightningBoltHB3 = new LightningHB(this,player.getX(),player.getY(),'magicBlast',{owner: player, animationSprite: lightningBolt, Olength: 25});
+                let lightningBoltHB4 = new LightningHB(this,player.getX(),player.getY(),'magicBlast',{owner: player, animationSprite: lightningBolt, Olength: 75});
+                //Add to collision group
+                this.lightningBolts.add(lightningBoltHB1);
+                this.lightningBolts.add(lightningBoltHB2);
+                this.lightningBolts.add(lightningBoltHB3);
+                this.lightningBolts.add(lightningBoltHB4);
+
+            }
             this.checkForSwingThenSwing = function(attackInput, player, coolDown){
                 //Check if swordSwing exists, and then check if it belongs to the player
                 this.swordHitBoxes.getChildren().forEach(swordSwing => {
@@ -291,10 +350,14 @@ let LocalGameScene = {
                 //and there is no sword currently active on the player,
                 //and the cooldown is no active, then the sword can be swung
                  if ((attackInput.swordSwingFiring && typeof swordToCheck == 'undefined' && !coolDown.isActive())){
+                   
+                   
+                    //Send sword swing to server
+                    this.socket.emit('swingSword',this.roomName);
                     //Set sword swing spawn point
                     let swordSpawnX = player.getX();
                     let swordSpawnY = player.getY();
-                   
+                    //emit sword swing event:
                     //Create new sword swing
                     let newSwordSwing = new SwordSwing(this,swordSpawnX,swordSpawnY,'swordSwing',{owner: player});
                     newSwordSwing.swingSword();
@@ -303,8 +366,18 @@ let LocalGameScene = {
                    
                  }
             };
-            
-            
+            this.onlinePlayerSwing = function (player, coolDown){
+                //Set sword swing spawn point
+                let swordSpawnX = player.getX();
+                let swordSpawnY = player.getY();
+                //emit sword swing event:
+                //Create new sword swing
+                let newSwordSwing = new SwordSwing(this,swordSpawnX,swordSpawnY,'swordSwing',{owner: player});
+                newSwordSwing.body.active = false;
+                newSwordSwing.swingSword();
+                coolDown.startCoolDown();
+                this.swordHitBoxes.add(newSwordSwing);
+            };
            
         },
 
@@ -323,13 +396,13 @@ let LocalGameScene = {
 
         //Set the orientation of the player
         this.player1.setOrientationVector(this.movementVectorP1);
-        console.log("roomName is: " + this.roomName);
+        
         // emit player movement data
         var x = this.player1.x;
         var y = this.player1.y;
         var d = this.player1.getOrientationVector();
         if (this.player1.oldPosition && (x !== this.player1.oldPosition.x || y !== this.player1.oldPosition.y || d !== this.player1.oldPosition.direction)) {
-            console.log('opponentSocketId is: ' + this.opponentSocketId);
+         
             this.socket.emit('playerMovement', { x: x, y: y, direction: d , roomName: this.roomName});
         }
  
@@ -339,20 +412,24 @@ let LocalGameScene = {
           y: y,
           direction: d
         };
-        // save player movement data
-         x = this.player2.x;
-         y = this.player2.y;
-         d = this.player2.getOrientationVector();
-        if (this.player2.oldPosition && (x !== this.player2.oldPosition.x || y !== this.player2.oldPosition.y || d !== this.player2.oldPosition.direction)) {
-            //Stop animation if not moving
+        //Stop animation if not moving
+        if (this.player2.moving === false)
+        {
             this.player2.anims.stop();
         }
-        // save old position data
-        this.player2.oldPosition = {
-          x: x,
-          y: y,
-          direction: d
-        };
+        else
+        {
+            //Count some update frames, compensating for server delay,
+            //If there is an acceptable delay from the server, then it can be assumed that the opponent
+            //has stopped moving since the last time
+            //They triggered a movmement event
+            this.player2.moveTimer += 1;
+            if (this.player2.moveTimer > 12){
+                this.player2.moving = false;
+                this.player2.moveTimer = 0;
+            }
+            
+        }
         //Check to make sure the player is not stunned, alive, and is not dodging
         if(!this.player1.getStun() && this.player1.isAlive() && !this.player1.getDodging()){
             this.player1.setPlayerVelocity(this.movementVectorP1);
@@ -366,27 +443,16 @@ let LocalGameScene = {
         //Check for user firing magic blast and that the cooldown is not active
         if (attackInputsP1.magicBlastFiring && !this.magicCoolDownP1.isActive()){
            this.magicCoolDownP1.startCoolDown();
+           this.socket.emit('createMagicBlast', this.roomName);
            this.createMagicBlast(this.player1);
         };
         
         //Check for user firing Lightning Bolt
         if (attackInputsP1.lightningBoltFiring && !this.lightningCoolDownP1.isActive()){
            this.lightningCoolDownP1.startCoolDown();
-           
-           //create lightning Bolt animation object
-           let lightningBolt = new LightningBolt(this,this.player1.getX(),this.player1.getY(),'lightningBolt',{owner: this.player1});
-           //Creates 4 lightning bolt hitboxes which are the WIDTH of the lightning bolt, they travel 
-           //at a speed so fast that it mimics a diagonal hitbox. This normally
-           //can't be created using Arcade physics and its Axis aligned bounding boxes;
-           let lightningBoltHB1 = new LightningHB(this,this.player1.getX(),this.player1.getY(),'magicBlast',{owner: this.player1, animationSprite: lightningBolt, Olength: 100});
-           let lightningBoltHB2 = new LightningHB(this,this.player1.getX(),this.player1.getY(),'magicBlast',{owner: this.player1, animationSprite: lightningBolt, Olength: 50});
-           let lightningBoltHB3 = new LightningHB(this,this.player1.getX(),this.player1.getY(),'magicBlast',{owner: this.player1, animationSprite: lightningBolt, Olength: 25});
-           let lightningBoltHB4 = new LightningHB(this,this.player1.getX(),this.player1.getY(),'magicBlast',{owner: this.player1, animationSprite: lightningBolt, Olength: 75});
-           //Add to collision group
-           this.lightningBolts.add(lightningBoltHB1);
-           this.lightningBolts.add(lightningBoltHB2);
-           this.lightningBolts.add(lightningBoltHB3);
-           this.lightningBolts.add(lightningBoltHB4);
+           this.socket.emit('createLightningBolt',this.roomName);
+           this.createLightningBolt(this.player1);
+          
         };
         
 
@@ -415,7 +481,7 @@ let LocalGameScene = {
         //Check for user swinging sword and then swing, starting the cooldown
         //I think functions are supposed to do only one thing, I'll fix this later
         this.checkForSwingThenSwing(attackInputsP1, this.player1, this.swordCoolDownP1);
-    
+
         }
     
     

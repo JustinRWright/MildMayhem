@@ -114,7 +114,8 @@ export default class Player extends Phaser.Physics.Arcade.Sprite
         
         }
         setMovementAnim(velocityVector){
-           //Not Moving
+          if (typeof this.anims !== 'undefined'){
+             //Not Moving
               if(velocityVector.x === 0 && velocityVector.y === 0){
                 this.anims.stop();
               }
@@ -134,6 +135,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite
               else if (velocityVector.x < 0) {
                 this.anims.play(this.texture.key + 'left', true);
               }
+          }
         }
         setOrientationVector(velocityVector){
           //Check to make sure 0,0 is not passed in(that is not a direction)
@@ -141,10 +143,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite
              
             //Check to see if there is a change in orientation
             if (this.orientationVector.x !== velocityVector.x || this.orientationVector.y !== velocityVector.y){
-              
               this.orientationVector = velocityVector;
-              
-             
             }
 
           }
