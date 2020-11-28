@@ -57,6 +57,14 @@ let LocalGameScene = {
                 frameRate: 10,
                 repeat: -1
             });
+            //This needs to be added because the player2 animation breaks when called for some reason, unsure why?
+            //It must have to do with something where 'explode' is played
+            this.explosionAnim = this.anims.create({
+                key: 'explode2',
+                frames: this.anims.generateFrameNumbers('explosion',{ start: 1, end: 23}),
+                frameRate: 10,
+                repeat: -1
+            });
             //Callback function for player/magicBlast Collision
             this.playerHit = function(magicBlast,player){
                //Check that the magicBlast is hitting the right player
@@ -99,8 +107,9 @@ let LocalGameScene = {
                         //Stun is started for player
                         player.playStun();
                         self.socket.emit('destroyLightningBolt', self.roomName);
+                        self.socket.emit('damagePlayer', self.roomName);
                         if(player.getHealthBar().decrease(4)){
-                            self.socket.emit('damagePlayer');
+                           
                             //Player dies
                             player.gameOver();
                             player.anims.play('explode', true);
@@ -124,7 +133,7 @@ let LocalGameScene = {
             }
             //Callback for sending user back to main page when game ends
             this.redirect = function(){
-                  window.location.replace('http://localhost:3000/');
+                 window.location.replace('http://localhost:3000/');
             }
             //Glowing Background Sprite
             this.background = this.add.sprite(400,300,'Background');
@@ -147,7 +156,7 @@ let LocalGameScene = {
             console.log('gameconfig is: ' + this.gameConfig);
             if (this.gameConfig === 'joinOnline') {
                 this.player1 = new Player(this, 400, 200,'otherPlayer', this.explosionAnim);
-                this.player2 = new Player(self, 400, 500,'player', self.explosionAnim);
+                this.player2 = new Player(this, 400, 500,'player', this.explosionAnim);
                 this.player1.setHealthBar(this.healthBarP2);
                 this.player2.setHealthBar(this.healthBarP1);
                 this.player1.createAnimations(this);
@@ -159,7 +168,7 @@ let LocalGameScene = {
             }
             if (this.gameConfig === 'createOnline'){
                 this.player1 = new Player(this, 400, 500,'player', this.explosionAnim);
-                this.player2 = new Player(self, 400, 200,'otherPlayer', self.explosionAnim);
+                this.player2 = new Player(this, 400, 200,'otherPlayer', this.explosionAnim);
                 this.player1.setHealthBar(this.healthBarP1);
                 this.player2.setHealthBar(this.healthBarP2);
                 this.player1.createAnimations(this);
@@ -191,7 +200,10 @@ let LocalGameScene = {
                     self.player2.x = player2Movement.x;
                     self.player2.y = player2Movement.y;
                     self.player2.setOrientationVector(player2Movement.direction);
-                    self.player2.setMovementAnim(player2Movement.direction);
+                    if(self.player2.isAlive()){
+                         self.player2.setMovementAnim(player2Movement.direction);
+                    }
+                   
             });
            this.socket.on('swordSwung', function(){
                self.onlinePlayerSwing(self.player2, self.swordCoolDownP2);
@@ -213,7 +225,9 @@ let LocalGameScene = {
                self.player2.playStun();
                if (self.player2.getHealthBar().decrease(4)){
                    self.player2.gameOver();
-                   self.player2.anims.play('explode');
+                   self.player2.anims.play('explode2', false);
+                   
+                   
                    let timedEvent = self.time.delayedCall(3000, self.redirect, [], self);
                }
            });
@@ -400,7 +414,13 @@ let LocalGameScene = {
         //Checks if player 1 or player2 have lost, can events be used for this instead?
         if (!this.player1.isAlive()){
             this.youWin.setVisible(true);
-            this.youWin.setText('PLAYER2 WINS');
+           this.youWin.setText('OPPONENT WINS');
+        }
+        //Checks if player 1 or player2 have lost, can events be used for this instead?
+        else if (!this.player2.isAlive()){
+            this.youWin.setVisible(true);
+            this.youWin.setText('YOU WIN');
+            console.log("is player 2 anim playing?" + this.player2.anims.getTotalFrames());
         }
         
         //Get Player input
@@ -425,19 +445,22 @@ let LocalGameScene = {
           y: y,
           direction: d
         };
-        //Stop animation if not moving
-        if (this.player2.moving === false)
+        //Stop animation if not moving and alive(explode animation can play)
+        if (this.player2.moving === false && this.player2.isAlive())
         {
-            this.player2.anims.stop();
+            this.player2.anims.pause();
+            
+            
         }
         else
         {
+            
             //Count some update frames, compensating for server delay,
             //If there is an acceptable delay from the server, then it can be assumed that the opponent
             //has stopped moving since the last time
             //They triggered a movmement event
             this.player2.moveTimer += 1;
-            if (this.player2.moveTimer > 12){
+            if (this.player2.moveTimer > 17){
                 this.player2.moving = false;
                 this.player2.moveTimer = 0;
             }
@@ -446,6 +469,7 @@ let LocalGameScene = {
         //Check to make sure the player is not stunned, alive, and is not dodging
         if(!this.player1.getStun() && this.player1.isAlive() && !this.player1.getDodging()){
             this.player1.setPlayerVelocity(this.movementVectorP1);
+            this.player1.setMovementAnim(this.movementVectorP1);
         }
 
 

@@ -111,7 +111,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite
           else if (velocityVector.x < 0) {
             this.anims.play(this.texture.key + 'left', true);
           }
-        
+    
         }
         setMovementAnim(velocityVector){
           if (typeof this.anims !== 'undefined'){

@@ -6,6 +6,9 @@ const socket = io('http://localhost:8080', {
 function subscribeToShowRooms(cb) {
     socket.on('showRooms', room => cb(null,room));
 }
+function getRooms() {
+    socket.emit('getRooms');
+}
 function checkRoomCreation(){
     socket.emit('checkRoomCreation');
 }
@@ -13,4 +16,4 @@ function joinRoom(playerId){
     socket.emit('joinRoom', playerId);
 }
 
-export {subscribeToShowRooms,checkRoomCreation,socket,joinRoom};
+export {subscribeToShowRooms,getRooms,socket,joinRoom};

@@ -7,7 +7,7 @@ import InfoMenuBox from '../components/InfoMenuBox.js';
 import LocalGameImage from '../images/GameShot5.png';
 import OnlineGameImage from '../images/OnlineGame.png';
 import { Link } from 'react-router-dom';
-import {subscribeToShowRooms, checkRoomCreation, joinRoom} from '../api';
+import {subscribeToShowRooms, getRooms, joinRoom} from '../api';
 class MenuPage extends React.Component {
   constructor(props) {
             super(props);
@@ -30,12 +30,14 @@ class MenuPage extends React.Component {
         };
 componentDidMount(){
     
-    checkRoomCreation();
+    
     //Whenever the rooms on the server are updated, the room state is set again
     subscribeToShowRooms((err, room) => {
         let newRooms = room;
         this.setRoomState(newRooms);
     });
+    
+    getRooms();
 }
 
 setRoomState = (newRooms) => {

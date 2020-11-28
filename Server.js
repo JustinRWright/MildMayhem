@@ -121,8 +121,7 @@ io.on("connection", (socket) => {
     io.broadcast.emit('showRooms', gameRooms);
   });
 
-  socket.on('checkRoomCreation', () => {
-
+  socket.on('getRooms', () => {
     destroyRoom(socket);
     //Update all user of new rooms
     io.broadcast.emit('showRooms', gameRooms);
