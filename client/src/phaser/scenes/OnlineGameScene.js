@@ -100,6 +100,7 @@ let LocalGameScene = {
                         player.playStun();
                         self.socket.emit('destroyLightningBolt', self.roomName);
                         if(player.getHealthBar().decrease(4)){
+                            self.socket.emit('damagePlayer');
                             //Player dies
                             player.gameOver();
                             player.anims.play('explode', true);
@@ -139,11 +140,16 @@ let LocalGameScene = {
             //Refactoring idea: make every variable passed into constructors 
             //descriptive javascript properties for readability
 
-           
+           //Create Health Bars
+            this.healthBarP1 = new HealthBar({scene: this, x: 0, y:584});
+            this.healthBarP2 = new HealthBar({scene: this, x: 0, y:0});
+
             console.log('gameconfig is: ' + this.gameConfig);
             if (this.gameConfig === 'joinOnline') {
                 this.player1 = new Player(this, 400, 200,'otherPlayer', this.explosionAnim);
                 this.player2 = new Player(self, 400, 500,'player', self.explosionAnim);
+                this.player1.setHealthBar(this.healthBarP2);
+                this.player2.setHealthBar(this.healthBarP1);
                 this.player1.createAnimations(this);
                 this.player2.createAnimations(this);
                 console.log('my id is: ' + this.socket.id);    
@@ -154,6 +160,8 @@ let LocalGameScene = {
             if (this.gameConfig === 'createOnline'){
                 this.player1 = new Player(this, 400, 500,'player', this.explosionAnim);
                 this.player2 = new Player(self, 400, 200,'otherPlayer', self.explosionAnim);
+                this.player1.setHealthBar(this.healthBarP1);
+                this.player2.setHealthBar(this.healthBarP2);
                 this.player1.createAnimations(this);
                 this.player2.createAnimations(this);
                 this.player2.setVisible(false);
@@ -201,6 +209,14 @@ let LocalGameScene = {
                     }
                 });
            });
+           this.socket.on('playerDamaged', function() {
+               self.player2.playStun();
+               if (self.player2.getHealthBar().decrease(4)){
+                   self.player2.gameOver();
+                   self.player2.anims.play('explode');
+                   let timedEvent = self.time.delayedCall(3000, self.redirect, [], self);
+               }
+           });
            this.socket.on('lightningBoltCreated', function(){
                self.createLightningBolt(self.player2);
            });
@@ -224,10 +240,7 @@ let LocalGameScene = {
             this.youWin = this.add.text(150,300-60,'PLAYER2 WINS ',{fontSize: '70px', color: '#66FF00'});
             this.youWin.setVisible(false);
 
-            //Create Health Bars
-            this.healthBarP1 = new HealthBar({scene: this, x: 0, y:584});
-            this.healthBarP2 = new HealthBar({scene: this, x: 0, y:0});
-
+            
             //Create Cooldowns: Note, final variable passed in is a timer, it sets how long the cooldown lasts in milliseconds            
             this.swordCoolDownP1 = new CoolDown(this, 230, 560, 'swordCool', 700);
             this.swordCoolDownP2 = new CoolDown(this, 570, 40, 'swordCool', 700);
@@ -262,7 +275,7 @@ let LocalGameScene = {
           
 
             //Attach healthbars to the selected players, this is so the game knows whose healthbar is whose
-            this.player1.setHealthBar(this.healthBarP1);
+            //this.player1.setHealthBar(this.healthBarP1);
 
           
 
