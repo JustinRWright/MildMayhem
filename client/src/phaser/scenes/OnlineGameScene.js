@@ -133,7 +133,7 @@ let LocalGameScene = {
             }
             //Callback for sending user back to main page when game ends
             this.redirect = function(){
-                 window.location.replace('http://localhost:3000/');
+                 window.location.replace('https://mildmayhem.herokuapp.com/');
             }
             //Glowing Background Sprite
             this.background = this.add.sprite(400,300,'Background');
