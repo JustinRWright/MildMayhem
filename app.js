@@ -1,15 +1,19 @@
 const express = require('express');
+const cors = require('cors');
 const path = require('path');
 const bodyParser = require('body-parser');
 const port = process.env.PORT || 8081;
 const app = express();
+app.use(cors());
 const server = require('http').Server(app);
+server.listen(8081, () => console.log(`Outer Server.js Listening on port ${port}`));
 const io = require("socket.io")(server, {
-  path: '/socket'
-});
-io.configure(function () { 
-  io.set("transports", ["xhr-polling"]); 
-  io.set("polling duration", 10); 
+  path: '/socket',
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"],
+    allowedHeaders: ["content-type"],
+  }
 });
 //
 
@@ -30,7 +34,7 @@ app.get('/*', (req, res) => {
 var gameRooms = {};
 var roomCount = 0;
 var players = {};
-server.listen(8081, () => console.log(`Outer Server.js Listening on port ${port}`));
+
 
 function destroyRoom(socket){
         
