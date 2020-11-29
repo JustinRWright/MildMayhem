@@ -12,9 +12,7 @@ const io = require("socket.io")(server, {
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-var gameRooms = {};
-var roomCount = 0;
-var players = {};
+
 // Add Access Control Allow Origin headers
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
@@ -24,10 +22,12 @@ app.use((req, res, next) => {
   );
   next();
 });
-
+var gameRooms = {};
+var roomCount = 0;
+var players = {};
 server.listen(port, () => console.log(`Outer Server.js Listening on port ${port}`));
 
-let interval;
+
 function destroyRoom(socket){
         
   
