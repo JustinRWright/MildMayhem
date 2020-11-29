@@ -7,7 +7,12 @@ const server = require('http').Server(app);
 const io = require("socket.io")(server, {
   path: '/socket'
 });
+io.configure(function () { 
+  io.set("transports", ["xhr-polling"]); 
+  io.set("polling duration", 10); 
+});
 //
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
