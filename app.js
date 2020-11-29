@@ -8,7 +8,6 @@ app.use(cors());
 const server = require('http').Server(app);
 server.listen(8081, () => console.log(`Outer Server.js Listening on port ${port}`));
 const io = require("socket.io")(server, {
-  path: '/socket',
   cors: {
     origin: "*",
     methods: ["GET", "POST"],
