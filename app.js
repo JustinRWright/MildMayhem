@@ -1,20 +1,22 @@
-'use strict';
-
 const express = require('express');
-const socketIO = require('socket.io');
-
-const PORT = process.env.PORT || 3000;
-const INDEX = '/index.html';
-
-const server = express()
-  .use((req, res) => res.sendFile(INDEX, { root: __dirname }))
-  .listen(PORT, () => console.log(`Listening on ${PORT}`));
-
-const io = socketIO(server);
-
-io.on('connection', (socket) => {
-  console.log('Client connected');
-  socket.on('disconnect', () => console.log('Client disconnected'));
+const cors = require('cors');
+const path = require('path');
+const bodyParser = require('body-parser');
+const port = process.env.PORT || 8081;
+const app = express();
+app.use(cors());
+const server = require('http').Server(app);
+server.listen(8081, () => console.log(`Outer Server.js Listening on port ${port}`));
+const io = require("socket.io")(server, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"],
+    allowedHeaders: ["content-type"],
+  }
+});
+io.configure(function () {
+  io.set("transports", ["xhr-polling"]);
+  io.set("polling duration", 10);
 });
 //
 
