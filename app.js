@@ -14,10 +14,6 @@ const io = require("socket.io")(server, {
     allowedHeaders: ["content-type"],
   }
 });
-io.configure(function () {
-  io.set("transports", ["xhr-polling"]);
-  io.set("polling duration", 10);
-});
 //
 
 app.use(bodyParser.json());
