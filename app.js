@@ -7,7 +7,7 @@ const app = express();
 const port = process.env.PORT || 8080;
 const server = require('http').Server(app);
 const io = require("socket.io")(server);
-
+console.log("app is running here");
 
 app.use(express.static(path.join(__dirname, 'build')));
 
@@ -33,7 +33,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 var gameRooms = {};
 var roomCount = 0;
 var players = {};
-//server.listen(port, () => console.log(`Outer Server.js Listening on port ${port}`));
+server.listen(port, () => console.log(`Outer Server.js Listening on port ${port}`));
 
 
 function destroyRoom(socket){
