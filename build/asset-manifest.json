@@ -5,6 +5,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> parent of 03b76f04... Merge pull request #6 from JustinRWright/Build2
     "main.js": "/static/js/main.535a608b.chunk.js",
@@ -23,6 +24,8 @@
     "static/js/6.ad78e008.chunk.js.map": "/static/js/6.ad78e008.chunk.js.map",
 <<<<<<< HEAD
 =======
+=======
+>>>>>>> parent of f453f5c1... window.hostname location added to IO
 =======
 >>>>>>> parent of f453f5c1... window.hostname location added to IO
 =======
@@ -59,6 +62,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     "static/js/main.535a608b.chunk.js"
 =======
     "static/js/main.6d40ee6d.chunk.js"
@@ -72,5 +76,8 @@
 =======
     "static/js/main.535a608b.chunk.js"
 >>>>>>> parent of 03b76f04... Merge pull request #6 from JustinRWright/Build2
+=======
+    "static/js/main.6d40ee6d.chunk.js"
+>>>>>>> parent of f453f5c1... window.hostname location added to IO
   ]
 }
