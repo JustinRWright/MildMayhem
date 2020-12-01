@@ -4,6 +4,9 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> parent of 03b76f04... Merge pull request #6 from JustinRWright/Build2
     "main.js": "/static/js/main.535a608b.chunk.js",
     "main.js.map": "/static/js/main.535a608b.chunk.js.map",
     "polyfills-css-shim.js": "/static/js/polyfills-css-shim.af6547fd.chunk.js",
@@ -18,6 +21,7 @@
     "static/js/5.b6d81883.chunk.js.map": "/static/js/5.b6d81883.chunk.js.map",
     "static/js/6.ad78e008.chunk.js": "/static/js/6.ad78e008.chunk.js",
     "static/js/6.ad78e008.chunk.js.map": "/static/js/6.ad78e008.chunk.js.map",
+<<<<<<< HEAD
 =======
 =======
 >>>>>>> parent of f453f5c1... window.hostname location added to IO
@@ -38,6 +42,8 @@
     "static/js/6.ae23cd12.chunk.js": "/static/js/6.ae23cd12.chunk.js",
     "static/js/6.ae23cd12.chunk.js.map": "/static/js/6.ae23cd12.chunk.js.map",
 >>>>>>> parent of f453f5c1... window.hostname location added to IO
+=======
+>>>>>>> parent of 03b76f04... Merge pull request #6 from JustinRWright/Build2
     "index.html": "/index.html",
     "static/css/main.7ce28fda.chunk.css.map": "/static/css/main.7ce28fda.chunk.css.map",
     "static/js/3.ef34611b.chunk.js.LICENSE.txt": "/static/js/3.ef34611b.chunk.js.LICENSE.txt",
@@ -52,6 +58,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     "static/js/main.535a608b.chunk.js"
 =======
     "static/js/main.6d40ee6d.chunk.js"
@@ -62,5 +69,8 @@
 =======
     "static/js/main.6d40ee6d.chunk.js"
 >>>>>>> parent of f453f5c1... window.hostname location added to IO
+=======
+    "static/js/main.535a608b.chunk.js"
+>>>>>>> parent of 03b76f04... Merge pull request #6 from JustinRWright/Build2
   ]
 }
