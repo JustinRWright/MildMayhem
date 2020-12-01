@@ -4,7 +4,7 @@ const path = require('path');
 //const socketIo = require("socket.io");
 
 const app = express();
-const port = process.env.PORT || 8080;
+const port = process.env.PORT || 8081;
 const server = require('http').Server(app);
 const io = require("socket.io")(server);
 console.log("app is running here");
