@@ -1,6 +1,7 @@
 {
   "files": {
     "main.css": "/static/css/main.7ce28fda.chunk.css",
+<<<<<<< HEAD
     "main.js": "/static/js/main.535a608b.chunk.js",
     "main.js.map": "/static/js/main.535a608b.chunk.js.map",
     "polyfills-css-shim.js": "/static/js/polyfills-css-shim.af6547fd.chunk.js",
@@ -15,6 +16,22 @@
     "static/js/5.b6d81883.chunk.js.map": "/static/js/5.b6d81883.chunk.js.map",
     "static/js/6.ad78e008.chunk.js": "/static/js/6.ad78e008.chunk.js",
     "static/js/6.ad78e008.chunk.js.map": "/static/js/6.ad78e008.chunk.js.map",
+=======
+    "main.js": "/static/js/main.6d40ee6d.chunk.js",
+    "main.js.map": "/static/js/main.6d40ee6d.chunk.js.map",
+    "polyfills-css-shim.js": "/static/js/polyfills-css-shim.accd2ed2.chunk.js",
+    "polyfills-css-shim.js.map": "/static/js/polyfills-css-shim.accd2ed2.chunk.js.map",
+    "runtime-main.js": "/static/js/runtime-main.5ac6c6a1.js",
+    "runtime-main.js.map": "/static/js/runtime-main.5ac6c6a1.js.map",
+    "static/js/3.24f83efe.chunk.js": "/static/js/3.24f83efe.chunk.js",
+    "static/js/3.24f83efe.chunk.js.map": "/static/js/3.24f83efe.chunk.js.map",
+    "static/js/4.ac8eaf6f.chunk.js": "/static/js/4.ac8eaf6f.chunk.js",
+    "static/js/4.ac8eaf6f.chunk.js.map": "/static/js/4.ac8eaf6f.chunk.js.map",
+    "static/js/5.f7ec0374.chunk.js": "/static/js/5.f7ec0374.chunk.js",
+    "static/js/5.f7ec0374.chunk.js.map": "/static/js/5.f7ec0374.chunk.js.map",
+    "static/js/6.ae23cd12.chunk.js": "/static/js/6.ae23cd12.chunk.js",
+    "static/js/6.ae23cd12.chunk.js.map": "/static/js/6.ae23cd12.chunk.js.map",
+>>>>>>> parent of f453f5c1... window.hostname location added to IO
     "index.html": "/index.html",
     "static/css/main.7ce28fda.chunk.css.map": "/static/css/main.7ce28fda.chunk.css.map",
     "static/js/3.ef34611b.chunk.js.LICENSE.txt": "/static/js/3.ef34611b.chunk.js.LICENSE.txt",
@@ -26,6 +43,10 @@
     "static/js/runtime-main.4bc5db82.js",
     "static/js/3.ef34611b.chunk.js",
     "static/css/main.7ce28fda.chunk.css",
+<<<<<<< HEAD
     "static/js/main.535a608b.chunk.js"
+=======
+    "static/js/main.6d40ee6d.chunk.js"
+>>>>>>> parent of f453f5c1... window.hostname location added to IO
   ]
 }
