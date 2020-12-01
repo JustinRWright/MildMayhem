@@ -4,6 +4,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     "main.js": "/static/js/main.535a608b.chunk.js",
     "main.js.map": "/static/js/main.535a608b.chunk.js.map",
     "polyfills-css-shim.js": "/static/js/polyfills-css-shim.af6547fd.chunk.js",
@@ -19,6 +20,8 @@
     "static/js/6.ad78e008.chunk.js": "/static/js/6.ad78e008.chunk.js",
     "static/js/6.ad78e008.chunk.js.map": "/static/js/6.ad78e008.chunk.js.map",
 =======
+=======
+>>>>>>> parent of f453f5c1... window.hostname location added to IO
 =======
 >>>>>>> parent of f453f5c1... window.hostname location added to IO
 =======
@@ -52,7 +55,11 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     "static/js/main.535a608b.chunk.js"
+=======
+    "static/js/main.6d40ee6d.chunk.js"
+>>>>>>> parent of f453f5c1... window.hostname location added to IO
 =======
     "static/js/main.6d40ee6d.chunk.js"
 >>>>>>> parent of f453f5c1... window.hostname location added to IO
