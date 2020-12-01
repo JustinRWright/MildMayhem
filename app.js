@@ -1,40 +1,35 @@
 const express = require('express');
-const cors = require('cors');
-const path = require('path');
 const bodyParser = require('body-parser');
-const port = process.env.PORT || 8081;
+const path = require('path');
+//const socketIo = require("socket.io");
+
 const app = express();
-app.use(cors());
+const port = process.env.PORT || 8081;
 const server = require('http').Server(app);
-server.listen(8081, () => console.log(`Outer Server.js Listening on port ${port}`));
 const io = require("socket.io")(server, {
-  cors: {
-      origins: "*:*",
-      methods: ["GET", "POST"],
-      allowedHeaders: ["content-type"],
-      pingTimeout: 7000,
-      pingInterval: 3000
-    }
+  path: '/socket'
 });
-//
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-
-
-app.use(express.static(path.join(__dirname, 'build')));
-
-
+app.use(express.static(__dirname + '/public'));
 app.get('/*', (req, res) => {
   res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
-
-
-
+// Add Access Control Allow Origin headers
+/*app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  next();
+});*/
 var gameRooms = {};
 var roomCount = 0;
 var players = {};
+server.listen(port, () => console.log(`Outer Server.js Listening on port ${port}`));
 
 
 function destroyRoom(socket){
