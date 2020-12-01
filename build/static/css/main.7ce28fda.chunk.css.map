@@ -1,0 +1,1 @@
+{"version":3,"sources":["webpack://src/styles/main.css"],"names":[],"mappings":"AAAA,EACI,QAAS,CACT,QAAS,CACT,qBACJ,CAMA,kBAEI,SACJ","file":"main.7ce28fda.chunk.css","sourcesContent":["* {\r\n    margin: 0;\r\n    sizing: 0;\r\n    box-sizing: border-box;\r\n}\r\n\r\nbody {\r\n    \r\n}\r\n\r\n.selectMatchTitle {\r\n    \r\n    font: 50px;\r\n}"]}
