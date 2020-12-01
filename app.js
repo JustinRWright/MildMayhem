@@ -4,28 +4,32 @@ const path = require('path');
 //const socketIo = require("socket.io");
 
 const app = express();
-const port = process.env.PORT || 8081;
+const port = (process.env.PORT || 3000);
 const server = require('http').Server(app);
-const io = require("socket.io")(server, {
-  path: '/socket'
+const io = require("socket.io")(server);
+console.log("app is running here");
+
+app.use(express.static(path.join(__dirname, 'build')));
+
+
+app.get('/*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use(express.static(__dirname + '/public'));
-app.get('/*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'build', 'index.html'));
-});
+
 // Add Access Control Allow Origin headers
 /*app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+  res.setHeader("Access-Control-Allow-Origin", "http://localhost:8080");
   res.header(
     "Access-Control-Allow-Headers",
     "Origin, X-Requested-With, Content-Type, Accept"
   );
   next();
-});*/
+});
+*/
 var gameRooms = {};
 var roomCount = 0;
 var players = {};
