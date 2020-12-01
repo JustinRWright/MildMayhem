@@ -7,7 +7,15 @@ const app = express();
 const port = process.env.PORT || 8081;
 const server = require('http').Server(app);
 const io = require("socket.io")(server, {
+<<<<<<< HEAD
   path: '/socket'
+=======
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"],
+    allowedHeaders: ["content-type"],
+  }
+>>>>>>> parent of 6c8a4aa7... Update app.js
 });
 
 app.use(bodyParser.json());
