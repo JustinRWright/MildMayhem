@@ -555,11 +555,21 @@ declare namespace NodeJS {
         [Symbol.toPrimitive](): number;
     }
 
-    type TypedArray = Uint8Array | Uint8ClampedArray | Uint16Array | Uint32Array | Int8Array | Int16Array | Int32Array | Float32Array | Float64Array;
+    type TypedArray =
+        | Uint8Array
+        | Uint8ClampedArray
+        | Uint16Array
+        | Uint32Array
+        | Int8Array
+        | Int16Array
+        | Int32Array
+        | BigUint64Array
+        | BigInt64Array
+        | Float32Array
+        | Float64Array;
     type ArrayBufferView = TypedArray | DataView;
 
     interface Require {
-        /* tslint:disable-next-line:callable-types */
         (id: string): any;
         resolve: RequireResolve;
         cache: Dict<NodeModule>;

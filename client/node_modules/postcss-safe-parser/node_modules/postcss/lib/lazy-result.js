@@ -114,6 +114,10 @@ class LazyResult {
     })
   }
 
+  get [Symbol.toStringTag] () {
+    return 'LazyResult'
+  }
+
   get processor () {
     return this.result.processor
   }
@@ -475,5 +479,6 @@ LazyResult.registerPostcss = dependant => {
 }
 
 module.exports = LazyResult
+LazyResult.default = LazyResult
 
 Root.registerLazyResult(LazyResult)

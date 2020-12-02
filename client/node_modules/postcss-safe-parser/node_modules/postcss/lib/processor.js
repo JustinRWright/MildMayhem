@@ -5,7 +5,7 @@ let Root = require('./root')
 
 class Processor {
   constructor (plugins = []) {
-    this.version = '8.1.4'
+    this.version = '8.1.10'
     this.plugins = this.normalize(plugins)
   }
 
@@ -65,5 +65,6 @@ class Processor {
 }
 
 module.exports = Processor
+Processor.default = Processor
 
 Root.registerProcessor(Processor)
