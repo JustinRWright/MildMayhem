@@ -264,7 +264,6 @@ let LocalGameScene = {
 
     update: function()
         {
-        
         //Checks if player 1 or player2 have lost, can events be used for this instead?
         if (!this.player1.isAlive()){
             this.youWin.setVisible(true);
