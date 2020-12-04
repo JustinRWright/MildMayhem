@@ -1,7 +1,7 @@
 const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
-const port = process.env.PORT || 8081;
+const port = process.env.PORT || 80;
 const app = express();
 const server = require('http').Server(app);
 const io = require("socket.io")(server);
@@ -23,7 +23,7 @@ app.get('/*', (req, res) => {
 var gameRooms = {};
 var roomCount = 0;
 var players = {};
-//server.listen(port, () => console.log(`Outer Server.js Listening on port ${port}`));
+server.listen(port, () => console.log(`Outer Server.js Listening on port ${port}`));
 
 function destroyRoom(socket){
         
