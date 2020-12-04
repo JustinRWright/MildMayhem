@@ -82,7 +82,8 @@ io.on("connection", (socket) => {
 
   socket.on('joinRoom', function(playerId) {
     
-    if (typeof gameRooms[playerId] !== 'undefind'){
+    if (typeof gameRooms[playerId] !== 'undefined'){
+      if (typeof gameRooms[playerId].opponent === 'undefined'){
       //Joins the the room of the opposing player
       socket.join(gameRooms[playerId].name);
 
@@ -90,6 +91,8 @@ io.on("connection", (socket) => {
       gameRooms[playerId].opponent = socket.id;
       
       io.to(playerId).emit('opponentJoined', socket.id);
+      }
+    
     }
     
   });
