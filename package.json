@@ -2,13 +2,20 @@
   "name": "mildmayhem",
   "version": "1.0.0",
   "scripts": {
+    "start": "node ./bin/www",
     "client": "cd client && yarn start",
     "server": "nodemon server.js",
     "dev": "concurrently --kill-others-on-fail \"yarn server\" \"yarn client\""
   },
   "dependencies": {
+    "cookie-parser": "~1.4.4",
+    "debug": "~2.6.9",
     "body-parser": "^1.19.0",
     "bufferutil": "^4.0.2",
+    "http": "0.0.1-security",
+    "http-errors": "~1.6.3",
+    "jade": "~1.11.0",
+    "morgan": "~1.9.1",
     "express": "^4.17.1",
     "socket.io": "^3.0.2",
     "socket.io-proxy": "^1.0.3",
