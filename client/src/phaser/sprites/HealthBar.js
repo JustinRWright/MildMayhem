@@ -12,7 +12,7 @@ export default class HealthBar extends Phaser.GameObjects.Sprite
         var x = config.x;
         var y = config.y;
         this.bar = new Phaser.GameObjects.Graphics(scene);
-
+        this.canTakeDamage = true;
         this.x = x;
         this.y = y;
         this.value = 100;
@@ -26,8 +26,12 @@ export default class HealthBar extends Phaser.GameObjects.Sprite
 
     decrease (amount)
     {
-        this.value -= amount*10;
-
+        let concurrentDamageCheck = this.scene.time.delayedCall(40, this.setTakeDamage, [], this);
+        if (this.canTakeDamage){
+             this.value -= amount*10;
+             this.canTakeDamage = false;
+        }
+       
         if (this.value < 0)
         {
             this.value = 0;
@@ -36,6 +40,11 @@ export default class HealthBar extends Phaser.GameObjects.Sprite
         this.draw();
 
         return (this.value === 0);
+    }
+
+    setTakeDamage()
+    {
+        this.canTakeDamage = true
     }
 
     draw ()

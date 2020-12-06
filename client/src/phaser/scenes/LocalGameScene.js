@@ -6,6 +6,7 @@ import SwordSwing from "../sprites/SwordSwing.js";
 import Phaser from 'phaser';
 import bckg from '../assets/bckg.png';
 import HealthBar from "../sprites/HealthBar.js";
+import CoolDownBar from "../sprites/CoolDownBar.js"
 import CoolDown from "../sprites/CoolDown.js";
 import LightningBolt from '../sprites/lightningBolt.js';
 import LightningHB from '../sprites/lightningBoltHitbox.js';
@@ -82,7 +83,40 @@ let LocalGameScene = {
                     
                 }
             }
-            
+            this.playerHitSwordSwing = function(swordSwing, player){
+                console.log('collision happened');
+                if(swordSwing.getOwner()!==player){
+
+                    //Problem, this code isn't working. It's because the stun check isn't working at the correct time 
+                    //and the player set function isn't set before the player takes like double or triple damage
+                    //Since the hitbox isn't destroy on impact it does a lot of other stuff
+                    //Potential Fixes: 
+                    //Destroy sword hitbox
+                    //Don't let the player take damage within like, a certain amount of time. 
+                    //Somehow wait for the decrease to happen and then rechecking the stun, async functions?
+                    //
+                    //Check if player is stunned or dodging, if neither is true, play stun animation and calculate damage
+                    if (player.getStun() === false || player.getDodging() === false){
+                        
+                        
+                        player.playStun();
+
+
+                        //When the healthbar reaches 0, this evaluates to true
+                        if(player.getHealthBar().decrease(4)){
+                            //This function 
+                            player.gameOver();
+                            player.anims.play('explode', true);
+                            //Win Screen and link people back to main menu   
+                            //How could we access the react router DOM here?
+
+                            let timedEvent = player.scene.time.delayedCall(3000, player.scene.redirect, [], this);
+                        };
+                        //Knock opponent backwards
+                        player.knockBack(swordSwing);
+                    }
+                }
+            }
             //Collision between lightning and player
             this.playerHitLightning = function(lightningBolt,player){
                 //Players cannot hit themselves with their own attacks
@@ -117,7 +151,7 @@ let LocalGameScene = {
             }
             //Callback for sending user back to main page when game ends
             this.redirect = function(){
-                  window.location.replace('https://mildmayhem.herokuapp.com/');
+                  window.location.replace('http://localhost:3000/');
             }
             //Glowing Background Sprite
             this.background = this.add.sprite(400,300,'Background');
@@ -145,8 +179,12 @@ let LocalGameScene = {
             this.healthBarP1 = new HealthBar({scene: this, x: 0, y:584});
             this.healthBarP2 = new HealthBar({scene: this, x: 0, y:0});
 
+            //this.coolDownBar = new CoolDownBar({scene: this, x: 200, y: 300});
             //Create Cooldowns: Note, final variable passed in is a timer, it sets how long the cooldown lasts in milliseconds            
+            //this.coolDownBar = new CoolDownBar({scene: this, x: 207, y: 526},{duration: 700});
             this.swordCoolDownP1 = new CoolDown(this, 230, 560, 'swordCool', 700);
+           
+
             this.swordCoolDownP2 = new CoolDown(this, 570, 40, 'swordCool', 700);
            
             this.magicCoolDownP1 = new CoolDown(this, 278, 560, 'blastCool', 1000);
@@ -190,7 +228,7 @@ let LocalGameScene = {
             this.physics.add.overlap(this.magicBlasts,this.swordHitBoxes,this.deflectBlast);
             this.physics.add.overlap(this.magicBlasts,this.players,this.playerHit);
             this.physics.add.overlap(this.lightningBolts,this.players,this.playerHitLightning);
-            
+            this.physics.add.overlap(this.swordHitBoxes,this.players,this.playerHitSwordSwing);
             //4 walls on the outside
             this.leftWall = this.physics.add.sprite(-55,300,'vwall');
             //Set immovable allows the objects to not move on collision
@@ -274,6 +312,15 @@ let LocalGameScene = {
             this.youWin.setVisible(true);
             this.youWin.setText('PLAYER1 WINS');
         }
+        this.swordCoolDownP1.update();
+        this.swordCoolDownP2.update();
+        this.magicCoolDownP1.update();
+        this.magicCoolDownP2.update();
+        this.dodgeCoolDownP1.update();
+        this.dodgeCoolDownP2.update();
+        this.lightningCoolDownP1.update();
+        this.lightningCoolDownP2.update();
+
 
         //Get Player input
         this.movementVectorP1 = this.controlsP1.getMovementVector();

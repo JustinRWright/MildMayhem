@@ -24,15 +24,17 @@ export default class Player extends Phaser.Physics.Arcade.Sprite
             this.stunned = false;
             //This can be passed into contructor later
             //Should I use getters and setters like this?
-            this.setPlayerSpeed(400);
+            this.setPlayerSpeed(500);
+            this.dodgeSpeed = 1600;
            
         }
         
         //Starts stun for player
         playStun(){
-            this.toggleStun();
+            this.stunned = true;
+            this.setAlpha(.5);
             //calls a timer which removes player stun after 1 second
-            let timedEvent = this.scene.time.delayedCall(1000, this.onEvent, [], this);
+            let timedEvent = this.scene.time.delayedCall(1000, this.stunComplete, [], this);
         }
         knockBack(gameObj){
           //This code finds the angle between the player and the object that damaged the player,
@@ -46,23 +48,14 @@ export default class Player extends Phaser.Physics.Arcade.Sprite
           let movementY = Math.sin(vectorAngle)*knockBackVel;
           this.setVelocity(movementX,movementY);
         }
-        onEvent(){
-          this.toggleStun();
-        }
-        toggleStun(){
-          //While player is stunned, changed the player opacity
-          this.stunned = !this.stunned;
-          if (this.stunned === false){
-            this.setAlpha(1);
-          }
-          else {
-            this.setAlpha(.5);
-          }
-          
+        stunComplete(){
+          this.setAlpha(1);
+          this.stunned = false
         }
         dodge(){
           //Changes player velocity and sets dodge property 
-          this.body.setVelocity(this.orientationVector.x*1500,this.orientationVector.y*1500);
+          
+          this.body.setVelocity(this.orientationVector.x*this.dodgeSpeed,this.orientationVector.y*this.dodgeSpeed);
           this.dodging = true;
           this.setBounce(0);
           console.log(this.orientationVector);
@@ -91,6 +84,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite
         {
           
           this.body.setVelocity(velocityVector.x*this.playerSpeed,velocityVector.y*this.playerSpeed);
+         
           //Not Moving
           if(velocityVector.x === 0 && velocityVector.y === 0){
             this.anims.stop();
@@ -113,6 +107,7 @@ export default class Player extends Phaser.Physics.Arcade.Sprite
           }
     
         }
+        
         setMovementAnim(velocityVector){
           if (typeof this.anims !== 'undefined'){
              //Not Moving
