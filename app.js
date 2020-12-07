@@ -110,6 +110,10 @@ io.on("connection", (socket) => {
     
     io.to(movementData.roomName).emit('playerMoved', movementData);
   });
+  socket.on("createShield", function(roomName){
+    console.log("shield created on server");
+    io.to(roomName).emit('shieldCreated');
+  })
   socket.on("swingSword", function(roomName) {
     console.log('swordswing on server');
     io.to(roomName).emit('swordSwung');

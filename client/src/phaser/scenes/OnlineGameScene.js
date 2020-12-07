@@ -10,6 +10,7 @@ import CoolDown from "../sprites/CoolDown.js";
 import LightningBolt from '../sprites/lightningBolt.js';
 import LightningHB from '../sprites/lightningBoltHitbox.js';
 import io from 'socket.io-client';
+import Shield from '../sprites/Shield.js';
 //import proxy from 'socket.io-proxy';
 let LocalGameScene = {
     
@@ -34,7 +35,8 @@ let LocalGameScene = {
             this.load.image('dodgeCool', 'https://i.imgur.com/mTklmkU.png');
             this.load.spritesheet('lightningBolt', 'https://i.imgur.com/3MskIUy.png', {frameWidth: 16, frameHeight: 1000});
             this.load.image('lightningCool', 'https://i.imgur.com/FVquIxw.png');
-            this.load.spritesheet('Shield', 'https://i.imgur.com/xiVxzaW.png', {frameWidth: 100, frameHeight: 100});
+            this.load.spritesheet('shield', 'https://i.imgur.com/xiVxzaW.png', {frameWidth: 100, frameHeight: 100});
+            this.load.image('shieldCool', 'https://i.imgur.com/2u16NSJ.png');
         },
 
     create: function()
@@ -165,6 +167,32 @@ let LocalGameScene = {
                 }
             }
             }
+            this.shieldHitLightningBolt = function(shield, lightningBolt){
+                 console.log("shield hit lightning Bolt");
+                if(shield.getOwner() !== lightningBolt.getOwner()){
+                    console.log("Opponent shield collision");
+                    self.socket.emit('destroyLightningBolt', self.roomName);
+                        //Destroy the animation associated with these hitboxes
+                        lightningBolt.destroyAnimationSprite();
+
+                        //Find all other associated lightning bolt hitboxes and destroy them
+                        lightningBolt.scene.lightningBolts.getChildren().forEach(lightningBolt => {
+                            if (lightningBolt.getOwner() !== shield.getOwner()) {
+                                lightningBolt.body.enable = false;
+                            }
+                    });
+                }
+            }
+            this.shieldHitMagicBlast = function(shield, magicBlast){
+                console.log("shield hit magic Blast");
+                if (shield.getOwner() !== magicBlast.getOwner()){
+                    console.log("Opponenet shield collision");
+                    self.socket.emit('destroyMagicBlast', self.roomName);
+                    magicBlast.explode();
+                }
+            }
+
+
             //Callback for sending user back to main page when game ends
             this.redirect = function(){
                  window.location.replace('https://mildmayhem.herokuapp.com/');
@@ -182,19 +210,21 @@ let LocalGameScene = {
             
             //Refactoring idea: make every variable passed into constructors 
             //descriptive javascript properties for readability
-            this.setCoolDowns = function(swordCoolDown,dodgeCoolDown,magicCoolDown,lightningCoolDown,position){
+            this.setCoolDowns = function(swordCoolDown,dodgeCoolDown,magicCoolDown,lightningCoolDown,shieldCoolDown,position){
                if (position === 'top'){
                 //Create Cooldowns: Note, final variable passed in is a timer, it sets how long the cooldown lasts in milliseconds            
                 this[swordCoolDown] = new CoolDown(this, 570, 40, 'swordCool', 700); 
                 this[magicCoolDown] = new CoolDown(this, 618, 40, 'blastCool', 1000);  
                 this[dodgeCoolDown] = new CoolDown(this, 665, 40, 'dodgeCool', 1000);
                 this[lightningCoolDown] = new CoolDown(this, 713, 40, 'lightningCool', 5000);
+                this[shieldCoolDown] = new CoolDown(this, 761, 40, 'shieldCool', 7000);
                }
                else if(position === 'bottom'){
                 this[swordCoolDown] = new CoolDown(this, 230, 560, 'swordCool', 700);
                 this[magicCoolDown] = new CoolDown(this, 278, 560, 'blastCool', 1000);
                 this[dodgeCoolDown] = new CoolDown(this, 326, 560, 'dodgeCool', 1000);
                 this[lightningCoolDown] = new CoolDown(this, 374, 560, 'lightningCool', 5000);
+                this[shieldCoolDown] = new CoolDown(this, 422, 560, 'shieldCool', 7000);
                }
             }
            //Create Health Bars
@@ -207,8 +237,8 @@ let LocalGameScene = {
                 this.player2 = new Player(this, 400, 500,'player', this.explosionAnim);
                 this.player1.setHealthBar(this.healthBarP2);
                 this.player2.setHealthBar(this.healthBarP1);
-                this.setCoolDowns('swordCoolDownP1','dodgeCoolDownP1','magicCoolDownP1','lightningCoolDownP1',"top");
-                this.setCoolDowns('swordCoolDownP2','dodgeCoolDownP2','magicCoolDownP2','lightningCoolDownP2',"bottom");
+                this.setCoolDowns('swordCoolDownP1','dodgeCoolDownP1','magicCoolDownP1','lightningCoolDownP1','shieldCoolDownP1',"top");
+                this.setCoolDowns('swordCoolDownP2','dodgeCoolDownP2','magicCoolDownP2','lightningCoolDownP2','shieldCoolDownP2',"bottom");
                 this.player1.createAnimations(this);
                 this.player2.createAnimations(this);
                 console.log('my id is: ' + this.socket.id);    
@@ -222,8 +252,8 @@ let LocalGameScene = {
                 this.player1.setHealthBar(this.healthBarP1);
                 this.player2.setHealthBar(this.healthBarP2);
                 this.player1.createAnimations(this);
-                this.setCoolDowns('swordCoolDownP1','dodgeCoolDownP1','magicCoolDownP1','lightningCoolDownP1',"bottom");
-                this.setCoolDowns('swordCoolDownP2','dodgeCoolDownP2','magicCoolDownP2','lightningCoolDownP2',"top");
+                this.setCoolDowns('swordCoolDownP1','dodgeCoolDownP1','magicCoolDownP1','lightningCoolDownP1','shieldCoolDownP1',"bottom");
+                this.setCoolDowns('swordCoolDownP2','dodgeCoolDownP2','magicCoolDownP2','lightningCoolDownP2','shieldCoolDownP2',"top");
                 this.player2.createAnimations(this);
                 this.player2.setVisible(false);
                 this.socket.emit('createOnlineRoom');
@@ -269,6 +299,11 @@ let LocalGameScene = {
                          self.player2.setMovementAnim(player2Movement.direction);
                     }
                    
+            });
+            this.socket.on('shieldCreated', function(){
+                let shield = new Shield(self,self.player2.getX(),self.player2.getY(),'shield', {duration: 5000, owner: self.player2});
+                self.shieldCoolDownP2.startCoolDown();
+                self.shields.add(shield);
             });
            this.socket.on('swordSwung', function(){
                self.onlinePlayerSwing(self.player2, self.swordCoolDownP2);
@@ -340,7 +375,7 @@ let LocalGameScene = {
             this.magicBlasts = this.physics.add.group();
             this.swordHitBoxes = this.physics.add.group();
             this.lightningBolts = this.physics.add.group();
-
+            this.shields = this.physics.add.group();
             //Create a sprite group in order to handle collisions
             this.players = this.physics.add.group();
             this.players.add(this.player1);
@@ -360,7 +395,8 @@ let LocalGameScene = {
             this.physics.add.overlap(this.magicBlasts,this.players,this.playerHit);
             this.physics.add.overlap(this.lightningBolts,this.players,this.playerHitLightning);
             this.physics.add.overlap(this.swordHitBoxes,this.players,this.playerHitSwordSwing);
-            
+            this.physics.add.overlap(this.shields,this.magicBlasts, this.shieldHitMagicBlast);
+            this.physics.add.overlap(this.shields,this.lightningBolts, this.shieldHitLightningBolt);
             //4 walls on the outside
             this.leftWall = this.physics.add.sprite(-55,300,'vwall');
             //Set immovable allows the objects to not move on collision
@@ -491,8 +527,9 @@ let LocalGameScene = {
         this.dodgeCoolDownP2.update();
         this.lightningCoolDownP1.update();
         this.lightningCoolDownP2.update();
-
-        //Get Player input
+        this.shieldCoolDownP1.update();
+        this.shieldCoolDownP2.update();
+        //Get Player inputgetMovementVector
         this.movementVectorP1 = this.controlsP1.getMovementVector();
         
 
@@ -569,7 +606,13 @@ let LocalGameScene = {
             this.socket.emit('startDodgeCoolDown',this.roomName);
             this.player1.dodge();
         };
-       
+        
+         if(attackInputsP1.shieldFiring && !this.shieldCoolDownP1.isActive()){
+            let shield = new Shield(this,this.player1.getX(),this.player1.getY(),'shield', {duration: 5000, owner: this.player1});
+            this.shieldCoolDownP1.startCoolDown();
+            this.shields.add(shield);
+            this.socket.emit('createShield',this.roomName);
+        }
 
         //Check if sword swings exist, and update them as needed, 
         //this is the best way I can think of for tracking and following player position in the main loop
