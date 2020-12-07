@@ -6,7 +6,6 @@ import SwordSwing from "../sprites/SwordSwing.js";
 import Phaser from 'phaser';
 import bckg from '../assets/bckg.png';
 import HealthBar from "../sprites/HealthBar.js";
-import CoolDownBar from "../sprites/CoolDownBar.js"
 import CoolDown from "../sprites/CoolDown.js";
 import LightningBolt from '../sprites/lightningBolt.js';
 import LightningHB from '../sprites/lightningBoltHitbox.js';
@@ -84,7 +83,7 @@ let LocalGameScene = {
                 }
             }
             this.playerHitSwordSwing = function(swordSwing, player){
-                console.log('collision happened');
+           
                 if(swordSwing.getOwner()!==player){
 
                     //Problem, this code isn't working. It's because the stun check isn't working at the correct time 
@@ -151,7 +150,7 @@ let LocalGameScene = {
             }
             //Callback for sending user back to main page when game ends
             this.redirect = function(){
-                  window.location.replace('http://localhost:3000/');
+                  window.location.replace('https://mildmayhem.herokuapp.com/');
             }
             //Glowing Background Sprite
             this.background = this.add.sprite(400,300,'Background');
@@ -179,12 +178,8 @@ let LocalGameScene = {
             this.healthBarP1 = new HealthBar({scene: this, x: 0, y:584});
             this.healthBarP2 = new HealthBar({scene: this, x: 0, y:0});
 
-            //this.coolDownBar = new CoolDownBar({scene: this, x: 200, y: 300});
             //Create Cooldowns: Note, final variable passed in is a timer, it sets how long the cooldown lasts in milliseconds            
-            //this.coolDownBar = new CoolDownBar({scene: this, x: 207, y: 526},{duration: 700});
             this.swordCoolDownP1 = new CoolDown(this, 230, 560, 'swordCool', 700);
-           
-
             this.swordCoolDownP2 = new CoolDown(this, 570, 40, 'swordCool', 700);
            
             this.magicCoolDownP1 = new CoolDown(this, 278, 560, 'blastCool', 1000);
@@ -229,6 +224,7 @@ let LocalGameScene = {
             this.physics.add.overlap(this.magicBlasts,this.players,this.playerHit);
             this.physics.add.overlap(this.lightningBolts,this.players,this.playerHitLightning);
             this.physics.add.overlap(this.swordHitBoxes,this.players,this.playerHitSwordSwing);
+
             //4 walls on the outside
             this.leftWall = this.physics.add.sprite(-55,300,'vwall');
             //Set immovable allows the objects to not move on collision
@@ -302,7 +298,6 @@ let LocalGameScene = {
 
     update: function()
         {
-        
         //Checks if player 1 or player2 have lost, can events be used for this instead?
         if (!this.player1.isAlive()){
             this.youWin.setVisible(true);
@@ -312,6 +307,8 @@ let LocalGameScene = {
             this.youWin.setVisible(true);
             this.youWin.setText('PLAYER1 WINS');
         }
+
+        //CoolDownAnims
         this.swordCoolDownP1.update();
         this.swordCoolDownP2.update();
         this.magicCoolDownP1.update();
@@ -320,8 +317,6 @@ let LocalGameScene = {
         this.dodgeCoolDownP2.update();
         this.lightningCoolDownP1.update();
         this.lightningCoolDownP2.update();
-
-
         //Get Player input
         this.movementVectorP1 = this.controlsP1.getMovementVector();
         this.movementVectorP2 = this.controlsP2.getMovementVector();

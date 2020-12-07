@@ -26,7 +26,7 @@ export default class HealthBar extends Phaser.GameObjects.Sprite
 
     decrease (amount)
     {
-        let concurrentDamageCheck = this.scene.time.delayedCall(40, this.setTakeDamage, [], this);
+        let concurrentDamageCheck = this.scene.time.delayedCall(200, this.setTakeDamage, [], this);
         if (this.canTakeDamage){
              this.value -= amount*10;
              this.canTakeDamage = false;

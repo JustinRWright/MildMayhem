@@ -1,12 +1,10 @@
 const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
-const port = process.env.PORT || 8081;
+const port = process.env.PORT || 80;
 const app = express();
 const server = require('http').Server(app);
-const io = require("socket.io")(server, {
-  path: '/socket'
-});
+const io = require("socket.io")(server);
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -25,7 +23,7 @@ app.get('/*', (req, res) => {
 var gameRooms = {};
 var roomCount = 0;
 var players = {};
-server.listen(8081, () => console.log(`Outer Server.js Listening on port ${port}`));
+server.listen(port, () => console.log(`Outer Server.js Listening on port ${port}`));
 
 function destroyRoom(socket){
         
@@ -84,7 +82,8 @@ io.on("connection", (socket) => {
 
   socket.on('joinRoom', function(playerId) {
     
-    if (typeof gameRooms[playerId] !== 'undefind'){
+    if (typeof gameRooms[playerId] !== 'undefined'){
+      if (typeof gameRooms[playerId].opponent === 'undefined'){
       //Joins the the room of the opposing player
       socket.join(gameRooms[playerId].name);
 
@@ -92,6 +91,8 @@ io.on("connection", (socket) => {
       gameRooms[playerId].opponent = socket.id;
       
       io.to(playerId).emit('opponentJoined', socket.id);
+      }
+    
     }
     
   });
