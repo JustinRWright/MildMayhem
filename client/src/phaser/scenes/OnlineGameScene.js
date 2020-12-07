@@ -34,6 +34,7 @@ let LocalGameScene = {
             this.load.image('dodgeCool', 'https://i.imgur.com/mTklmkU.png');
             this.load.spritesheet('lightningBolt', 'https://i.imgur.com/3MskIUy.png', {frameWidth: 16, frameHeight: 1000});
             this.load.image('lightningCool', 'https://i.imgur.com/FVquIxw.png');
+            this.load.spritesheet('Shield', 'https://i.imgur.com/xiVxzaW.png', {frameWidth: 100, frameHeight: 100});
         },
 
     create: function()

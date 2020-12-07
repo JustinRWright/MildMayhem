@@ -29,6 +29,7 @@ export default class Controls extends Phaser.GameObjects.Sprite
           this.swordSwing = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
           this.dodge = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT);
           this.lightningBolt = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.O);
+          this.shield =  this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.I);
         }
         setArrowKeyControls(){
           this.directionals = this.scene.input.keyboard.createCursorKeys();
@@ -36,8 +37,9 @@ export default class Controls extends Phaser.GameObjects.Sprite
           this.swordSwing = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.NUMPAD_ZERO);
           this.dodge = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.NUMPAD_FOUR);
           this.lightningBolt = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.NUMPAD_EIGHT);
+          this.shield = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.NUMPAD_ONE);
         }
-        setKeyInput(scene,{directionals,magicBlast,swordSwing,dodge}={}){
+        setKeyInput(scene,{directionals,magicBlast,swordSwing,dodge,shield}={}){
           //Potentially can add more configurable controls by using passing keycodes in here in the future
           if (directionals === 'WASD'){
            this.setWASDControls();
@@ -53,7 +55,8 @@ export default class Controls extends Phaser.GameObjects.Sprite
             this.swordSwing = {};
             this.magicBlastAttack = {};
             this.dodge = {};
-           
+            this.shield = {};
+
             const xAxis = 0;
             const yAxis = 0;
             this.directionals = {
@@ -66,11 +69,14 @@ export default class Controls extends Phaser.GameObjects.Sprite
              
             }, this);
             this.scene.input.gamepad.on('down', function (pad, button, index) {
+              
              
               this.swordSwing.isDown = pad.X;
               this.magicBlastAttack.isDown = pad.R2;
-              this.dodge.isDown =  pad.R1;
+              this.dodge.isDown = pad.R1;
               this.lightningBolt.isDown = pad.L2;
+              this.shield.isDown = pad.B;
+              
               
             }, this);
            this.scene.input.gamepad.on('up', function (pad, button, index) {
@@ -78,6 +84,7 @@ export default class Controls extends Phaser.GameObjects.Sprite
               this.magicBlastAttack.isDown = false;
               this.dodge.isDown = false;
               this.lightningBolt.isDown = false;
+              this.shield.isDown = false;
               
             }, this);
           }
@@ -149,7 +156,7 @@ export default class Controls extends Phaser.GameObjects.Sprite
            y: ((this.directionals.up.isDown)? -1:0)+((this.directionals.down.isDown)? 1:0)};
         }
         getMoveInput(){
-          return {lightningBoltFiring: this.lightningBolt.isDown, dodgeFiring: this.dodge.isDown, magicBlastFiring: this.magicBlastAttack.isDown,swordSwingFiring: this.swordSwing.isDown};
+          return {lightningBoltFiring: this.lightningBolt.isDown, dodgeFiring: this.dodge.isDown, magicBlastFiring: this.magicBlastAttack.isDown,swordSwingFiring: this.swordSwing.isDown, shieldFiring: this.shield.isDown};
           
         }
         

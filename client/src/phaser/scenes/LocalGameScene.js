@@ -9,6 +9,8 @@ import HealthBar from "../sprites/HealthBar.js";
 import CoolDown from "../sprites/CoolDown.js";
 import LightningBolt from '../sprites/lightningBolt.js';
 import LightningHB from '../sprites/lightningBoltHitbox.js';
+import Shield from '../sprites/Shield.js';
+
 
 //import proxy from 'socket.io-proxy';
 let LocalGameScene = {
@@ -34,6 +36,8 @@ let LocalGameScene = {
             this.load.image('dodgeCool', 'https://i.imgur.com/mTklmkU.png');
             this.load.spritesheet('lightningBolt', 'https://i.imgur.com/3MskIUy.png', {frameWidth: 16, frameHeight: 1000});
             this.load.image('lightningCool', 'https://i.imgur.com/FVquIxw.png');
+            this.load.spritesheet('shield', 'https://i.imgur.com/xiVxzaW.png', {frameWidth: 100, frameHeight: 100});
+            this.load.image('shieldCool', 'https://i.imgur.com/2u16NSJ.png');
         },
 
     create: function()
@@ -116,6 +120,28 @@ let LocalGameScene = {
                     }
                 }
             }
+            this.shieldHitLightningBolt = function(shield, lightningBolt){
+                 console.log("shield hit lightning Bolt");
+                if(shield.getOwner() !== lightningBolt.getOwner()){
+                    console.log("Opponent shield collision");
+                        //Destroy the animation associated with these hitboxes
+                        lightningBolt.destroyAnimationSprite();
+
+                        //Find all other associated lightning bolt hitboxes and destroy them
+                        lightningBolt.scene.lightningBolts.getChildren().forEach(lightningBolt => {
+                            if (lightningBolt.getOwner() !== shield.getOwner()) {
+                                lightningBolt.body.enable = false;
+                            }
+                    });
+                }
+            }
+            this.shieldHitMagicBlast = function(shield, magicBlast){
+                console.log("shield hit magic Blast");
+                if (shield.getOwner() !== magicBlast.getOwner()){
+                     console.log("Opponenet shield collision");
+                    magicBlast.explode();
+                }
+            }
             //Collision between lightning and player
             this.playerHitLightning = function(lightningBolt,player){
                 //Players cannot hit themselves with their own attacks
@@ -191,6 +217,9 @@ let LocalGameScene = {
             this.lightningCoolDownP1 = new CoolDown(this, 374, 560, 'lightningCool', 5000);
             this.lightningCoolDownP2 = new CoolDown(this, 713, 40, 'lightningCool', 5000);
 
+            this.shieldCoolDownP1 = new CoolDown(this, 422, 560, 'shieldCool', 7000);
+            this.shieldCoolDownP2 = new CoolDown(this, 760, 40, 'shieldCool', 7000);
+
             //Checks for the amount of gamepads connected to the phaser game, if the passed controls do not match the quantity of connected gamepads,
             //the controls will be reset, this can be fixed later
             let pad: Phaser.Input.Gamepad.Gamepad;
@@ -198,13 +227,14 @@ let LocalGameScene = {
             gamePadCount += ((this.controlConfig.player2.Movement=='GamePad')? 1:0);
 
             //Create controls object which can be accessed in the update logic for game object interactions
-            this.controlsP1 = new Controls(this,{directionals: this.controlConfig.player1.Movement, magicBlast: this.controlConfig.player1.MagicBlast, swordSwing: this.controlConfig.player1.SwordSlash},gamePadCount,1);
-            this.controlsP2 = new Controls(this,{directionals: this.controlConfig.player2.Movement, magicBlast: this.controlConfig.player2.MagicBlast, swordSwing: this.controlConfig.player2.SwordSlash},gamePadCount,2);
+            this.controlsP1 = new Controls(this,{directionals: this.controlConfig.player1.Movement, magicBlast: this.controlConfig.player1.MagicBlast, swordSwing: this.controlConfig.player1.SwordSlash, shield: "L1"},gamePadCount,1);
+            this.controlsP2 = new Controls(this,{directionals: this.controlConfig.player2.Movement, magicBlast: this.controlConfig.player2.MagicBlast, swordSwing: this.controlConfig.player2.SwordSlash, shield: "L1"},gamePadCount,2);
             
             //These phaser groups allow for collisino detection of classes of objects at scale, for example all magic blasts have the same collision callack that is called
             this.magicBlasts = this.physics.add.group();
             this.swordHitBoxes = this.physics.add.group();
             this.lightningBolts = this.physics.add.group();
+            this.shields = this.physics.add.group();
 
             //Create a sprite group in order to handle collisions
             this.players = this.physics.add.group();
@@ -224,6 +254,8 @@ let LocalGameScene = {
             this.physics.add.overlap(this.magicBlasts,this.players,this.playerHit);
             this.physics.add.overlap(this.lightningBolts,this.players,this.playerHitLightning);
             this.physics.add.overlap(this.swordHitBoxes,this.players,this.playerHitSwordSwing);
+            this.physics.add.overlap(this.shields,this.magicBlasts, this.shieldHitMagicBlast);
+            this.physics.add.overlap(this.shields,this.lightningBolts, this.shieldHitLightningBolt);
 
             //4 walls on the outside
             this.leftWall = this.physics.add.sprite(-55,300,'vwall');
@@ -317,6 +349,8 @@ let LocalGameScene = {
         this.dodgeCoolDownP2.update();
         this.lightningCoolDownP1.update();
         this.lightningCoolDownP2.update();
+        this.shieldCoolDownP1.update();
+        this.shieldCoolDownP2.update();
         //Get Player input
         this.movementVectorP1 = this.controlsP1.getMovementVector();
         this.movementVectorP2 = this.controlsP2.getMovementVector();
@@ -344,6 +378,16 @@ let LocalGameScene = {
            this.createMagicBlast(this.player1);
         };
         
+        if(attackInputsP1.shieldFiring && !this.shieldCoolDownP1.isActive()){
+            let shield = new Shield(this,this.player1.getX(),this.player1.getY(),'shield', {duration: 5000, owner: this.player1});
+            this.shieldCoolDownP1.startCoolDown();
+            this.shields.add(shield);
+        }
+        if(attackInputsP2.shieldFiring && !this.shieldCoolDownP2.isActive()){
+            let shield = new Shield(this,this.player2.getX(),this.player2.getY(),'shield', {duration: 5000, owner: this.player2});
+            this.shieldCoolDownP2.startCoolDown();
+            this.shields.add(shield);
+        }
          if (attackInputsP2.magicBlastFiring && !this.magicCoolDownP2.isActive()){
            this.magicCoolDownP2.startCoolDown();
            this.createMagicBlast(this.player2);
