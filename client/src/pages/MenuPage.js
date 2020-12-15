@@ -32,15 +32,10 @@ componentDidMount(){
     
     //Whenever the rooms on the server are updated, the room state is set again
     subscribeToShowRooms((err, room) => {
+        console.log("showRooms called was received in menupage")
         let newRooms = room;
         this.setRoomState(newRooms);
     });
-    getRooms((err, room) => {
-       
-        let newRooms = room;
-        this.setRoomState(newRooms);
-    });
-    
    
 }
 componentWillUnmount() {
