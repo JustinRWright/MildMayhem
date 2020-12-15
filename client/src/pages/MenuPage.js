@@ -11,8 +11,6 @@ import {subscribeToShowRooms, socket, getRooms, joinRoom} from '../api';
 class MenuPage extends React.Component {
   constructor(props) {
             super(props);
-            console.log('menupage constructor called');
-           
             
             this.state = {
                 rooms: {},
@@ -31,7 +29,6 @@ class MenuPage extends React.Component {
         };
 componentDidMount(){
     //Remove event listeners in case user pressed back from online game
-    console.log('component mounted');
     
     //Whenever the rooms on the server are updated, the room state is set again
     subscribeToShowRooms((err, room) => {
@@ -39,7 +36,7 @@ componentDidMount(){
         this.setRoomState(newRooms);
     });
     getRooms((err, room) => {
-        console.log('room is: ' + JSON.stringify(room));
+       
         let newRooms = room;
         this.setRoomState(newRooms);
     });
@@ -47,7 +44,6 @@ componentDidMount(){
    
 }
 componentWillUnmount() {
-    console.log('componentUnmounted');
     socket.removeAllListeners()
 }
 setRoomState = (newRooms) => {
@@ -114,7 +110,7 @@ be set as the attack.*/
   };
   render() {
     let roomCount = this.state.rooms;
-    //console.log('roomCount is: ' + JSON.stringify(roomCount));
+  
     let joinMatchBox;
     
     //I set the resolution to 800*600, which is the size of an old school NewGrounds web game. It is currently not responsive

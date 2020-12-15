@@ -11,7 +11,7 @@ The backend is built with NodeJS, and Express. It is hosted on Heroku.
 This game is fun for anyone who likes fast paced competitive fighting games that require mastery, strategy, player reads, and quick thinking. I hope that nostalgia for the old adventure games with new mechanics brings something fun to the table for everyone.
 
 ## Links
-- [Deployed Game(currently can play offline multiplayer)](https://mildmayhem.herokuapp.com/)
+- [Deployed Game](https://mildmayhem.herokuapp.com/)
 - [Client Code](https://github.com/JustinRWright/MildMayhemFull/tree/main/client)
 - [Server Code](https://github.com/JustinRWright/MildMayhemFull/tree/main/app.js)
 
