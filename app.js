@@ -80,8 +80,9 @@ io.on("connection", (socket) => {
     }
     socket.join(gameRooms[socket.id].name);
 
+    availableRooms = sortAvailable(gameRooms);
     //Shows all rooms to players
-    io.broadcast.emit('showRooms', gameRooms);
+    io.broadcast.emit('showRooms', availableRooms);
   
   });
 
@@ -94,7 +95,6 @@ io.on("connection", (socket) => {
   socket.on('getRooms', function() {
     availableRooms = sortAvailable(gameRooms);
     io.emit('showRooms',availableRooms);
-    
   })
   socket.on('joinRoom', function(playerId) {
     
@@ -122,9 +122,9 @@ io.on("connection", (socket) => {
     if (gameRooms[socket.id] !== 'undefined'){
       destroyRoom(socket);
     }
-    
+    availableRooms = sortAvailable(gameRooms);
     //Update all user of new rooms
-    io.broadcast.emit('showRooms', gameRooms);
+    io.broadcast.emit('showRooms', availableRooms);
   });
 
   socket.on("playerMovement", function(movementData) {
@@ -165,16 +165,18 @@ io.on("connection", (socket) => {
   });
   socket.on('destroyOnlineRoom', () => {
     destroyRoom(socket);
+    availableRooms = sortAvailable(gameRooms);
     //Update all user of new rooms
-    io.broadcast.emit('showRooms', gameRooms);
+    io.broadcast.emit('showRooms', availableRooms);
   });
 
   socket.on("disconnect", () => {
     console.log("Client disconnected");
     //delete any gameRoom that may have been open
     destroyRoom(socket);
+    availableRooms = sortAvailable(gameRooms);
     //Update all users of room changes
-    io.broadcast.emit('showRooms', gameRooms);
+    io.broadcast.emit('showRooms', availableRooms);
     delete players[socket.id];
   });
 });
