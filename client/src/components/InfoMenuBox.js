@@ -108,6 +108,8 @@ class InfoMenuBox extends React.Component {
             <br></br>
             Magic Blast: P
             <br></br>
+            Shield: I
+            <br></br>
             Dodge: SHIFT
             </p>
             </div>
@@ -124,7 +126,8 @@ class InfoMenuBox extends React.Component {
             <br></br>
             Lightning: Left Trigger
             <br></br>
-           
+            Shield: B
+            <br></br>
             Dodge: Right Bumper
             </p>
             </div>
@@ -143,6 +146,8 @@ class InfoMenuBox extends React.Component {
             <br></br>
             Magic Blast: NumPad 9
             <br></br>
+            Shield: NumPad 1
+            <br></br>
             Dodge: NumPad 4
             </p>
             </div>
@@ -156,6 +161,8 @@ class InfoMenuBox extends React.Component {
             Magic Blast: Right Trigger
             <br></br>
             Lightning: Left Trigger
+            <br></br>
+            Shield: B
             <br></br>
             Dodge: Right Bumper
             </p>
@@ -187,7 +194,7 @@ class InfoMenuBox extends React.Component {
                     
                 </Grid>
                
-                <div style={{backgroundColor: 'black', borderRadius: 15, textAlign: 'center', color: '#39FF14',verticalAlign: 'center', fontSize: 13,height:220, border: '4px solid black'}}>
+                <div style={{backgroundColor: 'black', borderRadius: 15, textAlign: 'center', color: '#39FF14',verticalAlign: 'center', fontSize: 13,height:260, border: '4px solid black'}}>
                     <Grid container>
                         {/*These curly braced jsx values dissappear if they are not set in render, great for a changing info box values*/}
                         {notesPageGridPadding}

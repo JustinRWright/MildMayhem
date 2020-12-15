@@ -144,6 +144,9 @@ be set as the attack.*/
                     <MatchRoomBox onClick={() => this.matchRoomClicked('createOnline')} image={OnlineGameImage} matchType={'Start Online Room'}></MatchRoomBox>
                 </Link>
             </div>
+             <div style={{ textAlign: 'center', paddingTop: 25, font: 25, color: '#39FF14'}}>
+                <b>Available Online Matches</b>
+            </div>
         </Grid>
 
         {/*Offline match box*/}
@@ -162,9 +165,7 @@ be set as the attack.*/
 
         <Grid item xs = {10}>
         
-                <div style={{ textAlign: 'center', paddingTop: 15, font: 25, color: '#39FF14'}}>
-                <b>Available Online Matches</b>
-                </div>
+               
                 <div style={{ borderRadius: 15, backgroundColor: '#9A9A9A', align: 'left', textAlign: 'left', minHeight:200, maxHeight:200, border: '1px solid'}}>
                 <Grid container>
                 {

@@ -14,6 +14,7 @@ export default class Shield extends Phaser.Physics.Arcade.Sprite
             scene.add.existing(this);
             //Adds physics to sprite
             scene.physics.add.existing(this);
+            this.setBounce(.1);
             this.duration = duration;
             //this.texture = texture;
             this.x = x;
@@ -21,6 +22,7 @@ export default class Shield extends Phaser.Physics.Arcade.Sprite
             let shieldTimeOut = this.scene.time.delayedCall(this.duration, this.shieldTimer, [], this);
             this.createAnimations(scene);
             this.anims.play('shieldExist',true);
+            this.setCollideWorldBounds(true);
             //Set shield orientation to owner orientation
             let ownerOrientation = owner.getOrientationVector();
 

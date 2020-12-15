@@ -256,6 +256,9 @@ let LocalGameScene = {
             this.physics.add.overlap(this.swordHitBoxes,this.players,this.playerHitSwordSwing);
             this.physics.add.overlap(this.shields,this.magicBlasts, this.shieldHitMagicBlast);
             this.physics.add.overlap(this.shields,this.lightningBolts, this.shieldHitLightningBolt);
+            //this.physics.add.collider(this.shields,this.players);
+           
+            
 
             //4 walls on the outside
             this.leftWall = this.physics.add.sprite(-55,300,'vwall');
