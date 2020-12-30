@@ -1,14 +1,15 @@
-* {
-    margin: 0;
-    sizing: 0;
-    box-sizing: border-box;
-}
 
-body {
-    
+.menuTabButton {
+    padding-Top: 7;
+    padding-Bottom: 7;
+    text-align: 'center';
+    margin: 'auto';
+    background-Color: 'grey';
+    width: '70%';
+    cursor: 'pointer';
+    border-Radius: 5;
+    border: "3px solid black";
 }
-
-.selectMatchTitle {
-    
-    font: 50px;
+.menuTabButton:hover {
+    background-color: yellow;
 }

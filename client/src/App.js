@@ -31,6 +31,7 @@ const App = () => {
   //     roomName: 'Null'
   //   }
   // };
+
   const [controlConfig, setControlConfig] = useState({
     player1: {
       Movement: 'WASD',
