@@ -39,9 +39,6 @@ const MenuPage = (props) => {
     console.log("displayModeStringis: " + DisplayModeString);
     setDisplayMode(() => DisplayModeString);
   }, {setDisplayMode});
-  function wasClicked() {
-    console.log("Was clicked!");
-  }
   const [rooms, setRooms] = useState({})
   const [controls, setControls] = useState({
     player1: {
