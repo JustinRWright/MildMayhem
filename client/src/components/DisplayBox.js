@@ -6,12 +6,25 @@ import Notes from './Notes'
 const DisplayBox = () => {
   const [displayMode, setDisplayMode] = useAtom(displayModeAtom)
 
+  const displayContent = (displayMode) => {
+    switch(displayMode) {
+      case 'LocalPVP': return displayMode
+
+      case 'OnlinePVP': return displayMode
+
+      case 'Stats': return displayMode
+
+      case 'Controls': return displayMode
+
+      case 'Tutorial': return displayMode
+
+      default: return (<Notes />)
+    }
+  }
+
   return (
     <div className="display-container">
-      {!displayMode
-        ? <Notes />
-        : <div>{displayMode}</div>
-      }
+      { displayContent(displayMode) }
     </div>
   )
 }
