@@ -1,4 +1,8 @@
 
+body {
+  background-color: gray !important;
+}
+
 .menuTabButton {
     padding-Top: 7;
     padding-Bottom: 7;
@@ -12,4 +16,16 @@
 }
 .menuTabButton:hover {
     background-color: yellow;
+}
+
+.display-container {
+  background-color: gray;
+  padding-top: 7; 
+  padding-bottom: 7; 
+  height: 100%; 
+  margin: 0 auto; 
+  width: 60%; 
+  cursor: pointer; 
+  border-radius: 5; 
+  border: 3px solid black; 
 }

@@ -1,44 +1,46 @@
 import React, { useCallback } from 'react';
 import { useAtom } from 'jotai';
-import {displayModeAtom} from '../jotai';
+import { displayModeAtom } from '../jotai';
 import '../styles/main.scss';
 import ReactDOM from 'react-dom';
 import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
 import MatchRoomBox from '../components/MatchRoomBox.js';
 import InfoMenuBox from '../components/InfoMenuBox.js';
+import DisplayBox from '../components/DisplayBox'
 import LocalGameImage from '../images/GameShot5.png';
 import OnlineGameImage from '../images/OnlineGame.png';
 import { Link } from 'react-router-dom';
 import { subscribeToShowRooms, socket, getRooms, joinRoom } from '../api';
 import { useState, useEffect } from 'react';
 import MenuTabButton from '../components/menuTabButton.js';
+import CssBaseline from '@material-ui/core/CssBaseline';
 
- const styles = {
-    menuTabButton: {
-            padding: '16px 0px 16px 0px',
-            paddingTop: 7, 
-            paddingBottom: 7, 
-            textAlign: 'center', 
-            margin: 'auto', 
-            backgroundColor: 'grey', 
-            width: '70%', 
-            cursor: 'pointer', 
-            borderRadius: 5,
-            border: "3px solid black",
-            '& a:hover': {
-              border: "3px solid green",
-            }
+const styles = {
+  menuTabButton: {
+    padding: '16px 0px 16px 0px',
+    paddingTop: 7,
+    paddingBottom: 7,
+    textAlign: 'center',
+    margin: 'auto',
+    backgroundColor: 'grey',
+    width: '70%',
+    cursor: 'pointer',
+    borderRadius: 5,
+    border: "3px solid black",
+    '& a:hover': {
+      border: "3px solid green",
     }
-   
- };
+  }
+
+};
 const MenuPage = (props) => {
   const [displayMode, setDisplayMode] = useAtom(displayModeAtom);
 
   const updateDisplayMode = useCallback((DisplayModeString) => {
     console.log("displayModeStringis: " + DisplayModeString);
     setDisplayMode(() => DisplayModeString);
-  }, {setDisplayMode});
+  }, { setDisplayMode });
   function wasClicked() {
     console.log("Was clicked!");
   }
@@ -146,15 +148,18 @@ const MenuPage = (props) => {
     props.passGameConfig(gameType, roomName);
     props.passControlConfig(controls);
   };
-  
-    let roomCount = rooms;
 
-    let joinMatchBox;
+  let roomCount = rooms;
 
-    //I set the resolution to 800*600, which is the size of an old school NewGrounds web game. It is currently not responsive
-    //This could be changed for a mobile depoloyment or something
-    return <div style={{ backgroundColor: '#031316', borderRadius: 15, maxWidth: 800, minWidth: 800, minHeight: 600, maxHeight: 600, margin: 'auto' }}>
-      <Grid container>
+  let joinMatchBox;
+
+  //I set the resolution to 800*600, which is the size of an old school NewGrounds web game. It is currently not responsive
+  //This could be changed for a mobile depoloyment or something
+  return (
+    <div style={{ backgroundColor: '#031316', borderRadius: 15, maxWidth: 800, minWidth: 800, minHeight: 600, maxHeight: 600, margin: 'auto' }}>
+      {/* for border box */}
+      <CssBaseline />
+      <Grid container style={{ height: '600px' }}>
         {/*Title Bar*/}
         <Grid item xs={12}>
           <div style={{ textAlign: 'center', borderRadius: 15, backgroundColor: 'black', fontSize: 30, fontFamily: 'Audiowide', padding: 20, border: '4px solid #1f39bd' }}>
@@ -167,31 +172,24 @@ const MenuPage = (props) => {
           </div>
         </Grid>
         {/*Interactive information box*/}
-        <Grid item xs={4}>
-          <div style={{paddingTop: 60}}></div>
-         
-          <MenuTabButton onClick={() => updateDisplayMode("LocalPVP")} title="Local PVP"></MenuTabButton>
-          <MenuTabButton onClick={() => updateDisplayMode("OnlinePVP")} title="Online PVP"></MenuTabButton>
-          <MenuTabButton onClick={() => updateDisplayMode("Stats")} title="Stats"></MenuTabButton>
-          <MenuTabButton onClick={() => updateDisplayMode("Controls")} title="Controls"></MenuTabButton>
-          <MenuTabButton onClick={() => updateDisplayMode("Tutorial")} title="Tutorial"></MenuTabButton>
-          {/*<InfoMenuBox setControlConfig={controlConfigSelected}></InfoMenuBox>
+        <Grid item xs={12} container style={{ padding: '60px 0',height: '510px' }}>
+          <Grid item xs={4}>
+            <div>
+              <MenuTabButton onClick={() => updateDisplayMode("LocalPVP")} title="Local PVP"></MenuTabButton>
+              <MenuTabButton onClick={() => updateDisplayMode("OnlinePVP")} title="Online PVP"></MenuTabButton>
+              <MenuTabButton onClick={() => updateDisplayMode("Stats")} title="Stats"></MenuTabButton>
+              <MenuTabButton onClick={() => updateDisplayMode("Controls")} title="Controls"></MenuTabButton>
+              <MenuTabButton onClick={() => updateDisplayMode("Tutorial")} title="Tutorial"></MenuTabButton>
+              <MenuTabButton onClick={() => updateDisplayMode("")} title="Notes"></MenuTabButton>
+            </div>
+            {/*<InfoMenuBox setControlConfig={controlConfigSelected}></InfoMenuBox>
           */}
-       
-        </Grid>
 
-        {/*Online match box*/}
-        <Grid item xs={4}>
-        <div style={{paddingTop: 60}}></div>
-        <div style = {{paddingTop: 7, paddingBottom: 7, height:'100%', margin: 'auto', backgroundColor: 'grey', width: '100%', cursor: 'pointer', borderRadius: 5, border: "3px solid black"}}>
-          <div style={{textAlign: 'center'}}><u><b>Patch Notes/Updates</b></u></div>
-          
-          <div style={{paddingLeft: 27, width: '80%', textAlign: 'left'}}>
-            <p><b>Hello, and welcome to Mild Mayhem!</b> <br></br>The goal is simple, defeat your opponent! Use your lightning bolts and magic blasts. You can deflect the magic blasts with your sword and dodge through attacks.</p>
-          </div>
-        </div>
+          </Grid>
 
-        {/*
+          {/*Online match box*/}
+
+            {/*
           <div style={{ paddingTop: 40, paddingBottom: 30 }}>
             <Link to='/game' style={{ color: 'black' }}>
               <MatchRoomBox onClick={() => matchRoomClicked('createOnline')} image={OnlineGameImage} matchType={'Start Online Room'}></MatchRoomBox>
@@ -202,19 +200,25 @@ const MenuPage = (props) => {
             <b>Available Online Matches</b>
           </div>
           */}
-        </Grid>
 
+          {/* display box */}
+          <Grid item xs={8} >
+            <DisplayBox />
+          </Grid>
+
+
+        </Grid>
         {/*Offline match box*/}
-        <Grid item xs={4}>
-         {/* <div style={{ paddingTop: 40, paddingBottom: 30 }}>
+        {/* <Grid item xs={4}> */}
+        {/* <div style={{ paddingTop: 40, paddingBottom: 30 }}>
             {/*route to game
             <Link to='/game' style={{ color: 'black' }}>
               <MatchRoomBox onClick={() => matchRoomClicked('offline')} image={LocalGameImage} matchType={'Start Local Room'}></MatchRoomBox>
             </Link>
           </div>
           */}
-       </Grid>
-{/* 
+        {/* </Grid> */}
+        {/* 
         {/*List of available online rooms
         <Grid item xs={1}>
         </Grid>
@@ -244,10 +248,10 @@ const MenuPage = (props) => {
         <Grid item xs={1}>
         </Grid>
       */}
-      </Grid> 
+      </Grid>
 
-    </div>
-  
+    </div>)
+
 }
 
 export default MenuPage;
