@@ -69,20 +69,24 @@ const StyledControls = styled.div`
 const KeyTitle = styled.span`
 grid-area: title;
 font-size: 1rem;
+padding-left: 10px;
 `;
 const KeyValue = styled.span`
 grid-area: value;
 font-size: 1.15rem;
 justify-self: center;
-padding-left: 20px;
+padding-left: 10px;
+
 `;
 
 const ListItem = styled.li`
 display: grid;
 grid-template: 'title value';
-grid-template-columns: 95px 120px;
+grid-template-columns: 105px 130px;
+grid-template-rows: 26px;
 list-style: none;
 align-items: center;
+padding: 3px 0;
 `;
 
 const List = styled.ul`
