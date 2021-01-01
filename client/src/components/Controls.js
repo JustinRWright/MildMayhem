@@ -62,7 +62,7 @@ const StyledControls = styled.div`
 
   }
   .list-container {
-    display: fl;
+    display: flex;
     align-items: center;
   }
 `;
@@ -72,21 +72,22 @@ font-size: 1rem;
 `;
 const KeyValue = styled.span`
 grid-area: value;
-font-size: 1.2rem;
+font-size: 1.15rem;
+justify-self: center;
+padding-left: 20px;
 `;
 
 const ListItem = styled.li`
 display: grid;
 grid-template: 'title value';
-grid-template-columns: 100px 100px;
+grid-template-columns: 95px 120px;
 list-style: none;
 align-items: center;
 `;
 
 const List = styled.ul`
 margin-left: 0;
-padding-left: 10px;
-
+padding-left: 0;
 `;
 // controls
 const controlsList = [
@@ -100,6 +101,9 @@ const Controls = () => {
   const [keyBindings, setKeyBindings] = useAtom(keyBindingsAtom);
 
   const toggleControl = (e) => {
+    if(e.target.innerText.toLowerCase() === controlMode.toLowerCase()) {
+      return
+    }
     if (controlMode === "keyboard") {
       setControlMode("gamepad");
       setKeyBindings(false);
@@ -139,7 +143,7 @@ const Controls = () => {
           </ListItem>
         </List>
         {item.length > 1 && (
-          <List>
+          <List >
             <ListItem>
               <KeyTitle>Movement</KeyTitle>
               <KeyValue>{item[1][0]}</KeyValue>
