@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import { useAtom } from 'jotai';
-import { displayModeAtom } from '../jotai';
+import { displayModeAtom, roomsAtom } from '../jotai';
 import '../styles/main.scss';
 import ReactDOM from 'react-dom';
 import Grid from '@material-ui/core/Grid';
@@ -66,11 +66,9 @@ const MenuPage = (props) => {
     setDisplayMode(() => DisplayModeString);
 
   }, [ setDisplayMode ]);
-  function wasClicked() {
-    console.log("Was clicked!");
-  }
 
-  const [rooms, setRooms] = useState({})
+
+  const [rooms, setRooms] = useAtom(roomsAtom)
   const [controls, setControls] = useState({
     player1: {
       Movement: 'WASD',
@@ -106,18 +104,22 @@ const MenuPage = (props) => {
     subscribeToShowRooms((err, room) => {
       console.log("showRooms called was received in menupage")
       let newRooms = room;
-      setRoomState(newRooms);
+      setRooms(newRooms);
     });
-  }, [])
+  }, [setRooms])
 
   useEffect(() => {
     return () => {
       socket.removeAllListeners()
     }
   }, [])
-  const setRoomState = (newRooms) => {
-    setRooms(newRooms)
-  }
+  
+  // redundant code
+
+  // const setRoomState = (newRooms) => {
+  //   setRooms(newRooms)
+  // }
+
   /*Function passed into the infoMenuBox, Sets the control config object which then gets passed up to App.js and then down into the GamePage component and the phaser game 
   Perhaps custom controls here can detect keycodes and translate directly into a keycode value that gets passed into phaser
   For example, an option to click on swordslash and press a key to get the key code(ex: SPACE), then send that to the phaser game where it will
@@ -173,6 +175,7 @@ const MenuPage = (props) => {
 
     props.passGameConfig(gameType, roomName);
     props.passControlConfig(controls);
+    console.log('room created')
   };
 
   let roomCount = rooms;
@@ -208,6 +211,14 @@ const MenuPage = (props) => {
               <MenuTabButton selected={menuTabButtonSelection.Tutorial} onClick={() => updateDisplayMode("Tutorial")} title="Tutorial"></MenuTabButton>
               <MenuTabButton selected={menuTabButtonSelection.Notes} onClick={() => updateDisplayMode("Notes")} title="Notes"></MenuTabButton>
             </div>
+            {/* <div>
+              <MenuTabButton  title="Local PVP"></MenuTabButton>
+              <MenuTabButton  title="Online PVP"></MenuTabButton>
+              <MenuTabButton  title="Stats"></MenuTabButton>
+              <MenuTabButton  title="Controls"></MenuTabButton>
+              <MenuTabButton  title="Tutorial"></MenuTabButton>
+              <MenuTabButton  title="Notes"></MenuTabButton>
+            </div> */}
             {/*<InfoMenuBox setControlConfig={controlConfigSelected}></InfoMenuBox>
           */}
 
@@ -229,7 +240,7 @@ const MenuPage = (props) => {
 
           {/* display box */}
           <Grid item xs={8} >
-            <DisplayBox />
+            <DisplayBox matchRoomClicked={matchRoomClicked}/>
           </Grid>
 
 
