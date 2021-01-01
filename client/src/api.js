@@ -1,5 +1,12 @@
 import io from 'socket.io-client';
-const socket = io();
+//use this for deploying build
+//const socket = io();
+//use this below for proxy server in development
+const socket = io('http://localhost:8080', {
+                transports: ['websocket'],
+                path: '/socket'
+            });
+
 function subscribeToShowRooms(cb) {
     socket.on('showRooms', room => cb(null,room));
     socket.emit('getRooms', room => cb(null,room));
