@@ -2,13 +2,13 @@ import React from 'react'
 import { useAtom } from 'jotai'
 import { displayModeAtom } from '../jotai'
 import Notes from './Notes'
-
+import LocalPVP from './LocalPVP'
 const DisplayBox = () => {
   const [displayMode, setDisplayMode] = useAtom(displayModeAtom)
 
   const displayContent = (displayMode) => {
     switch(displayMode) {
-      case 'LocalPVP': return displayMode
+      case 'LocalPVP': return LocalPVP()
 
       case 'OnlinePVP': return displayMode
 

@@ -15,7 +15,10 @@ import { subscribeToShowRooms, socket, getRooms, joinRoom } from '../api';
 import { useState, useEffect } from 'react';
 import MenuTabButton from '../components/menuTabButton.js';
 import CssBaseline from '@material-ui/core/CssBaseline';
-
+//import TestImage from '../images/VanGogh.png';
+import TestImage from '../images/DeepArted.jpg';
+//import TestImage from '../images/DeepArtedG.jpg';
+//import TestImage from '../images/DeepArtedGCY.jpg';
 const styles = {
   menuTabButton: {
     padding: '16px 0px 16px 0px',
@@ -36,9 +39,30 @@ const styles = {
 };
 const MenuPage = (props) => {
   const [displayMode, setDisplayMode] = useAtom(displayModeAtom);
-
+  const [menuTabButtonSelection, setMenuTabButtonSelection] = useState({
+    LocalPVP: false,
+    OnlinePVP: false,
+    Stats: false,
+    Controls: false,
+    Tutorial: false,
+    Notes: true,
+  });
   const updateDisplayMode = useCallback((DisplayModeString) => {
     console.log("displayModeStringis: " + DisplayModeString);
+
+    let newSelection = {
+    LocalPVP: false,
+    OnlinePVP: false,
+    Stats: false,
+    Controls: false,
+    Tutorial: false,
+    Notes: false
+    }
+   
+    newSelection[DisplayModeString] = true;
+    //console.log('newSelection is: ' + JSON.stringify(newSelection));
+    setMenuTabButtonSelection(() => newSelection);
+
     setDisplayMode(() => DisplayModeString);
 
   }, [ setDisplayMode ]);
@@ -158,13 +182,13 @@ const MenuPage = (props) => {
   //I set the resolution to 800*600, which is the size of an old school NewGrounds web game. It is currently not responsive
   //This could be changed for a mobile depoloyment or something
   return (
-    <div style={{ backgroundColor: '#031316', borderRadius: 15, maxWidth: 800, minWidth: 800, minHeight: 600, maxHeight: 600, margin: 'auto' }}>
+    <div style={{ backgroundImage: `url(${TestImage})`,  backgroundSize: '100% 100%', borderRadius: 15, maxWidth: 800, minWidth: 800, minHeight: 600, maxHeight: 600, margin: 'auto' }}>
       {/* for border box */}
       <CssBaseline />
       <Grid container style={{ height: '600px' }}>
         {/*Title Bar*/}
         <Grid item xs={12}>
-          <div style={{ textAlign: 'center', borderRadius: 15, backgroundColor: 'black', fontSize: 30, fontFamily: 'Audiowide', padding: 20, border: '4px solid #1f39bd' }}>
+          <div style={{ textAlign: 'center', borderRadius: 15, background: 'rgba(0, 0, 0, 0.6)', fontSize: 30, fontFamily: 'Audiowide', padding: 20, }}>
             <div style={{ color: '#39FF14' }}>
               <u>
                 Mild Mayhem
@@ -177,12 +201,12 @@ const MenuPage = (props) => {
         <Grid item xs={12} container style={{ padding: '60px 0',height: '510px' }}>
           <Grid item xs={4}>
             <div>
-              <MenuTabButton onClick={() => updateDisplayMode("LocalPVP")} title="Local PVP"></MenuTabButton>
-              <MenuTabButton onClick={() => updateDisplayMode("OnlinePVP")} title="Online PVP"></MenuTabButton>
-              <MenuTabButton onClick={() => updateDisplayMode("Stats")} title="Stats"></MenuTabButton>
-              <MenuTabButton onClick={() => updateDisplayMode("Controls")} title="Controls"></MenuTabButton>
-              <MenuTabButton onClick={() => updateDisplayMode("Tutorial")} title="Tutorial"></MenuTabButton>
-              <MenuTabButton onClick={() => updateDisplayMode("")} title="Notes"></MenuTabButton>
+              <MenuTabButton selected={menuTabButtonSelection.LocalPVP} onClick={() => updateDisplayMode("LocalPVP")} title="Local PVP"></MenuTabButton>
+              <MenuTabButton selected={menuTabButtonSelection.OnlinePVP} onClick={() => updateDisplayMode("OnlinePVP")} title="Online PVP"></MenuTabButton>
+              <MenuTabButton selected={menuTabButtonSelection.Stats} onClick={() => updateDisplayMode("Stats")} title="Stats"></MenuTabButton>
+              <MenuTabButton selected={menuTabButtonSelection.Controls} onClick={() => updateDisplayMode("Controls")} title="Controls"></MenuTabButton>
+              <MenuTabButton selected={menuTabButtonSelection.Tutorial} onClick={() => updateDisplayMode("Tutorial")} title="Tutorial"></MenuTabButton>
+              <MenuTabButton selected={menuTabButtonSelection.Notes} onClick={() => updateDisplayMode("Notes")} title="Notes"></MenuTabButton>
             </div>
             {/*<InfoMenuBox setControlConfig={controlConfigSelected}></InfoMenuBox>
           */}
