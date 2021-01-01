@@ -1,10 +1,29 @@
 .player-wrapper {
     position: relative;
-    padding-top: 56.25% /* Player ratio: 100 / (1280 / 720) */
-  }
+    padding-top: 80%; /* Player ratio: 100 / (1280 / 720) */
+    padding-left: 10 ;
+}
   
   .react-player {
+   
     position: absolute;
     top: 0;
     left: 0;
+  }
+  .play-button {
+   color: 'white';
+   position: absolute;
+   background: gray;
+   top: 75%;
+   left: 27%;
+   font-family: 'Audiowide', cursive;  
+   font-size: 60px;
+   border-radius: 6px;
+   padding-right: 8px;
+
+   border-color: black;
+   border: 3px solid;
+  }
+  .play-button:hover {
+      
   }

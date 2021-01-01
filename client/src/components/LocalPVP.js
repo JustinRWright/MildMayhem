@@ -7,7 +7,7 @@ const LocalPVP = () => {
   return (
     <div >
         
-        <ResponsivePlayer />
+        <ResponsivePlayer  />
 
     </div>
   )

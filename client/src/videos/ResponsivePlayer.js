@@ -1,12 +1,13 @@
 import {React, Component} from 'react';
 import ReactPlayer from "react-player";
-import localPVPVideo from '../videos/LocalPVP.mp4';
+import styles from '../videos/responsive-player.css';
+import localPVPVideo from '../videos/WorkingShowcase.mp4';
 const ResponsivePlayer = () => {
     
         
     
     return (
-        <div>
+        <div style={{height: "100%"}}>
             <div className='player-wrapper'>
             <ReactPlayer
                 className='react-player'
@@ -19,6 +20,9 @@ const ResponsivePlayer = () => {
                 controls={false}
 
             />
+            <div className='play-button'>
+                PLAY
+            </div>
             </div>
         </div>
     )
