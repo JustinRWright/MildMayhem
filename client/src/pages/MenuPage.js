@@ -16,8 +16,8 @@ import { useState, useEffect } from 'react';
 import MenuTabButton from '../components/menuTabButton.js';
 import CssBaseline from '@material-ui/core/CssBaseline';
 //import TestImage from '../images/VanGogh.png';
-import TestImage from '../images/DeepArted.jpg';
-//import TestImage from '../images/DeepArtedG.jpg';
+//import TestImage from '../images/DeepArted.jpg';
+import TestImage from '../images/DeepArtedG.jpg';
 //import TestImage from '../images/DeepArtedGCY.jpg';
 const styles = {
   menuTabButton: {
@@ -188,7 +188,7 @@ const MenuPage = (props) => {
       <Grid container style={{ height: '600px' }}>
         {/*Title Bar*/}
         <Grid item xs={12}>
-          <div style={{ textAlign: 'center', borderRadius: 15, background: 'rgba(0, 0, 0, 0.6)', fontSize: 30, fontFamily: 'Audiowide', padding: 20, }}>
+          <div style={{ textAlign: 'center', borderRadius: 15, background: 'rgba(0, 0, 0, 0.6)', fontSize: 40, fontFamily: 'Audiowide', padding: 20, }}>
             <div style={{ color: '#39FF14' }}>
               <u>
                 Mild Mayhem
