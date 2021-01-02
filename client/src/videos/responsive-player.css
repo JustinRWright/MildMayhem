@@ -25,5 +25,5 @@
    border: 3px solid;
   }
   .play-button:hover {
-      
+    background: rgb(95, 95, 95);
   }
