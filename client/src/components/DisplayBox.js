@@ -12,7 +12,7 @@ const DisplayBox = ({matchRoomClicked}) => {
     switch(displayMode) {
       case 'LocalPVP': return (<LocalPVP />)
 
-      case 'OnlinePVP': return displayMode
+      case 'OnlinePVP': return (<OnlinePVP matchRoomClicked={matchRoomClicked}/>)
 
       case 'Stats': return displayMode
 
