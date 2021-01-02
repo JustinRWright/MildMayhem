@@ -5,7 +5,7 @@ import styled from 'styled-components'
 const StyledRoomContainer = styled.div`
 display: flex;
 padding: 0.5em 1em;
-
+color: black;
 border: 2px solid black;
 margin: 1rem 0 0 1rem;
 border-radius: 15px;
