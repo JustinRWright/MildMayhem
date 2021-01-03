@@ -40,12 +40,12 @@ const styles = {
 const MenuPage = (props) => {
   const [displayMode, setDisplayMode] = useAtom(displayModeAtom);
   const [menuTabButtonSelection, setMenuTabButtonSelection] = useState({
-    LocalPVP: false,
+    LocalPVP: true,
     OnlinePVP: false,
     Stats: false,
     Controls: false,
     Tutorial: false,
-    Notes: true,
+    Notes: false,
   });
   const updateDisplayMode = useCallback((DisplayModeString) => {
     console.log("displayModeStringis: " + DisplayModeString);
