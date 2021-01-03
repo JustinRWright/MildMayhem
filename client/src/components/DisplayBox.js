@@ -20,6 +20,8 @@ const DisplayBox = ({matchRoomClicked}) => {
 
       case 'Tutorial': return displayMode
 
+       case 'Notes': return (<Notes />)
+
       default: return (<LocalPVP />)
     }
   }
