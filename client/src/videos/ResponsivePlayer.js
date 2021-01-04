@@ -1,7 +1,7 @@
 import {React, Component} from 'react';
 import ReactPlayer from "react-player";
 import styles from '../videos/responsive-player.css';
-import localPVPVideo from '../videos/MidSatShowcase.mp4';
+import localPVPVideo from '../videos/WorkingShowcase.mp4';
 
 const ResponsivePlayer = () => {
     
