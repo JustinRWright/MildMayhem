@@ -26,4 +26,8 @@
   }
   .play-button:hover {
     background: rgb(95, 95, 95);
+   
+  }
+  .play-button {
+    cursor: pointer;
   }
