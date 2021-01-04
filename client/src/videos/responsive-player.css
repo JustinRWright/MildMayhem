@@ -5,7 +5,7 @@
 }
   
   .react-player {
-   
+    opacity: .8;
     position: absolute;
     top: 0;
     left: 0;
@@ -14,12 +14,12 @@
    color: 'white';
    position: absolute;
    background: gray;
-   top: 75%;
-   left: 27%;
+   top: 40%;
+   left: 31%;
    font-family: 'Audiowide', cursive;  
-   font-size: 60px;
+   font-size: 50px;
    border-radius: 6px;
-   padding-right: 8px;
+   padding-right: 3px;
 
    border-color: black;
    border: 3px solid;
