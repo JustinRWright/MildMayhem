@@ -8,6 +8,7 @@ class GamePage extends Component {
   constructor(props){
     super(props);
     let gameConfig = this.props.gameConfig;
+    console.log("gameConfig is: " + gameConfig);
     let roomName = this.props.roomName;
     //console.log("gameConfig is: " + gameConfig);
     //let newScene = new Object();

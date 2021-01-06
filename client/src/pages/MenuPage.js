@@ -179,7 +179,7 @@ const MenuPage = (props) => {
     props.passControlConfig(controls);
     console.log('room created')
   };
-
+  
   let roomCount = rooms;
 
   let joinMatchBox;

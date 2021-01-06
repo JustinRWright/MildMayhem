@@ -246,6 +246,7 @@ let LocalGameScene = {
                 
                
             }
+            console.log('gameConfig is: '+ this.gameConfig);
             if (this.gameConfig === 'createOnline'){
                 this.player1 = new Player(this, 400, 500,'player', this.explosionAnim);
                 this.player2 = new Player(this, 400, 200,'otherPlayer', this.explosionAnim);

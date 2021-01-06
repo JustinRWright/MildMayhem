@@ -2,10 +2,13 @@ import {React, Component} from 'react';
 import ReactPlayer from "react-player";
 import styles from '../videos/responsive-player.css';
 import localPVPVideo from '../videos/WorkingShowcase.mp4';
+import { Link, useHistory } from 'react-router-dom';
 
 const ResponsivePlayer = () => {
-    
-        
+    const history = useHistory();
+    function startMatch() {
+        history.push("/game");
+    }    
     
     return (
         <div style={{height: "100%"}}>
@@ -21,7 +24,7 @@ const ResponsivePlayer = () => {
                 controls={false}
 
             />
-            <div className='play-button'>
+            <div onClick={startMatch} className='play-button'>
                 PLAY
             </div>
             </div>

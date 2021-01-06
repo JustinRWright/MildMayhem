@@ -1,9 +1,10 @@
 import React, { useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 import { useAtom } from 'jotai'
-import { roomsAtom } from '../jotai'
+import { roomsAtom, matchAtom } from '../jotai'
 import Room from './Room'
 import styled from 'styled-components'
+
 
 const StyledOnlinePVPContainer = styled.div`
   display: flex;
@@ -63,19 +64,29 @@ const StyledOnlinePVPContainer = styled.div`
   }
 `
 const OnlinePVP = ({ matchRoomClicked }) => {
-  const [rooms, setRooms] = useAtom(roomsAtom)
+  const history = useHistory();
+  const [rooms, setRooms] = useAtom(roomsAtom);
+  const [match, setMatch] = useAtom(matchAtom);
   // useEffect(()=>{
   //   console.log('keys:',Object.keys(rooms))
   // },[rooms])
+  const startMatch = (gameType, roomName, roomId) => {
+    setMatch({gameType: gameType, roomName: roomName, roomId: roomId});
+    //matchRoomClicked(gameType, roomName, roomId);
+    
+    history.push("/game");
+  }
   const createRoom = () => {
-    matchRoomClicked('createOnline')
+    setMatch({gameType: 'createOnline', roomName: '', roomId: ''});
+    history.push("/game");
+    //matchRoomClicked('createOnline')
   }
   return (
     <StyledOnlinePVPContainer>
       <div className="button-container">
-        <Link to='/game' style={{ color: 'black' }}>
+        <div style={{ color: 'black' }}>
           <button onClick={createRoom} className="createRoom-button">Create Room</button>
-        </Link>
+        </div>
         <div className="border-elem"></div>
       </div>
       <div className="roomlist-container">
@@ -84,9 +95,9 @@ const OnlinePVP = ({ matchRoomClicked }) => {
           {
             Object.keys(rooms).length
               ? Object.keys(rooms).map((room, index) => {
-               return <Link to="/game" style={{textDecoration:'none'}}>
-                  <Room key={rooms[room].id} room={rooms[room]} onClick={() => matchRoomClicked('joinOnline', rooms[room].name, rooms[room].id)} />
-                </Link>
+               return <div style={{textDecoration:'none'}}>
+                  <Room key={rooms[room].id} room={rooms[room]} onClick={() => startMatch('joinOnline', rooms[room].name, rooms[room].id)} />
+                </div>
               })
               : <p>It Seems there are no rooms available. How about creating your own room? Click the <b>Create Room</b> Button Above.
           </p>
