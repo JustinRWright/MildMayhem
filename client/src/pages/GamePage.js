@@ -3,6 +3,7 @@ import Phaser from 'phaser';
 import { IonPhaser } from '@ion-phaser/react';
 import LocalGameScene from '../phaser/scenes/LocalGameScene.js';
 import OnlineGameScene from '../phaser/scenes/OnlineGameScene.js';
+import TutorialGameScene from '../phaser/scenes/TutorialGameScene.js';
 import {socket} from '../api';
 class GamePage extends Component {
   constructor(props){
@@ -19,6 +20,9 @@ class GamePage extends Component {
     }
     else if (gameConfig=='joinOnline'){
       newScene = OnlineGameScene;
+    }
+    else if (gameConfig=='tutorial'){
+      newScene = TutorialGameScene;
     }
     let controlConfig = this.props.controlConfig;
     this.state = {

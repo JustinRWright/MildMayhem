@@ -5,6 +5,7 @@ import Notes from './Notes'
 import LocalPVP from './LocalPVP'
 import OnlinePVP from './OnlinePVP'
 import Controls from './Controls'
+import Tutorial from './Tutorial'
 const DisplayBox = ({matchRoomClicked}) => {
   const [displayMode, setDisplayMode] = useAtom(displayModeAtom)
 
@@ -18,7 +19,7 @@ const DisplayBox = ({matchRoomClicked}) => {
 
       case 'Controls': return (<Controls />)
 
-      case 'Tutorial': return displayMode
+      case 'Tutorial': return (<Tutorial/>)
 
        case 'Notes': return (<Notes />)
 

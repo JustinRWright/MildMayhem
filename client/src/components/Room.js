@@ -10,6 +10,7 @@ border: 2px solid black;
 margin: 1rem 0 0 1rem;
 border-radius: 15px;
 align-items: center;
+cursor: pointer;
 
   .item__image-container {
     height: 50px;

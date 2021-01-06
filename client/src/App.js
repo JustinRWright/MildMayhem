@@ -89,6 +89,9 @@ const App = () => {
             {/*We are passing the control configuration into the game*/}
             <GamePage controlConfig={controlConfig} gameConfig={match.gameType} roomName={match.roomName} />
           </Route>
+          <Route path="/tutorial">
+            <GamePage controlConfig={controlConfig} gameConfig={match.gameType} roomName={match.roomName} />
+          </Route>
         </Switch>
 
       </div>
