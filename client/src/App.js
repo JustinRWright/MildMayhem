@@ -68,7 +68,7 @@ const App = () => {
     setGameConfig(gameSelectionFromMenuPage)
     setRoomName(roomNameFromMenuPage)
   }
- 
+  
 
 
   return (

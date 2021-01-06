@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React,{ useRef, useEffect, useState} from 'react'
 import { Link, useHistory } from 'react-router-dom'
 import { useAtom } from 'jotai'
 import { roomsAtom, matchAtom } from '../jotai'
@@ -64,23 +64,32 @@ const StyledOnlinePVPContainer = styled.div`
   }
 `
 const OnlinePVP = ({ matchRoomClicked }) => {
+  const isPvpClicked = useRef(false);
   const history = useHistory();
   const [rooms, setRooms] = useAtom(roomsAtom);
   const [match, setMatch] = useAtom(matchAtom);
-  // useEffect(()=>{
-  //   console.log('keys:',Object.keys(rooms))
-  // },[rooms])
+ 
+  useEffect(() => {
+    //Wait for rerender to navigate so that Jotai updates needed states before navigation
+    if (isPvpClicked.current){
+      //go to game
+     history.push("/game")
+    }
+  });
+ 
   const startMatch = (gameType, roomName, roomId) => {
     setMatch({gameType: gameType, roomName: roomName, roomId: roomId});
-    //matchRoomClicked(gameType, roomName, roomId);
+   
+    isPvpClicked.current = true;
     
-    history.push("/game");
   }
   const createRoom = () => {
     setMatch({gameType: 'createOnline', roomName: '', roomId: ''});
-    history.push("/game");
-    //matchRoomClicked('createOnline')
+    
+    isPvpClicked.current = true;
+   
   }
+ 
   return (
     <StyledOnlinePVPContainer>
       <div className="button-container">
