@@ -100,6 +100,8 @@ const MenuPage = (props) => {
   //   };
   // };
   useEffect(() => {
+    //This runs once at the beginning so that if players press back on OnlinePvp sthey don't see the localpvp tab with onlinepvp displayMode option
+    setDisplayMode('LocalPVP');
     //Remove event listeners in case user pressed back from online game
 
     //Whenever the rooms on the server are updated, the room state is set again
@@ -126,7 +128,7 @@ const MenuPage = (props) => {
   Perhaps custom controls here can detect keycodes and translate directly into a keycode value that gets passed into phaser
   For example, an option to click on swordslash and press a key to get the key code(ex: SPACE), then send that to the phaser game where it will
   be set as the attack.*/
-  const controlConfigSelected = (controlConfig) => {
+  /*const controlConfigSelected = (controlConfig) => {
     if (controlConfig === "keyboard1") {
       setControls({
         player1: {
@@ -169,8 +171,9 @@ const MenuPage = (props) => {
       });
     }
   };
+  */
   //When a match room is clicked, the control config is passed to the game for the game start
-  const matchRoomClicked = (gameType, roomName, playerId) => {
+  /*const matchRoomClicked = (gameType, roomName, playerId) => {
     if (gameType === 'joinOnline') {
       joinRoom(playerId);
     }
@@ -179,7 +182,7 @@ const MenuPage = (props) => {
     props.passControlConfig(controls);
     console.log('room created')
   };
-  
+  */
   let roomCount = rooms;
 
   let joinMatchBox;
@@ -242,7 +245,7 @@ const MenuPage = (props) => {
 
           {/* display box */}
           <Grid item xs={8} >
-            <DisplayBox matchRoomClicked={matchRoomClicked}/>
+            <DisplayBox />
           </Grid>
 
 

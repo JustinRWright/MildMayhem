@@ -6,7 +6,7 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import Phaser from 'phaser'
 import { useAtom, atom } from 'jotai'
 import { IonPhaser } from '@ion-phaser/react';
-import { matchAtom } from './jotai'
+import { matchAtom, controlConfigAtom } from './jotai'
 
 const App = () => {
   // constructor(props) {
@@ -32,7 +32,7 @@ const App = () => {
   //     roomName: 'Null'
   //   }
   // };
-
+  /*
   const [controlConfig, setControlConfig] = useState({
     player1: {
       Movement: 'WASD',
@@ -45,9 +45,11 @@ const App = () => {
       MagicBlast: 'NumPad9'
     }
   })
+  */
   const [match, setMatch] = useAtom(matchAtom);
   const [gameConfig, setGameConfig] = useState('offline');
   const [roomName, setRoomName] = useState('Null');
+  const [controlConfig, setControlConfig] = useAtom(controlConfigAtom);
   //Callback function which comes all the way from the button component in the React application, without redux, 
   //I believe state has to be managed/updated like this, which I think it isn't the best way to do it
   //I forget the term but basically you have to pass this one callback function through the entire program if there
@@ -61,14 +63,14 @@ const App = () => {
 
   // }
 
-  const controlConfigHandler = (dataFromMenuPage) => {
+  /*const controlConfigHandler = (dataFromMenuPage) => {
     setControlConfig(dataFromMenuPage);
   };
   const gameConfigHandler = (gameSelectionFromMenuPage, roomNameFromMenuPage) => {
     setGameConfig(gameSelectionFromMenuPage)
     setRoomName(roomNameFromMenuPage)
   }
-  
+  */
 
 
   return (
@@ -80,7 +82,7 @@ const App = () => {
            
             {/*Getting the control configuration from here*/}
             {/* <MenuPage passControlConfig={controlConfigHandler} addNewRoom={this.addNewRoom} passGameConfig={gameConfigHandler} /> */}
-            <MenuPage passControlConfig={controlConfigHandler} passGameConfig={gameConfigHandler} />
+            <MenuPage />
           </Route>
           <Route path="/game">
            {console.log('matchAtom is: ' + JSON.stringify(match))}

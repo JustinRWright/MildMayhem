@@ -4,7 +4,7 @@ import { useAtom } from 'jotai'
 import { roomsAtom, matchAtom } from '../jotai'
 import Room from './Room'
 import styled from 'styled-components'
-
+import { joinRoom } from '../api';
 
 const StyledOnlinePVPContainer = styled.div`
   display: flex;
@@ -70,7 +70,7 @@ const OnlinePVP = ({ matchRoomClicked }) => {
   const [match, setMatch] = useAtom(matchAtom);
  
   useEffect(() => {
-    //Wait for rerender to navigate so that Jotai updates needed states before navigation
+    //Wait for rerender to navigate so that Jotai updates necessary states before navigation
     if (isPvpClicked.current){
       //go to game
      history.push("/game")
@@ -81,7 +81,7 @@ const OnlinePVP = ({ matchRoomClicked }) => {
     setMatch({gameType: gameType, roomName: roomName, roomId: roomId});
    
     isPvpClicked.current = true;
-    
+    joinRoom(roomId);
   }
   const createRoom = () => {
     setMatch({gameType: 'createOnline', roomName: '', roomId: ''});

@@ -1,5 +1,5 @@
 import React from "react";
-import { controlsAtom, keyBindingsAtom } from "../jotai";
+import { controlsAtom, keyBindingsAtom, controlConfigAtom } from "../jotai";
 import { useAtom } from "jotai";
 import styled from "styled-components";
 
@@ -103,17 +103,36 @@ const controlsList = [
 const Controls = () => {
   const [controlMode, setControlMode] = useAtom(controlsAtom);
   const [keyBindings, setKeyBindings] = useAtom(keyBindingsAtom);
-
+  const [controlConfig, setControlConfig] = useAtom(controlConfigAtom);
   const toggleControl = (e) => {
     if(e.target.innerText.toLowerCase() === controlMode.toLowerCase()) {
       return
     }
     if (controlMode === "keyboard") {
-      setControlMode("gamepad");
-      setKeyBindings(false);
+      setControlConfig({player1: {
+      Movement: 'WASD',
+      SwordSlash: 'SPACE',
+      MagicBlast: 'P'
+    },
+    player2: {
+      Movement: 'ArrowKeys',
+      SwordSlash: 'NumPad0',
+      MagicBlast: 'NumPad9'
+    }});
+      //setControlMode("gamepad");
+      //setKeyBindings(false);
     } else {
-      setControlMode("keyboard");
-      setKeyBindings(true);
+      setControlConfig({ player1: {
+          Movement: 'GamePad',
+          SwordSlash: '',
+          MagicBlast: ''
+        },player2: {
+          Movement: 'ArrowKeys',
+          SwordSlash: 'NumPad0',
+          MagicBlast: 'NumPad9'
+        }});
+      //setControlMode("keyboard");
+      //setKeyBindings(true);
     }
   };
   // displays keys

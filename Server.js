@@ -28,9 +28,21 @@ var players = {};
 server.listen(port, () => console.log(`Outer Server.js Listening on port ${port}`));
 
 
+function sortAvailable(gameRooms) {
+  availableRooms = {};
+  Object.keys(gameRooms).forEach(gameRoom => {
+    
+    console.log('gameRooms[gameRoom] is' + gameRooms[gameRoom]);
+    //If the room has no opponent then it is available...
+    if (typeof gameRooms[gameRoom].opponent === 'undefined'){
+      console.log('Room is available, the opponent is ' + typeof gameRoom.opponent);
+      availableRooms[gameRooms[gameRoom].id] = gameRooms[gameRoom];
+    }
+  });
+  return availableRooms;
+}
+
 function destroyRoom(socket){
-        
-  
   //Loop through all saved gameRooms
   for (let i = 0; i < Object.keys(gameRooms).length; i++) {
     //Check to see if the client was the host of a gameroom
@@ -71,8 +83,9 @@ io.on("connection", (socket) => {
     }
     socket.join(gameRooms[socket.id].name);
 
+    availableRooms = sortAvailable(gameRooms);
     //Shows all rooms to players
-    io.broadcast.emit('showRooms', gameRooms);
+    io.broadcast.emit('showRooms', availableRooms);
   
   });
 
@@ -82,17 +95,28 @@ io.on("connection", (socket) => {
     console.log('roomname is: ' + gameRooms[socket.id].name);
     socket.emit('yourRoomName', gameRooms[socket.id].name);
   });
-
+  socket.on('getRooms', function() {
+    availableRooms = sortAvailable(gameRooms);
+    io.emit('showRooms',availableRooms);
+  })
   socket.on('joinRoom', function(playerId) {
     
-    if (typeof gameRooms[playerId] !== 'undefind'){
+    //If a gameRoom exists on Join
+    if (typeof gameRooms[playerId] !== 'undefined'){
+      //if there is not currently an opponent in the room
+      if (typeof gameRooms[playerId].opponent === 'undefined'){
       //Joins the the room of the opposing player
       socket.join(gameRooms[playerId].name);
 
       //Save and link opponent id to gameRoom
       gameRooms[playerId].opponent = socket.id;
       
+      availableRooms = sortAvailable(gameRooms);
+
       io.to(playerId).emit('opponentJoined', socket.id);
+      io.broadcast.emit('showRooms', availableRooms);
+      }
+    
     }
     
   });
@@ -101,15 +125,19 @@ io.on("connection", (socket) => {
     if (gameRooms[socket.id] !== 'undefined'){
       destroyRoom(socket);
     }
-    
+    availableRooms = sortAvailable(gameRooms);
     //Update all user of new rooms
-    io.broadcast.emit('showRooms', gameRooms);
+    io.broadcast.emit('showRooms', availableRooms);
   });
 
   socket.on("playerMovement", function(movementData) {
     
     io.to(movementData.roomName).emit('playerMoved', movementData);
   });
+  socket.on("createShield", function(roomName){
+    console.log("shield created on server");
+    io.to(roomName).emit('shieldCreated');
+  })
   socket.on("swingSword", function(roomName) {
     console.log('swordswing on server');
     io.to(roomName).emit('swordSwung');
@@ -140,32 +168,20 @@ io.on("connection", (socket) => {
   });
   socket.on('destroyOnlineRoom', () => {
     destroyRoom(socket);
+    availableRooms = sortAvailable(gameRooms);
     //Update all user of new rooms
-    io.broadcast.emit('showRooms', gameRooms);
+    io.broadcast.emit('showRooms', availableRooms);
   });
-  socket.on('getRooms', () => {
-    destroyRoom(socket);
-    console.log('getRooms called');
-    console.log('gameRooms are: ' + JSON.stringify(gameRooms));
-    //Sort available and send them to users;
-    let availableRooms = {};
-    Object.keys(gameRooms).forEach(gameRoom => {
 
-      //If the room has no opponent then it is available...
-      if (gameRoom.opponent !== 'undefined'){
-        availableRooms[gameRooms[gameRoom].id] = gameRooms[gameRoom];
-      }
-    });
-    console.log('availableRooms are' + JSON.stringify(availableRooms));
-    //Update user of new rooms
-    io.emit('updateRooms', availableRooms);
-  });
   socket.on("disconnect", () => {
     console.log("Client disconnected");
     //delete any gameRoom that may have been open
     destroyRoom(socket);
+    availableRooms = sortAvailable(gameRooms);
     //Update all users of room changes
-    io.broadcast.emit('showRooms', gameRooms);
+    io.broadcast.emit('showRooms', availableRooms);
     delete players[socket.id];
   });
 });
+
+module.exports = app;
