@@ -90,7 +90,7 @@ const App = () => {
             <GamePage controlConfig={controlConfig} gameConfig={match.gameType} roomName={match.roomName} />
           </Route>
           <Route path="/tutorial">
-            <GamePage controlConfig={controlConfig} gameConfig={match.gameType} roomName={match.roomName} />
+            <GamePage controlConfig={controlConfig} gameConfig={'tutorial'} roomName={match.roomName} />
           </Route>
         </Switch>
 
