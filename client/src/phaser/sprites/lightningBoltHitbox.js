@@ -88,8 +88,8 @@ export default class lightningHB extends Phaser.Physics.Arcade.Sprite
             
         }
         //Reference to animation sprite to destroy for collisions
-        destroyAnimationSprite(){
-            this.animationSprite.destroy();
+       getAnimationSprite(){
+           return  this.animationSprite;
         }
         getOwner(){
           return this.owner;
