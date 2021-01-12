@@ -3,7 +3,7 @@ export default class MagicBlast extends Phaser.Physics.Arcade.Sprite
     {
 
         //https://www.youtube.com/watch?v=jEaoeEdv7eU I used this tutorial to for extending a sprite in phaser3
-        constructor (scene,x,y,texture,{owner}={})
+        constructor (scene,x,y,texture,{owner, duration}={})
         {
             super(scene,x,y,texture);
             //Adds sprite to screen
@@ -22,7 +22,14 @@ export default class MagicBlast extends Phaser.Physics.Arcade.Sprite
             this.owner = owner;
             this.x = x;
             this.y = y;
-            let magicBlastTimeOut = this.scene.time.delayedCall(1000, this.explodeTimer, [], this);
+            console.log('duration is: ' + duration);
+            if (typeof duration == 'undefined'){
+              let magicBlastTimeOut = this.scene.time.delayedCall(1000, this.explodeTimer, [], this);
+            }
+            else {
+              let magicBlastTimeOut = this.scene.time.delayedCall(duration, this.explodeTimer, [], this);
+            }
+            
             //this callback plays at the end of an animation sequence
             this.on('animationcomplete', function(anim) {
               //This nested event emit allows for specific animations to trigger specific actions

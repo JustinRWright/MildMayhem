@@ -87,6 +87,19 @@ let LocalGameScene = {
                     
                 }
             }
+            this.destroyAllLightningBolts = function () {
+                 this.lightningBolts.getChildren().forEach(lightningBoltHB => {
+                    if (typeof lightningBoltHB.getAnimationSprite() !== 'undefined'){
+                        lightningBoltHB.getAnimationSprite().destroy();
+                    }
+                          lightningBoltHB.body.enable = false;
+                    });
+            }
+            this.destroyAllMagicBlasts = function () {
+                this.magicBlasts.getChildren().forEach(magicBlast => {
+                    magicBlast.explode();
+                })
+            }
             this.playerHitSwordSwing = function(swordSwing, player){
            
                 if(swordSwing.getOwner()!==player){
@@ -139,10 +152,15 @@ let LocalGameScene = {
                 }
             } 
             this.shieldHitMagicBlast = function(shield, magicBlast){
-                console.log("shield hit magic Blast");
+               
                 if (shield.getOwner() !== magicBlast.getOwner()){
-                     console.log("Opponenet shield collision");
+                    shield.getOwner().hasShieldedMagicBlast = true;
+                    shield.getOwner().scene.tutorialText.setText('Nice Work! Ready to play a match?(Hit back in your browser)\n ');
+                    shield.getOwner().scene.destroyAllMagicBlasts();
                     magicBlast.explode();
+
+                    //start deflect sequence
+
                 }
             }
             this.magicBlastHitTarget = function(target, magicBlast){
@@ -188,20 +206,21 @@ let LocalGameScene = {
                     sceneRef.player1.hasDodgedThroughLightning = false;
                     sceneRef.player1.dodgeThroughLightningColliderSet = false; 
                     //Fire a lightning bolt to the right of the player create a collision for that lightning Bolt
-                    sceneRef.fireLightningBoltAtPlayer();
+                    sceneRef.fireLightningBoltAtPlayer(200,50,200,50);
                 };
                 let timedEvent = sceneRef.time.delayedCall(1000, destroyTarget, [], this);
                 sceneRef.tutorialText.setText('OH NO, YOU ANGERED THE TARGET(Someone got excited with the enchantment), \n RETURN FIRE \n QUICK, DODGE THROUGH IT \n (SHIFT)');
             }
-            this.fireLightningBoltAtPlayer = function() {
-                 let newlightningBolt = new LightningBolt(this,this.player1.getX() +  this.player1.getOrientationVector().x*-200 + this.player1.getOrientationVector().y*50,this.player1.getY() + this.player1.getOrientationVector().y*-200 + this.player1.getOrientationVector().x*50,'lightningBolt',{owner: this.player1,lightningBoltHBTexture: 'magicBlast', lightningBoltGroup: this.lightningBolts});
-                 if (this.player1.dodgeThroughLightningColliderSet === false){
-                     this.physics.add.overlap(this.player1, this.lightningBolts, this.playerDodgedThroughLightning);
-                     this.player1.dodgeThroughLightningColliderSet = true; 
-                 }
-                 if (!this.player1.hasDodgedThroughLightning){
+            this.fireLightningBoltAtPlayer = function(lightningOffsetX1,lightningOffsetX2,lightningOffsetY1,lightningOffsetY2) {
+                if (!this.player1.hasDodgedThroughLightning){
+                    let newlightningBolt = new LightningBolt(this,this.player1.getX() +  this.player1.getOrientationVector().x*-lightningOffsetX1 + this.player1.getOrientationVector().y*lightningOffsetY2,this.player1.getY() + this.player1.getOrientationVector().y*-lightningOffsetY1 + this.player1.getOrientationVector().x*lightningOffsetX2,'lightningBolt',{owner: this.player1,lightningBoltHBTexture: 'magicBlast', lightningBoltGroup: this.lightningBolts});
+                    if (this.player1.dodgeThroughLightningColliderSet === false){
+                        this.physics.add.overlap(this.player1, this.lightningBolts, this.playerDodgedThroughLightning);
+                        this.player1.dodgeThroughLightningColliderSet = true; 
+                    }
+                    
                      //this.fireLightningBoltAtPlayer();
-                     let timedEvent = this.time.delayedCall(1000, this.fireLightningBoltAtPlayer, [], this);
+                     let timedEvent = this.time.delayedCall(1000, () => this.fireLightningBoltAtPlayer(200,50,200,50), [], this);
                  }
                 
             }
@@ -209,11 +228,41 @@ let LocalGameScene = {
                 let sceneRef = player.scene;
                 if (player.getDodging()){
                     player.hasDodgedThroughLightning = true;
-                    sceneRef.tutorialText.setText('Way to go boss, well uh, \n It looks like the target is going to fire right at you!!, Try shielding this time(I) \n ');
-                    lightningBoltHB.getAnimationSprite().destroyLightningBolt();
+                    sceneRef.tutorialText.setText('Way to go boss, well uh, \n It looks like the target is going to fire right at you!!,\n Try shielding! (I) \n ');
+                    //lightningBoltHB.getAnimationSprite().destroyLightningBolt();
+                    sceneRef.destroyAllLightningBolts();
+                    
+                    //Fire lightning Bolt directly at player after a delay
+
+                    sceneRef.physics.add.overlap(sceneRef.shields, sceneRef.magicBlasts, sceneRef.playerHasShieldedMagicBlast);
+                    sceneRef.player1.hasShieldedMagicBlast = false;
+                    
+                    let timedEvent = sceneRef.time.delayedCall(4000, () => sceneRef.fireMagicBlastAtPlayer(800,800), [], sceneRef);
+                    
                 }
                 
             }
+            this.fireMagicBlastAtPlayer = function(magicBlastOffsetX1,magicBlastOffsetY1) {
+                    if (!this.player1.hasShieldedMagicBlast){
+                        //Create magic Blast
+                        var newMagicBlast = new MagicBlast(this,this.player1.getX()+magicBlastOffsetX1*this.player1.getOrientationVector().x,
+                        this.player1.getY()+this.player1.getOrientationVector().y*magicBlastOffsetY1,'magicBlast',{duration: 5000});
+                        //Add to collision group
+                        this.magicBlasts.add(newMagicBlast);
+                        //Fire in direction of this.player1 orientation
+                        newMagicBlast.setMagicBlastVelocity({x: -this.player1.getOrientationVector().x*.2, y: -this.player1.getOrientationVector().y*.2});
+                        //Set magicBlast bounce
+                        newMagicBlast.setCollideWorldBounds(true);
+                        newMagicBlast.setBounce(1);
+                        //let magicBlast = new LightningBolt(sceneRef,sceneRef.player1.getX() +  sceneRef.player1.getOrientationVector().x*-200 + sceneRef.player1.getOrientationVector().y*50,sceneRef.player1.getY() + sceneRef.player1.getOrientationVector().y*-200 + sceneRef.player1.getOrientationVector().x*50,'lightningBolt',{owner: sceneRef.player1,lightningBoltHBTexture: 'magicBlast', lightningBoltGroup: sceneRef.lightningBolts});
+                    
+                        let timedEvent = this.time.delayedCall(4000, () => this.fireMagicBlastAtPlayer(800,800), [], this);
+                    }
+                    else {
+
+                    }
+                }
+            
             //Collision between lightning and player
             this.playerHitLightning = function(lightningBoltHB,player){
                 //Players cannot hit themselves with their own attacks
