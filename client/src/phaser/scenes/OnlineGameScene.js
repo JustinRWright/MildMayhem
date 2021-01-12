@@ -134,9 +134,9 @@ let LocalGameScene = {
                 }
             }
             //Collision between lightning and player
-            this.playerHitLightning = function(lightningBolt,player){
+            this.playerHitLightning = function(lightningBoltHB,player){
                 //Players cannot hit themselves with their own attacks
-                if(lightningBolt.getOwner()!==player){
+                if(lightningBoltHB.getOwner()!==player){
                    
                     if (player.getStun() === false && player.getDodging() === false){
                         
@@ -153,34 +153,36 @@ let LocalGameScene = {
                             let timedEvent = player.scene.time.delayedCall(3000, player.scene.redirect, [], this);
                         }
                         
-                        player.knockBack(lightningBolt);
+                        player.knockBack(lightningBoltHB);
                       
                         //Destroy the animation associated with these hitboxes
-                        lightningBolt.destroyAnimationSprite();
-
+                        lightningBoltHB.getAnimationSprite().destroyLightningBolt();
+                        /*
                         //Find all other associated lightning bolt hitboxes and destroy them
-                        lightningBolt.scene.lightningBolts.getChildren().forEach(lightningBolt => {
+                        lightningBoltHB.scene.lightningBolts.getChildren().forEach(lightningBolt => {
                             if (lightningBolt.getOwner() !== player) {
                                 lightningBolt.body.enable = false;
                             }
                     });
+                    */
                 }
             }
             }
-            this.shieldHitLightningBolt = function(shield, lightningBolt){
+            this.shieldHitLightningBolt = function(shield, lightningBoltHB){
                  console.log("shield hit lightning Bolt");
-                if(shield.getOwner() !== lightningBolt.getOwner()){
+                if(shield.getOwner() !== lightningBoltHB.getOwner()){
                     console.log("Opponent shield collision");
                     self.socket.emit('destroyLightningBolt', self.roomName);
                         //Destroy the animation associated with these hitboxes
-                        lightningBolt.destroyAnimationSprite();
-
+                        lightningBoltHB.getAnimationSprite().destroyLightningBolt();
+                        /*
                         //Find all other associated lightning bolt hitboxes and destroy them
-                        lightningBolt.scene.lightningBolts.getChildren().forEach(lightningBolt => {
+                        lightningBoltHB.scene.lightningBolts.getChildren().forEach(lightningBolt => {
                             if (lightningBolt.getOwner() !== shield.getOwner()) {
                                 lightningBolt.body.enable = false;
                             }
                     });
+                    */
                 }
             }
             this.shieldHitMagicBlast = function(shield, magicBlast){
@@ -342,16 +344,18 @@ let LocalGameScene = {
            this.socket.on('lightningBoltDestroyed', function(){
                //console.log('animation destruction ran');
                          //Destroy the animation associated with these hitboxes
-                        let lightningAnimDestroyed = false;
-                        //Find all other associated lightning bolt hitboxes and destroy them
-                        self.lightningBolts.getChildren().forEach(lightningBolt => {
-                            if (lightningBolt.getOwner() !== self.player2) {
-                                lightningBolt.body.enable = false;
+                        //let lightningAnimDestroyed = false;
+                        //Find all other associated lightning bolt hitboxes and destroy them-+
+                        self.lightningBolts.getChildren().forEach(lightningBoltHB => {
+                            if (lightningBoltHB.getOwner() !== self.player2) {
+                                lightningBoltHB.getAnimationSprite().destroyLightningBolt();
+                                /*lightningBolt.body.enable = false;
                                 if (lightningAnimDestroyed === false){
                                     //console.log('animation destruction ran');
                                     lightningAnimDestroyed = true;
                                     lightningBolt.destroyAnimationSprite();
                                 }
+                                */
                             }
                     });
            });
@@ -446,6 +450,8 @@ let LocalGameScene = {
             {
                 //DO NOT CALL SOCKET EMITS IN HERE, INFINITE FEEDBACK LOOP
                  //create lightning Bolt animation object
+                 let lightningBolt = new LightningBolt(this,player.getX(),player.getY(),'lightningBolt',{owner: player,lightningBoltHBTexture: 'magicBlast', lightningBoltGroup: this.lightningBolts});
+                /*
                 let lightningBolt = new LightningBolt(this,player.getX(),player.getY(),'lightningBolt',{owner: player});
                 //Creates 4 lightning bolt hitboxes which are the WIDTH of the lightning bolt, they travel 
                 //at a speed so fast that it mimics a diagonal hitbox. This normally
@@ -459,7 +465,7 @@ let LocalGameScene = {
                 this.lightningBolts.add(lightningBoltHB2);
                 this.lightningBolts.add(lightningBoltHB3);
                 this.lightningBolts.add(lightningBoltHB4);
-
+                */
             }
             this.checkForSwingThenSwing = function(attackInput, player, coolDown){
                 //Check if swordSwing exists, and then check if it belongs to the player
@@ -552,7 +558,7 @@ let LocalGameScene = {
           y: y,
           direction: d
         };
-        //Stop animation if not moving and alive(explode animation can play)
+        //Stop animation if not moving and alive(explode animation can play when this runs)
         if (this.player2.moving === false && this.player2.isAlive())
         {
             this.player2.anims.pause();

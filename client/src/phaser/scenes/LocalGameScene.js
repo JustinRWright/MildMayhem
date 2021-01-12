@@ -120,19 +120,14 @@ let LocalGameScene = {
                     }
                 }
             }
-            this.shieldHitLightningBolt = function(shield, lightningBolt){
+            this.shieldHitLightningBolt = function(shield, lightningBoltHB){
                  console.log("shield hit lightning Bolt");
-                if(shield.getOwner() !== lightningBolt.getOwner()){
+                if(shield.getOwner() !== lightningBoltHB.getOwner()){
                     console.log("Opponent shield collision");
                         //Destroy the animation associated with these hitboxes
-                        lightningBolt.destroyAnimationSprite();
+                        lightningBoltHB.getAnimationSprite().destroyLightningBolt();
 
-                        //Find all other associated lightning bolt hitboxes and destroy them
-                        lightningBolt.scene.lightningBolts.getChildren().forEach(lightningBolt => {
-                            if (lightningBolt.getOwner() !== shield.getOwner()) {
-                                lightningBolt.body.enable = false;
-                            }
-                    });
+
                 }
             }
             this.shieldHitMagicBlast = function(shield, magicBlast){
@@ -143,9 +138,9 @@ let LocalGameScene = {
                 }
             }
             //Collision between lightning and player
-            this.playerHitLightning = function(lightningBolt,player){
+            this.playerHitLightning = function(lightningBoltHB,player){
                 //Players cannot hit themselves with their own attacks
-                if(lightningBolt.getOwner()!==player){
+                if(lightningBoltHB.getOwner()!==player){
                    
                     if (player.getStun() === false && player.getDodging() === false){
                         
@@ -160,17 +155,18 @@ let LocalGameScene = {
                             let timedEvent = player.scene.time.delayedCall(3000, player.scene.redirect, [], this);
                         }
                         
-                        player.knockBack(lightningBolt);
+                        player.knockBack(lightningBoltHB);
                       
                         //Destroy the animation associated with these hitboxes
-                        lightningBolt.destroyAnimationSprite();
-
+                        lightningBoltHB.getAnimationSprite().destroyLightningBolt();
+                        /*
                         //Find all other associated lightning bolt hitboxes and destroy them
                         lightningBolt.scene.lightningBolts.getChildren().forEach(lightningBolt => {
                             if (lightningBolt.getOwner() !== player) {
                                 lightningBolt.body.enable = false;
                             }
                     });
+                    */
                 }
             }
             }
@@ -401,10 +397,12 @@ let LocalGameScene = {
            this.lightningCoolDownP1.startCoolDown();
            
            //create lightning Bolt animation object
-           let lightningBolt = new LightningBolt(this,this.player1.getX(),this.player1.getY(),'lightningBolt',{owner: this.player1});
+           //let lightningBolt = new LightningBolt(this,this.player1.getX(),this.player1.getY(),'lightningBolt',{owner: this.player1});
            //Creates 4 lightning bolt hitboxes which are the WIDTH of the lightning bolt, they travel 
            //at a speed so fast that it mimics a diagonal hitbox. This normally
            //can't be created using Arcade physics and its Axis aligned bounding boxes;
+           let lightningBolt = new LightningBolt(this,this.player1.getX(),this.player1.getY(),'lightningBolt',{owner: this.player1,lightningBoltHBTexture: 'magicBlast', lightningBoltGroup: this.lightningBolts});
+            /*
            let lightningBoltHB1 = new LightningHB(this,this.player1.getX(),this.player1.getY(),'magicBlast',{owner: this.player1, animationSprite: lightningBolt, Olength: 100});
            let lightningBoltHB2 = new LightningHB(this,this.player1.getX(),this.player1.getY(),'magicBlast',{owner: this.player1, animationSprite: lightningBolt, Olength: 50});
            let lightningBoltHB3 = new LightningHB(this,this.player1.getX(),this.player1.getY(),'magicBlast',{owner: this.player1, animationSprite: lightningBolt, Olength: 25});
@@ -414,9 +412,13 @@ let LocalGameScene = {
            this.lightningBolts.add(lightningBoltHB2);
            this.lightningBolts.add(lightningBoltHB3);
            this.lightningBolts.add(lightningBoltHB4);
+            */
         };
         if (attackInputsP2.lightningBoltFiring && !this.lightningCoolDownP2.isActive()){
            this.lightningCoolDownP2.startCoolDown();
+           let lightningBolt = new LightningBolt(this,this.player2.getX(),this.player2.getY(),'lightningBolt',{owner: this.player2,lightningBoltHBTexture: 'magicBlast', lightningBoltGroup: this.lightningBolts});
+
+           /*
            let lightningBolt = new LightningBolt(this,this.player2.getX(),this.player2.getY(),'lightningBolt',{owner: this.player2});
            let lightningBoltHB1 = new LightningHB(this,this.player2.getX(),this.player2.getY(),'magicBlast',{owner: this.player2, animationSprite: lightningBolt, Olength: 100});
            let lightningBoltHB2 = new LightningHB(this,this.player2.getX(),this.player2.getY(),'magicBlast',{owner: this.player2, animationSprite: lightningBolt, Olength: 50});
@@ -426,11 +428,12 @@ let LocalGameScene = {
            this.lightningBolts.add(lightningBoltHB2);
            this.lightningBolts.add(lightningBoltHB3);
            this.lightningBolts.add(lightningBoltHB4);
+            */
         };
 
        
         //Check for user dodging and check that they aren't already in dodge mode
-        if (attackInputsP1.dodgeFiring && !this.player1.getDodging() && !this.dodgeCoolDownP1.isActive()){
+        if (attackInputsP1.dodgeFiring && !this.player2.getDodging() && !this.dodgeCoolDownP1.isActive()){
             this.dodgeCoolDownP1.startCoolDown();
             this.player1.dodge();
         };

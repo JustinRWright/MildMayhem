@@ -61,6 +61,7 @@ export default class LightningBolt extends Phaser.Physics.Arcade.Sprite
         endLightningBolt(){
           this.destroy();
         }
+        
         addHitboxesToGroup(lightningBoltGroup){
           lightningBoltGroup.add();
         }

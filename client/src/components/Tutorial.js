@@ -17,14 +17,14 @@ const Tutorial = () => {
     const history = useHistory();
     const [match, setMatch] = useAtom(matchAtom);
  useEffect(()=>{
-     if (isTutorialClicked.current){
-         history.push("/tutorial");
-     }
+     //if (isTutorialClicked.current){
+     //history.push("/tutorial");    
+     //}
  });
  const startTutorial = () => {
-
-        isTutorialClicked.current = true;
-        setMatch({gameType: 'tutorial', roomName: '', roomId: ''});
+        history.push("/tutorial");
+        //isTutorialClicked.current = true;
+        //setMatch({gameType: 'tutorial', roomName: '', roomId: ''});
     };
 
 
