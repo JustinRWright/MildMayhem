@@ -23,11 +23,17 @@ const StyledOnlinePVPContainer = styled.div`
   .createRoom-button{
     margin: 1.4rem auto;
     padding: 0.8rem 1.2rem;
-    font-size: 1.1rem;
+    font-size: 1.8rem;
     border-radius: 25px;
     outline: none;
     cursor: pointer;
+    background: gray;
+    font-family: 'Audiowide', cursive;  
+    border-radius: 6px;
+    
 
+    border-color: black;
+    border: 3px solid;
     &:hover {
       background-color: rgb(221,221,221)
     }

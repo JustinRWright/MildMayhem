@@ -6,6 +6,7 @@ import LocalPVP from './LocalPVP'
 import OnlinePVP from './OnlinePVP'
 import Controls from './Controls'
 import Tutorial from './Tutorial'
+import Stats from './Stats'
 const DisplayBox = ({matchRoomClicked}) => {
   const [displayMode, setDisplayMode] = useAtom(displayModeAtom)
 
@@ -15,7 +16,7 @@ const DisplayBox = ({matchRoomClicked}) => {
 
       case 'OnlinePVP': return (<OnlinePVP matchRoomClicked={matchRoomClicked}/>)
 
-      case 'Stats': return displayMode
+      case 'Stats': return (<Stats />)
 
       case 'Controls': return (<Controls />)
 

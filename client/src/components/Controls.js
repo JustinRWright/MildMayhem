@@ -14,26 +14,42 @@ const StyledControls = styled.div`
     text-transform: uppercase;
   }
 
+  .setControlsButton {
+    cursor: pointer;
+    background: gray;
+    font-family: 'Audiowide', cursive;  
+    border-radius: 6px;
+    
+
+    border-color: black;
+    border: 3px solid;
+  }
   .controls-option {
     display: flex;
     flex-direction: row;
     margin-bottom: 1.5rem;
 
     .keyboard {
-      margin: 0 1.5rem 0 0;
+      margin: 0 2.2rem 0 0;
     }
 
     .gamepad {
       margin: 0 0 0 1.5rem;
+    
     }
 
     button {
-      border-radius: 15px;
-      padding: 10px 30px;
+      width: 200px;
+      
       outline: none;
-      font-size: 1.2rem;
+      font-size: 1.6rem;
       font-weight: bold;
       cursor: pointer;
+      background: gray;
+      font-family: 'Audiowide', cursive;  
+      border-radius: 6px;
+      border-color: black;
+      border: 3px solid;
     }
 
     button:hover {
