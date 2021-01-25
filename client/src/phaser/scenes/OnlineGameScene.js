@@ -41,6 +41,7 @@ let LocalGameScene = {
 
     create: function()
         {   
+           
              let self = this;
            /*I define some of the functions ex:this.deflectBlast
            this way instead of outside of the preload/create/update
@@ -293,7 +294,6 @@ let LocalGameScene = {
                 self.opponentSocketId = opponentSocketId;
             });
             this.socket.on('playerMoved', function (player2Movement){
-               
                     self.player2.moving = true;
                     self.player2.x = player2Movement.x;
                     self.player2.y = player2Movement.y;
@@ -374,6 +374,7 @@ let LocalGameScene = {
 
             //Create controls object which can be accessed in the update logic for game object interactions
             this.controlsP1 = new Controls(this,{directionals: this.controlConfig.player1.Movement, magicBlast: this.controlConfig.player1.MagicBlast, swordSwing: this.controlConfig.player1.SwordSlash},gamePadCount,1);
+           
            
             
             //These phaser groups allow for collisino detection of classes of objects at scale, for example all magic blasts have the same collision callack that is called

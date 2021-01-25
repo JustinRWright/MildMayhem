@@ -60,7 +60,7 @@ class GamePage extends Component {
   }
   componentWillUnmount() {
     console.log('componentUnmounted');
-    socket.removeAllListeners()
+    socket.removeAllListeners();
     socket.emit('destroyOnlineRoom');
 }
   

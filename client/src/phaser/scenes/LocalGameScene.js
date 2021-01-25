@@ -350,6 +350,7 @@ let LocalGameScene = {
         this.lightningCoolDownP2.update();
         this.shieldCoolDownP1.update();
         this.shieldCoolDownP2.update();
+        
         //Get Player input
         this.movementVectorP1 = this.controlsP1.getMovementVector();
         this.movementVectorP2 = this.controlsP2.getMovementVector();

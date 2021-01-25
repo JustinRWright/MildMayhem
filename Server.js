@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 
 const app = express();
 const port = process.env.PORT || 8080;
+//const mongoDBPassWord = 'put password here';
 const server = require('http').Server(app);
 const io = require("socket.io")(server, {
   path: '/socket'
@@ -11,6 +12,16 @@ const io = require("socket.io")(server, {
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+
+const MongoClient = require('mongodb').MongoClient;
+const uri = "mongodb+srv://thegreatsponge:<password>@cluster0.uu3xz.mongodb.net/<dbname>?retryWrites=true&w=majority";
+const client = new MongoClient(uri, { useNewUrlParser: true });
+client.connect(err => {
+  const collection = client.db("test").collection("devices");
+  // perform actions on the collection object
+  client.close();
+});
 
 
 // Add Access Control Allow Origin headers

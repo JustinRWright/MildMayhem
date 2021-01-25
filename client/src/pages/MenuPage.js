@@ -70,7 +70,8 @@ const MenuPage = (props) => {
   }, [ setDisplayMode ]);
 
 
-  const [rooms, setRooms] = useAtom(roomsAtom)
+  const [rooms, setRooms] = useAtom(roomsAtom);
+  
   const [controls, setControls] = useState({
     player1: {
       Movement: 'WASD',
